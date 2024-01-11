@@ -1,0 +1,21 @@
+architect:
+  - h1alexbel
+docker:
+  image: l3r8y/rultor-image:1.0.3
+merge:
+  script: |
+    mvn clean install -Pqulice --errors -Dstyle.color=never
+# @todo #1:60min Create release script to rultor configuration.
+#   We should create release script that will be executed by Rultor.com.
+#   Probably it can be a release inside the GitHub with a new tag,
+#   and build+push Docker image to the private Docker registry.
+release:
+  script:
+    - "No release script for now"
+# @todo #1:90min Create deploy script for rultor configuration.
+#  We should create deploy script that will deliver our Java software
+#  into some target platform. For now, we assuming that it will be
+#  Cloud VM with public IP, and SSH connection.
+deploy:
+  script:
+    - "No deploy script for now"
