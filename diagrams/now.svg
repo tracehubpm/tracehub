@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="186px" preserveAspectRatio="none" style="width:206px;height:186px;" version="1.1" viewBox="0 0 206 186" width="206px" zoomAndPan="magnify"><defs><filter height="300%" id="f47489ia3968m" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[c3dd7293d4e74cc67bec6d68663a773e]
+entity p1--><ellipse cx="45.5" cy="14" fill="#FEFECE" filter="url(#f47489ia3968m)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><path d="M45.5,22 L45.5,49 M32.5,30 L58.5,30 M45.5,49 L32.5,64 M45.5,49 L58.5,64 " fill="none" filter="url(#f47489ia3968m)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="79" x="6" y="82.4951">Programmer</text><!--MD5=[f3929e065b321440b4eee273bd9781ea]
+entity p2--><ellipse cx="159.5" cy="14" fill="#FEFECE" filter="url(#f47489ia3968m)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><path d="M159.5,22 L159.5,49 M146.5,30 L172.5,30 M159.5,49 L146.5,64 M159.5,49 L172.5,64 " fill="none" filter="url(#f47489ia3968m)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="79" x="120" y="82.4951">Programmer</text><ellipse cx="55.5772" cy="160.0236" fill="#FEFECE" filter="url(#f47489ia3968m)" rx="30.5772" ry="14.5236" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="27" x="42.0772" y="162.8703">PMS</text><ellipse cx="153.7487" cy="160.0236" fill="#FEFECE" filter="url(#f47489ia3968m)" rx="27.7487" ry="14.5236" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="23" x="142.2487" y="162.8703">VCS</text><!--MD5=[11fc0ccdf845b8c57aab22239a9db545]
+link p1 to pms--><path d="M49,85.52 C50.64,104.11 52.53,125.41 53.84,140.27 " fill="none" id="p1-to-pms" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="54.3,145.44,57.4857,136.1206,53.8564,140.4597,49.5172,136.8304,54.3,145.44" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[8f1576b8d2c310c96fe1a188a3e6f563]
+link p1 to vcs--><path d="M83.27,85.52 C102.07,105.19 123.75,127.87 137.99,142.77 " fill="none" id="p1-to-vcs" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="141.8,146.76,138.4696,137.4913,138.3439,143.1468,132.6884,143.0211,141.8,146.76" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[bda8244fc124058c8b0a1a151e170aa5]
+link p2 to vcs--><path d="M157.4,85.52 C156.41,104.11 155.28,125.41 154.49,140.27 " fill="none" id="p2-to-vcs" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="154.22,145.44,158.7033,136.6708,154.4918,140.4474,150.7152,136.2359,154.22,145.44" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[466f277a00b430d623a74d7e1327f1f3]
+link p2 to pms--><path d="M123.13,85.52 C105.14,105.07 84.4,127.6 70.68,142.51 " fill="none" id="p2-to-pms" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="67,146.5,76.0343,142.578,70.3825,142.8178,70.1427,137.166,67,146.5" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[ced260c509dc2b7cc9944114c7966561]
+@startuml
+actor Programmer as p1
+actor Programmer as p2
+(PMS) as pms
+(VCS) as vcs
+
+p1 - -> pms
+p1 - -> vcs
+p2 - -> vcs
+p2 - -> pms
+@enduml
+
+PlantUML version 1.2020.23(Sun Dec 13 19:14:58 GMT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
