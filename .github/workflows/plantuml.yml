@@ -24,4 +24,4 @@ jobs:
           author_name: h1alexbel
           author_email: aliaksei.bialiauski@hey.com
           message: 'Diagram generated'
-          add: 'paper/diagrams/*'
+          add: 'diagrams/*'
