@@ -1,0 +1,13 @@
+@startuml
+actor "Project Manager" as pm
+actor Programmer as p1
+(PMS) as pms
+(VCS) as vcs
+
+pm --> pms
+pms --> (Pull Request)
+(Pull Request) --> vcs
+p1 --> (Pull Request)
+p1 --> vcs
+
+@enduml

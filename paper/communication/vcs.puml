@@ -1,0 +1,8 @@
+@startuml
+actor Programmer as p1
+actor Programmer as p2
+(VCS) as vcs
+
+p1 --> vcs
+p2 --> vcs
+@enduml

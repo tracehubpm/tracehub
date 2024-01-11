@@ -1,0 +1,15 @@
+@startuml
+actor Programmer as p1
+actor Programmer as p2
+actor "Project Manager" as pm
+(PMS) as pms
+(Messenger) as messages
+(VCS) as vcs
+
+p1 --> messages
+p2 --> messages
+pm --> messages
+p1 --> vcs
+p2 --> vcs
+pm --> pms
+@enduml
