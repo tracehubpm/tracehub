@@ -169,4 +169,5 @@ $ mvn clean install -Pqulice
 ```
 
 The build has to be clean. If it's not, [submit an issue](https://github.com/tracehubpm/tracebot/issues).
+
 Then, make your changes, make sure the build is still clean, and [submit a pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
