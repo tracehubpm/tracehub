@@ -162,6 +162,7 @@ Document storages:
 ### How to contribute?
 
 It is a Java project. First install [Java SDK 17+](https://www.oracle.com/java/technologies/downloads), [Maven 3.8+](https://maven.apache.org).
+
 Then:
 
 ```shell
