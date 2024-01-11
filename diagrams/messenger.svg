@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="187px" preserveAspectRatio="none" style="width:349px;height:187px;" version="1.1" viewBox="0 0 349 187" width="349px" zoomAndPan="magnify"><defs><filter height="300%" id="frm2vr0nz1580" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[c3dd7293d4e74cc67bec6d68663a773e]
+entity p1--><ellipse cx="162.5" cy="14" fill="#FEFECE" filter="url(#frm2vr0nz1580)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><path d="M162.5,22 L162.5,49 M149.5,30 L175.5,30 M162.5,49 L149.5,64 M162.5,49 L175.5,64 " fill="none" filter="url(#frm2vr0nz1580)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="79" x="123" y="82.4951">Programmer</text><!--MD5=[f3929e065b321440b4eee273bd9781ea]
+entity p2--><ellipse cx="45.5" cy="14" fill="#FEFECE" filter="url(#frm2vr0nz1580)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><path d="M45.5,22 L45.5,49 M32.5,30 L58.5,30 M45.5,49 L32.5,64 M45.5,49 L58.5,64 " fill="none" filter="url(#frm2vr0nz1580)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="79" x="6" y="82.4951">Programmer</text><!--MD5=[dc7fb56487618d91d540ed1a4700aa4b]
+entity pm--><ellipse cx="290.5" cy="14" fill="#FEFECE" filter="url(#frm2vr0nz1580)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><path d="M290.5,22 L290.5,49 M277.5,30 L303.5,30 M290.5,49 L277.5,64 M290.5,49 L303.5,64 " fill="none" filter="url(#frm2vr0nz1580)" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="103" x="239" y="82.4951">Project Manager</text><ellipse cx="293.5772" cy="160.5236" fill="#FEFECE" filter="url(#frm2vr0nz1580)" rx="30.5772" ry="14.5236" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="27" x="280.0772" y="163.3703">PMS</text><ellipse cx="165.5868" cy="160.3174" fill="#FEFECE" filter="url(#frm2vr0nz1580)" rx="62.0868" ry="14.8174" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="70" x="127.5868" y="164.0649">Messenger</text><ellipse cx="40.7487" cy="160.5236" fill="#FEFECE" filter="url(#frm2vr0nz1580)" rx="27.7487" ry="14.5236" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="23" x="29.2487" y="163.3703">VCS</text><!--MD5=[313b67830907af94c04674dfc678a157]
+link p1 to messages--><path d="M163.55,85.7 C164.04,104.14 164.59,125.24 164.99,140.14 " fill="none" id="p1-to-messages" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="165.13,145.33,168.8973,136.2302,165.0015,140.3317,160.9,136.4358,165.13,145.33" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[7cc6204e252b5bfedb6d58bae5c0fd6f]
+link p2 to messages--><path d="M85.13,83.48 C106.02,103.24 130.65,126.54 147.09,142.09 " fill="none" id="p2-to-messages" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="151.09,145.87,147.3144,136.7736,147.4629,142.4285,141.808,142.577,151.09,145.87" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[f4940cdeab072f41e776cb4988280d2a]
+link pm to messages--><path d="M246.78,85.7 C225.49,105.03 201,127.27 184.51,142.24 " fill="none" id="pm-to-messages" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="180.5,145.88,189.8531,142.7947,184.2029,142.5202,184.4774,136.87,180.5,145.88" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[8f1576b8d2c310c96fe1a188a3e6f563]
+link p1 to vcs--><path d="M122.89,82.85 C100.7,103.5 74.18,128.17 57.34,143.83 " fill="none" id="p1-to-vcs" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="53.27,147.62,62.5783,144.4021,56.9248,144.2079,57.119,138.5544,53.27,147.62" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[bda8244fc124058c8b0a1a151e170aa5]
+link p2 to vcs--><path d="M43.75,85.7 C42.93,104.37 41.99,125.76 41.33,140.69 " fill="none" id="p2-to-vcs" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="41.1,145.88,45.4817,137.0595,41.3141,140.8846,37.489,136.717,41.1,145.88" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[9cc976106f5ac0cf365fc9dee2326263]
+link pm to pms--><path d="M291.55,85.7 C292.04,104.37 292.61,125.76 293,140.69 " fill="none" id="pm-to-pms" style="stroke:#A80036;stroke-width:1.0;"/><polygon fill="#A80036" points="293.14,145.88,296.9073,136.7802,293.0115,140.8817,288.91,136.9858,293.14,145.88" style="stroke:#A80036;stroke-width:1.0;"/><!--MD5=[6413ef76af9172b15334a5189128bba2]
+@startuml
+actor Programmer as p1
+actor Programmer as p2
+actor "Project Manager" as pm
+(PMS) as pms
+(Messenger) as messages
+(VCS) as vcs
+
+p1 - -> messages
+p2 - -> messages
+pm - -> messages
+p1 - -> vcs
+p2 - -> vcs
+pm - -> pms
+@enduml
+
+PlantUML version 1.2020.23(Sun Dec 13 19:14:58 GMT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
