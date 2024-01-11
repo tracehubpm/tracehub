@@ -6,7 +6,7 @@ Documents must be located inside `.trace` directory,
 placed in the root of your `master` branch.
 
 ```text
-.tracehub
+.trace
   /project.yml
   /docs
     /req.yml
