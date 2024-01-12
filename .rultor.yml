@@ -4,7 +4,7 @@ docker:
   image: l3r8y/rultor-image:1.0.3
 merge:
   script: |
-    mvn clean install -Pqulice --errors -Dstyle.color=never
+    mvn clean install --errors -Dstyle.color=never
 # @todo #1:60min Create release script to rultor configuration.
 #   We should create release script that will be executed by Rultor.com.
 #   Probably it can be a release inside the GitHub with a new tag,
