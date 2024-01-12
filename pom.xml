@@ -210,7 +210,7 @@ SOFTWARE.
             <configuration>
               <excludes>
                 <exclude>duplicatefinder:.*</exclude>
-                <!-- @todo #1 Remove exclusion of dependency check.
+                <!-- @todo #1:15min Remove exclusion of dependency check.
                        For now have a skeleton and most of packages are not used.
                        We should enable that check as soon as we can.
                        Don't forget to remove this puzzle.
