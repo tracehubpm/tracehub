@@ -107,6 +107,16 @@ SOFTWARE.
       <artifactId>jcabi-github</artifactId>
       <!-- version from parent POM -->
     </dependency>
+    <!-- org.hamcrest:hamcrest is needed at compile scope
+         for jcabi-github dependency.
+         Please, don't change the scope.
+       -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${hamcrest-core.version}</version>
+      <scope>compile</scope>
+    </dependency>
     <dependency>
       <groupId>com.amihaiemil.web</groupId>
       <artifactId>eo-yaml</artifactId>
@@ -115,6 +125,11 @@ SOFTWARE.
     <dependency>
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-http</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-manifests</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
