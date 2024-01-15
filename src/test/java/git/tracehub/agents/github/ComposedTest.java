@@ -30,6 +30,7 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.takes.rq.RqFake;
 
@@ -91,6 +92,52 @@ final class ComposedTest {
                     ".trace/project.yml"
                 )
             )
+        );
+    }
+
+    /**
+     * Test case for duplicates exclusion.
+     *
+     * @throws Exception if I/O fails
+     * @todo #8:45min Exclude duplicates in Composed.
+     *  We should exclude duplicates when composing commit.
+     *  I think we can remove it from latest position where it was found
+     *  and append to new corresponding place.
+     *  Don't forget to remove this puzzle.
+     */
+    @Disabled
+    @Test
+    void excludesDuplicates() throws Exception {
+        final Commit composed = new Composed(
+            new GhCommits(
+                new RqFake(
+                    "POST",
+                    "",
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf("github/duplicates.json").stream()
+                        )
+                    ).pretty()
+                )
+            )
+        );
+        final List<String> created = composed.created();
+        MatcherAssert.assertThat(
+            "Created files %s has duplicates, but it should not"
+                .formatted(created),
+            created,
+            new IsEqual<>(
+                new ListOf<>(
+                    ".trace/project.yml"
+                )
+            )
+        );
+        final List<String> deleted = composed.deleted();
+        MatcherAssert.assertThat(
+            "Deleted files %s are not empty, but should be"
+                .formatted(deleted),
+            deleted.isEmpty(),
+            new IsEqual<>(true)
         );
     }
 }
