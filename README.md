@@ -1,3 +1,10 @@
+[![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
+[![DevOps By Rultor.com](http://www.rultor.com/b/trarcehubpm/tracehub)](http://www.rultor.com/p/tracehubpm/tracehub)
+[![We recommend IntelliJ IDEA](https://www.elegantobjects.org/intellij-idea.svg)](https://www.jetbrains.com/idea/)
+
+[![mvn](https://github.com/tracehubpm/tracehub/actions/workflows/mvn.yml/badge.svg)](https://github.com/tracehubpm/tracehub/actions/workflows/mvn.yml)
+[![codecov](https://codecov.io/gh/tracehubpm/tracehub/graph/badge.svg?token=hXMw1jvPJo)](https://codecov.io/gh/tracehubpm/tracehub)
+
 ### How to configure?
 
 The Project itself is defined as a set of [YAML](https://en.wikipedia.org/wiki/YAML) documents.
@@ -18,7 +25,7 @@ placed in the root of your `master` branch.
   /rules
     contribution.yml
   ...
-...(other files like package.json, Dockerfile and so on)
+...
 ```
 
 Project document (project.yml) is the special document and has the following notation:
@@ -33,7 +40,13 @@ performers:
     - email: aliaksei.bialiauski@hey.com
       roles: [PO, ARC]
 issues:
+  type: JIRA
+  url: ...
+  token: ...
 docs:
+  type: Confluence
+  url: ...
+  token: ...
 dependencies:
   - github.com/h1alexbel/cdit@master
   - github.com/tracehubpm/pmo@master
@@ -66,9 +79,11 @@ For now, we support these roles:
 
 Section `issues` represents the place where all issues from `/jobs` package
 will be placed.
+* `type`: issue tracker type, take a look at [supported](#supported-platforms) ones.
 
 Section `docs` represents the place where all documentation from `/docs` package
 will be placed.
+* `type`: document repository, take a look at [supported](#supported-platforms) ones.
 
 Section `dependencies` denotes the repository dependencies
 This is can be helpful in case of [multi-repository](https://www.gitkraken.com/blog/git-multi-repo-vs-git-mono-repo#git-multi-repo-pros-cons) codebase management.
@@ -124,7 +139,7 @@ We support these values:
 * Other, any other document you wish to have
 
 Once it committed inside `master`, @tracehubgit will create it in document repository that was
-specified in `.project.yml`.
+specified in `.trace/project.yml`.
 
 ### Rules
 
@@ -144,6 +159,24 @@ each:
   if: project.active
   contribution: 5 PR per week
 ```
+
+### Secret Variables
+
+Avoid storing sensitive information in your YAML documents.
+Use this notation instead:
+
+```yaml
+...
+issues:
+ type: JIRA
+ url: ${pmo.jira-url}
+ token: ${pmo.jira-token}
+...
+```
+
+Both secrets `jira-url` and `jira-token` must be present in your project account
+inside [pmo](https://github.com/tracehubpm/pmo).
+Now, values from these secret variables will be injected when integration happens.
 
 ### Supported platforms
 
