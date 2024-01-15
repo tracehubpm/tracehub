@@ -21,27 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents.github;
+package git.tracehub;
 
-import com.jcabi.github.Repo;
-import git.tracehub.agents.Project;
-import lombok.RequiredArgsConstructor;
+import org.cactoos.Text;
 
 /**
- * YAML Project in GitHub.
+ * Project.
  *
  * @since 0.0.0
+ *
+ * @todo #8:45min Redesign Project interface.
+ *  Instead of extending from Text interface, lets define
+ *  methods that describe project as a model, take a look
+ *  here: https://github.com/tracehubpm/tracehub?tab=readme-ov-file#how-to-configure.
+ *  For now lets a few attributes to it, to keep it simple: id, name, description, active or not,
+ *  JSON/XML of all performers, JSON/XML of all dependencies.
  */
-@RequiredArgsConstructor
-public final class GhYamlProject implements Project {
-
-    /**
-     * Repo.
-     */
-    private final Repo repo;
-
-    @Override
-    public String asString() throws Exception {
-        return new GhContent(this.repo, ".trace/project.yml").asString();
-    }
+public interface Project extends Text {
 }

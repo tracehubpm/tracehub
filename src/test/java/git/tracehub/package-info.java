@@ -21,42 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents.github;
-
-import com.jcabi.github.Repo;
-import com.jcabi.github.mock.MkGithub;
-import javax.json.Json;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.AllOf;
-import org.hamcrest.core.IsNot;
-import org.hamcrest.core.IsNull;
-import org.junit.jupiter.api.Test;
-import org.llorllale.cactoos.matchers.IsBlank;
 
 /**
- * Test case for {@link GhYamlProject}.
- *
+ * Tests for Tracehub.
  * @since 0.0.0
  */
-final class GhYamlProjectTest {
-
-    @Test
-    void returnsYaml() throws Exception {
-        final Repo repo = new MkGithub().randomRepo();
-        repo.contents().create(
-            Json.createObjectBuilder()
-                .add("path", ".trace/project.yml")
-                .add("content", "name: test")
-                .add("message", "project created")
-                .build()
-        );
-        MatcherAssert.assertThat(
-            "project.yml can't be read from repo, but should be",
-            new GhYamlProject(repo).asString(),
-            new AllOf<>(
-                new IsNot<>(new IsBlank()),
-                new IsNot<>(new IsNull<>())
-            )
-        );
-    }
-}
+package git.tracehub;

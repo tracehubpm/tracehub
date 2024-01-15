@@ -21,14 +21,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub;
 
-import org.cactoos.Text;
+import com.jcabi.github.Repo;
+import com.jcabi.github.mock.MkGithub;
+import git.tracehub.agents.github.GhProject;
+import javax.json.Json;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.AllOf;
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.IsNull;
+import org.junit.jupiter.api.Test;
+import org.llorllale.cactoos.matchers.IsBlank;
 
 /**
- * Project.
+ * Test case for {@link GhProject}.
  *
  * @since 0.0.0
  */
-public interface Project extends Text {
+final class GhProjectTest {
+
+    @Test
+    void returnsYaml() throws Exception {
+        final Repo repo = new MkGithub().randomRepo();
+        repo.contents().create(
+            Json.createObjectBuilder()
+                .add("path", ".trace/project.yml")
+                .add("content", "name: test")
+                .add("message", "project created")
+                .build()
+        );
+        MatcherAssert.assertThat(
+            "project.yml can't be read from repo, but should be",
+            new GhProject(repo).asString(),
+            new AllOf<>(
+                new IsNot<>(new IsBlank()),
+                new IsNot<>(new IsNull<>())
+            )
+        );
+    }
 }

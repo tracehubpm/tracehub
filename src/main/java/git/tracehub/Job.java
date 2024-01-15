@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package git.tracehub.agents;
+package git.tracehub;
 
 import org.cactoos.Text;
 
@@ -30,6 +30,12 @@ import org.cactoos.Text;
  * Job.
  *
  * @since 0.0.0
+ *
+ * @todo #8:30min Redesign Job interface.
+ *  Instead of extending from Text interface, lets define
+ *  methods that describe project as a model, take a look
+ *  here: https://github.com/tracehubpm/tracehub?tab=readme-ov-file#how-to-configure.
+ *  For now lets a few attributes to it, to keep it simple: label, description, and cost.
  */
 public interface Job extends Text {
 }

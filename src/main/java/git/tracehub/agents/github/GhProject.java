@@ -24,32 +24,24 @@
 package git.tracehub.agents.github;
 
 import com.jcabi.github.Repo;
-import git.tracehub.agents.Job;
+import git.tracehub.Project;
 import lombok.RequiredArgsConstructor;
 
 /**
- * YAML Job in GitHub.
+ * Project in GitHub.
  *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class GhYamlJob implements Job {
+public final class GhProject implements Project {
 
     /**
      * Repo.
      */
     private final Repo repo;
 
-    /**
-     * Job name.
-     */
-    private final String name;
-
     @Override
     public String asString() throws Exception {
-        return new GhContent(
-            this.repo,
-            ".trace/jobs/%s".formatted(this.name)
-        ).asString();
+        return new GhContent(this.repo, ".trace/project.yml").asString();
     }
 }
