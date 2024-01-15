@@ -24,18 +24,36 @@
 
 package git.tracehub;
 
-import org.cactoos.Text;
+import java.io.IOException;
 
 /**
  * Job.
  *
  * @since 0.0.0
  *
- * @todo #8:30min Redesign Job interface.
- *  Instead of extending from Text interface, lets define
- *  methods that describe project as a model, take a look
- *  here: https://github.com/tracehubpm/tracehub?tab=readme-ov-file#how-to-configure.
- *  For now lets a few attributes to it, to keep it simple: label, description, and cost.
  */
-public interface Job extends Text {
+public interface Job {
+
+    /**
+     * Label.
+     *
+     * @return Job label
+     * @throws IOException if I/O fails
+     */
+    String label() throws IOException;
+
+    /**
+     * Description.
+     *
+     * @return Job description
+     * @throws IOException if I/O fails
+     */
+    String verbose() throws IOException;
+
+    /**
+     * Cost of job.
+     * @return Job cost in minutes
+     * @throws IOException
+     */
+    String cost() throws IOException;
 }

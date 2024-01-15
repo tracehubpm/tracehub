@@ -23,33 +23,79 @@
  */
 package git.tracehub.agents.github;
 
+import com.amihaiemil.eoyaml.Yaml;
+import com.amihaiemil.eoyaml.YamlInput;
 import com.jcabi.github.Repo;
 import git.tracehub.Job;
-import lombok.RequiredArgsConstructor;
+
+import java.io.IOException;
 
 /**
  * Job in GitHub.
  *
  * @since 0.0.0
+ *
+ * @todo #10:25min Return total minutes in GhJob#cost().
+ *  We should return total minutes instead of String value.
+ *  For instance, 20 mins will be equal to 20, and
+ *  1h 20 mins will be equal to 60 + 20 => 80 minutes.
+ *  In this case we also should rename method to GhJob#minutes().
+ * @todo #10:60min YAML Job document validation.
+ *  We should validate all incoming job documents.
+ *  probably we should have some sort of schema.
+ *  Alternatively we can transform YAML into XML
+ *  with attached XSD schema to it.
+ *  Don't forget to remove this puzzle.
  */
-@RequiredArgsConstructor
 public final class GhJob implements Job {
 
     /**
-     * Repo.
+     * YAML input.
      */
-    private final Repo repo;
+    private final YamlInput yaml;
 
     /**
-     * Job name.
+     * Ctor.
+     *
+     * @param repo repo
+     * @param name name
+     * @throws Exception if something went wrong
      */
-    private final String name;
+    public GhJob(final Repo repo, final String name) throws Exception {
+        this(
+            Yaml.createYamlInput(
+                new GhContent(
+                    repo,
+                    ".trace/jobs/%s".formatted(name)
+                ).asString()
+            )
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param yml YAML input
+     */
+    public GhJob(final YamlInput yml) {
+        this.yaml = yml;
+    }
 
     @Override
-    public String asString() throws Exception {
-        return new GhContent(
-            this.repo,
-            ".trace/jobs/%s".formatted(this.name)
-        ).asString();
+    public String label() throws IOException {
+        return this.yaml.readYamlMapping().string("label");
+    }
+
+    @Override
+    public String verbose() throws IOException {
+        return String.join(
+            " ",
+            this.yaml.readYamlMapping().literalBlockScalar("description")
+        );
+    }
+
+    @Override
+    public String cost() throws IOException {
+        return this.yaml.readYamlMapping().string("cost");
     }
 }
