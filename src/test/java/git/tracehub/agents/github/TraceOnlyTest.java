@@ -79,14 +79,10 @@ final class TraceOnlyTest {
         );
         final List<String> deleted = commit.deleted();
         MatcherAssert.assertThat(
-            "Deleted files %s do not match with expected format"
+            "Deleted files %s are not empty, but should be"
                 .formatted(deleted),
-            deleted,
-            new IsEqual<>(
-                new ListOf<>(
-                    ".trace/project.yml"
-                )
-            )
+            deleted.isEmpty(),
+            new IsEqual<>(true)
         );
     }
 }

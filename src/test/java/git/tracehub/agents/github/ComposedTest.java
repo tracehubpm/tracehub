@@ -30,7 +30,6 @@ import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.takes.rq.RqFake;
 
@@ -63,9 +62,9 @@ final class ComposedTest {
             created,
             new IsEqual<>(
                 new ListOf<>(
+                    "src/main/java/git/tracehub/agents/github/package-info.java",
                     "src/main/java/git/tracehub/agents/Act.java",
                     "src/main/java/git/tracehub/agents/github/Invites.java",
-                    "src/main/java/git/tracehub/agents/github/package-info.java",
                     ".trace/project.yml"
                 )
             )
@@ -88,24 +87,12 @@ final class ComposedTest {
             deleted,
             new IsEqual<>(
                 new ListOf<>(
-                    "settings.xml",
-                    ".trace/project.yml"
+                    "settings.xml"
                 )
             )
         );
     }
 
-    /**
-     * Test case for duplicates exclusion.
-     *
-     * @throws Exception if I/O fails
-     * @todo #8:45min Exclude duplicates in Composed.
-     *  We should exclude duplicates when composing commit.
-     *  I think we can remove it from latest position where it was found
-     *  and append to new corresponding place.
-     *  Don't forget to remove this puzzle.
-     */
-    @Disabled
     @Test
     void excludesDuplicates() throws Exception {
         final Commit composed = new Composed(
@@ -138,6 +125,52 @@ final class ComposedTest {
                 .formatted(deleted),
             deleted.isEmpty(),
             new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    void excludesEvenMoreDuplicates() throws Exception {
+        final Commit composed = new Composed(
+            new GhCommits(
+                new RqFake(
+                    "POST",
+                    "",
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf("github/more-duplicates.json").stream()
+                        )
+                    ).pretty()
+                )
+            )
+        );
+        final List<String> created = composed.created();
+        MatcherAssert.assertThat(
+            "Created files %s has duplicates, but it should not"
+                .formatted(created),
+            created,
+            new IsEqual<>(
+                new ListOf<>(
+                    ".trace/project.yml"
+                )
+            )
+        );
+        final List<String> updated = composed.updated();
+        MatcherAssert.assertThat(
+            "Updated files %s are not empty, but it should be"
+                .formatted(updated),
+            updated.isEmpty(),
+            new IsEqual<>(true)
+        );
+        final List<String> deleted = composed.deleted();
+        MatcherAssert.assertThat(
+            "Deleted files %s do not match with expected"
+                .formatted(deleted),
+            deleted,
+            new IsEqual<>(
+                new ListOf<>(
+                    ".trace/jobs/job.yml"
+                )
+            )
         );
     }
 }

@@ -23,7 +23,9 @@
  */
 package git.tracehub.agents.github;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
@@ -52,24 +54,66 @@ public final class Composed implements Commit {
     @Override
     @SneakyThrows
     public List<String> created() {
-        final List<String> created = new ListOf<>();
-        this.chain.forEach(commit -> created.addAll(commit.created()));
-        return created;
+        return this.merge().get("created");
     }
 
     @Override
     @SneakyThrows
     public List<String> updated() {
-        final List<String> updated = new ListOf<>();
-        this.chain.forEach(commit -> updated.addAll(commit.updated()));
-        return updated;
+        return this.merge().get("updated");
     }
 
     @Override
     @SneakyThrows
     public List<String> deleted() {
+        return this.merge().get("deleted");
+    }
+
+    /**
+     * Merge.
+     *
+     * @return Map of merged commits.
+     * @todo #17:45min Resolve code duplication and extract method parts.
+     *  We should introduce more manageable pieces out of this method.
+     *  Don't forget to remove this puzzle.
+     */
+    private Map<String, List<String>> merge() {
+        final Map<String, String> state = new HashMap<>(16);
+        for (final Commit commit : this.chain) {
+            for (final String name : commit.created()) {
+                state.put(name, "created");
+            }
+            for (final String name : commit.updated()) {
+                state.put(name, "updated");
+            }
+            for (final String name : commit.deleted()) {
+                state.put(name, "deleted");
+            }
+        }
+        final List<String> created = new ListOf<>();
+        final List<String> updated = new ListOf<>();
         final List<String> deleted = new ListOf<>();
-        this.chain.forEach(commit -> deleted.addAll(commit.deleted()));
-        return deleted;
+        for (final Map.Entry<String, String> entry : state.entrySet()) {
+            switch (entry.getValue()) {
+                case "created":
+                    created.add(entry.getKey());
+                    break;
+                case "updated":
+                    updated.add(entry.getKey());
+                    break;
+                case "deleted":
+                    deleted.add(entry.getKey());
+                    break;
+                default:
+                    throw new IllegalStateException(
+                        "Unexpected value: %s".formatted(entry.getValue())
+                    );
+            }
+        }
+        final Map<String, List<String>> map = new HashMap<>(16);
+        map.put("created", created);
+        map.put("updated", updated);
+        map.put("deleted", deleted);
+        return map;
     }
 }
