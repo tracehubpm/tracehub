@@ -95,6 +95,7 @@ SOFTWARE.
     <mockito-core.version>5.5.0</mockito-core.version>
     <mockito-junit-jupiter.version>5.5.0</mockito-junit-jupiter.version>
     <jping.version>0.0.1</jping.version>
+    <eokson.version>0.3.2</eokson.version>
   </properties>
   <dependencies>
     <dependency>
@@ -136,6 +137,11 @@ SOFTWARE.
       <groupId>org.cactoos</groupId>
       <artifactId>cactoos</artifactId>
       <version>${cactoos.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.eo-cqrs</groupId>
+      <artifactId>eokson</artifactId>
+      <version>${eokson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
