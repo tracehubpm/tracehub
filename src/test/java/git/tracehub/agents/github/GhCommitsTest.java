@@ -47,7 +47,7 @@ final class GhCommitsTest {
                 "",
                 new Jocument(
                     new JsonOf(
-                        new ResourceOf("github/single-commit-hook.json").stream()
+                        new ResourceOf("github/hooks/single-commit.json").stream()
                     )
                 ).pretty()
             )
@@ -69,7 +69,7 @@ final class GhCommitsTest {
                 "",
                 new Jocument(
                     new JsonOf(
-                        new ResourceOf("github/many-commits-hook.json").stream()
+                        new ResourceOf("github/hooks/many-commits.json").stream()
                     )
                 ).pretty()
             )

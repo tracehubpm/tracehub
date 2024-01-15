@@ -49,7 +49,7 @@ final class ComposedTest {
                     "",
                     new Jocument(
                         new JsonOf(
-                            new ResourceOf("github/many-commits-hook.json").stream()
+                            new ResourceOf("github/hooks/many-commits.json").stream()
                         )
                     ).pretty()
                 )
@@ -102,7 +102,7 @@ final class ComposedTest {
                     "",
                     new Jocument(
                         new JsonOf(
-                            new ResourceOf("github/duplicates.json").stream()
+                            new ResourceOf("github/hooks/duplicates.json").stream()
                         )
                     ).pretty()
                 )
@@ -137,7 +137,7 @@ final class ComposedTest {
                     "",
                     new Jocument(
                         new JsonOf(
-                            new ResourceOf("github/more-duplicates.json").stream()
+                            new ResourceOf("github/hooks/more-duplicates.json").stream()
                         )
                     ).pretty()
                 )

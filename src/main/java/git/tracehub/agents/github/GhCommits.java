@@ -23,6 +23,7 @@
  */
 package git.tracehub.agents.github;
 
+import com.jcabi.log.Logger;
 import java.util.List;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -50,9 +51,17 @@ public final class GhCommits implements Scalar<List<Commit>> {
     public List<Commit> value() throws Exception {
         final JsonReader reader = Json.createReader(this.request.body());
         final JsonObject obj = reader.readObject();
+        final String coordinates = obj.getJsonObject("repository")
+            .getString("full_name");
         final List<Commit> collected = new ListOf<>();
         final JsonArray commits = obj.getJsonArray("commits");
         commits.forEach(c -> collected.add(new Commit.Smart(c)));
+        Logger.info(
+            this,
+            "found %s commit(s) in %s",
+            collected.size(),
+            coordinates
+        );
         return collected;
     }
 }

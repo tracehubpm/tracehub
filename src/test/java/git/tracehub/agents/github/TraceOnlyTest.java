@@ -51,7 +51,7 @@ final class TraceOnlyTest {
                         new Jocument(
                             new JsonOf(
                                 new ResourceOf(
-                                    "github/many-commits-hook.json"
+                                    "github/hooks/many-commits.json"
                                 ).stream()
                             )
                         ).pretty()
