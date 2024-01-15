@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package git.tracehub;
 
 import java.io.IOException;
@@ -30,7 +29,6 @@ import java.io.IOException;
  * Job.
  *
  * @since 0.0.0
- *
  */
 public interface Job {
 
@@ -53,7 +51,7 @@ public interface Job {
     /**
      * Cost of job.
      * @return Job cost in minutes
-     * @throws IOException
+     * @throws IOException if I/O fails
      */
     String cost() throws IOException;
 }

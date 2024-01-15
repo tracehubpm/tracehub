@@ -27,7 +27,6 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlInput;
 import com.jcabi.github.Repo;
 import git.tracehub.Job;
-
 import java.io.IOException;
 
 /**
@@ -57,8 +56,8 @@ public final class GhJob implements Job {
     /**
      * Ctor.
      *
-     * @param repo repo
-     * @param name name
+     * @param repo Repo
+     * @param name Name
      * @throws Exception if something went wrong
      */
     public GhJob(final Repo repo, final String name) throws Exception {
