@@ -96,6 +96,8 @@ SOFTWARE.
     <mockito-junit-jupiter.version>5.5.0</mockito-junit-jupiter.version>
     <jping.version>0.0.1</jping.version>
     <eokson.version>0.3.2</eokson.version>
+    <logcaptor.version>2.9.0</logcaptor.version>
+    <logback-classic.version>1.4.8</logback-classic.version>
   </properties>
   <dependencies>
     <dependency>
@@ -149,14 +151,9 @@ SOFTWARE.
       <version>${lombok.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.version}</version>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback-classic.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -204,6 +201,12 @@ SOFTWARE.
       <groupId>com.yegor256</groupId>
       <artifactId>jping</artifactId>
       <version>${jping.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.hakky54</groupId>
+      <artifactId>logcaptor</artifactId>
+      <version>${logcaptor.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
