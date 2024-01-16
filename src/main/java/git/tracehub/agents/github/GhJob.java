@@ -24,21 +24,16 @@
 package git.tracehub.agents.github;
 
 import com.amihaiemil.eoyaml.Yaml;
-import com.amihaiemil.eoyaml.YamlInput;
+import com.amihaiemil.eoyaml.YamlMapping;
 import com.jcabi.github.Repo;
 import git.tracehub.Job;
-import java.io.IOException;
+import org.cactoos.Text;
 
 /**
  * Job in GitHub.
  *
  * @since 0.0.0
  *
- * @todo #10:25min Return total minutes in GhJob#cost().
- *  We should return total minutes instead of String value.
- *  For instance, 20 mins will be equal to 20, and
- *  1h 20 mins will be equal to 60 + 20 => 80 minutes.
- *  In this case we also should rename method to GhJob#minutes().
  * @todo #10:60min YAML Job document validation.
  *  We should validate all incoming job documents.
  *  probably we should have some sort of schema.
@@ -51,23 +46,31 @@ public final class GhJob implements Job {
     /**
      * YAML input.
      */
-    private final YamlInput yaml;
+    private final YamlMapping yaml;
+
+    /**
+     * Job template.
+     */
+    private final Text template;
 
     /**
      * Ctor.
      *
      * @param repo Repo
      * @param name Name
+     * @param tmplt Job template
      * @throws Exception if something went wrong
      */
-    public GhJob(final Repo repo, final String name) throws Exception {
+    public GhJob(final Repo repo, final String name, final Text tmplt)
+        throws Exception {
         this(
             Yaml.createYamlInput(
                 new GhContent(
                     repo,
                     ".trace/jobs/%s".formatted(name)
                 ).asString()
-            )
+            ).readYamlMapping(),
+            tmplt
         );
     }
 
@@ -75,26 +78,27 @@ public final class GhJob implements Job {
      * Ctor.
      *
      * @param yml YAML input
+     * @param tmplt Job template
      */
-    public GhJob(final YamlInput yml) {
+    public GhJob(final YamlMapping yml, final Text tmplt) {
         this.yaml = yml;
+        this.template = tmplt;
     }
 
     @Override
-    public String label() throws IOException {
-        return this.yaml.readYamlMapping().string("label");
+    public String label() {
+        return this.yaml.string("label");
     }
 
     @Override
-    public String verbose() throws IOException {
-        return String.join(
-            " ",
-            this.yaml.readYamlMapping().literalBlockScalar("description")
-        );
-    }
-
-    @Override
-    public String cost() throws IOException {
-        return this.yaml.readYamlMapping().string("cost");
+    public String asString() throws Exception {
+        return this.template.asString()
+            .formatted(
+                String.join(
+                    " ",
+                    this.yaml.literalBlockScalar("description")
+                ),
+                this.yaml.string("cost")
+            );
     }
 }

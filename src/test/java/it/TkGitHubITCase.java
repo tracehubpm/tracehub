@@ -34,6 +34,11 @@ import org.takes.http.FtRemote;
  * Integration test case for {@link git.tracehub.tk.TkGitHub}.
  *
  * @since 0.0.0
+ * @todo #22:60min Create test with push webhook JSON payload.
+ *  We should create an integration test for push GitHub webhook with it payload.
+ *  Probably we need to configure Takes so that it will start accepting JSON payloads
+ *  on /github/hook.
+ *  Don't forget to remove this puzzle.
  */
 final class TkGitHubITCase {
 

@@ -1,0 +1,89 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023-2024 Tracehub.git
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package git.tracehub.agents.github.issues;
+
+import com.amihaiemil.eoyaml.Yaml;
+import com.jcabi.github.Issues;
+import com.jcabi.github.mock.MkGithub;
+import git.tracehub.agents.github.GhJob;
+import io.github.eocqrs.eokson.Jocument;
+import io.github.eocqrs.eokson.JsonOf;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Test case for {@link CreateIssue}.
+ *
+ * @since 0.0.0
+ * @checkstyle StringLiteralsConcatenationCheck (50 lines)
+ */
+final class CreateIssueTest {
+
+    @Test
+    void returnsCreatedIssue() throws Exception {
+        final Issues issues = new MkGithub().randomRepo().issues();
+        final Jocument json = new Jocument(
+            new JsonOf(
+                new CreateIssue(
+                    new GhJob(
+                        Yaml.createYamlInput(
+                            new ResourceOf("github/jobs/fix-me.yml").stream()
+                        ).readYamlMapping(),
+                        new TextOf(
+                            new ResourceOf("git/tracehub/agents/github/Issue.md")
+                        )
+                    ),
+                    issues
+                ).value().json()
+                    .toString()
+            )
+        );
+        final String title = "Update License year to 2024";
+        MatcherAssert.assertThat(
+            "Issue %s title does not match with expected format"
+                .formatted(json),
+            json.leaf("title"),
+            new IsEqual<>(title)
+        );
+        final String body =
+            "Lets update a copyright year in our License to 2024."
+            + " Its very important task.\n\nEstimation here is 20 minutes.";
+        MatcherAssert.assertThat(
+            "Issue %s body does not match with expected format"
+                .formatted(json),
+            json.leaf("body"),
+            new IsEqual<>(body)
+        );
+        final String state = "open";
+        MatcherAssert.assertThat(
+            "Issue %s state does not match with expected format"
+                .formatted(json),
+            json.leaf("state"),
+            new IsEqual<>(state)
+        );
+    }
+}

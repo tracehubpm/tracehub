@@ -24,11 +24,14 @@
 package git.tracehub.agents.github;
 
 import com.amihaiemil.eoyaml.Yaml;
+import git.tracehub.Job;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
-import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
+import org.llorllale.cactoos.matchers.Assertion;
+import org.llorllale.cactoos.matchers.Throws;
 
 /**
  * Test case for {@link GhJob}.
@@ -38,85 +41,111 @@ import org.junit.jupiter.api.Test;
 final class GhJobTest {
 
     @Test
-    void returnsLabel() throws Exception {
-        final String label = new GhJob(
+    void returnsFormattedJob() throws Exception {
+        final String fmt = new GhJob(
             Yaml.createYamlInput(
                 new ResourceOf("github/jobs/fix-me.yml").stream()
+            ).readYamlMapping(),
+            new TextOf(
+                new ResourceOf(
+                    "git/tracehub/agents/github/Issue.md"
+                )
             )
-        ).label();
+        ).asString();
+        MatcherAssert.assertThat(
+            "Job %s does not match expected format"
+                .formatted(fmt),
+            fmt,
+            // @checkstyle StringLiteralsConcatenationCheck (3 lines)
+            new IsEqual<>(
+                "Lets update a copyright year in our License to 2024. Its very important task.\n\n"
+                + "Estimation here is 20 minutes."
+            )
+        );
+    }
+
+    @Test
+    void returnsFormattedJobOnelineDescription() throws Exception {
+        final String fmt = new GhJob(
+            Yaml.createYamlInput(
+                new ResourceOf("github/jobs/oneline-description.yml").stream()
+            ).readYamlMapping(),
+            new TextOf(
+                new ResourceOf(
+                    "git/tracehub/agents/github/Issue.md"
+                )
+            )
+        ).asString();
+        MatcherAssert.assertThat(
+            "Job %s does not match expected format".formatted(fmt),
+            fmt,
+            // @checkstyle StringLiteralsConcatenationCheck (3 lines)
+            new IsEqual<>(
+                "Lets update a copyright year in our License to 2024\n\n"
+                + "Estimation here is 20 minutes."
+            )
+        );
+    }
+
+    /**
+     * Test case for invalid YAML input.
+     *
+     * @todo #22:25min Throw custom validation exception after applying validations.
+     *  This puzzle can be resolved probably after GhJob will be empowered with
+     *  XSD schema/validation decorator.
+     *  Don't forget to remove this puzzle.
+     */
+    @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void throwsOnInvalidYaml() {
+        new Assertion<>(
+            "Exception is not thrown or invalid",
+            () -> new GhJob(
+                Yaml.createYamlInput(
+                    new ResourceOf("github/jobs/--invalid.yml").stream()
+                ).readYamlMapping(),
+                new TextOf(
+                    new ResourceOf(
+                        "git/tracehub/agents/github/Issue.md"
+                    )
+                )
+            ).asString(),
+            new Throws<>(NullPointerException.class)
+        ).affirm();
+    }
+
+    @Test
+    void returnsFormattedJobAndItsLabel() throws Exception {
+        final Job job = new GhJob(
+            Yaml.createYamlInput(
+                new ResourceOf("github/jobs/fix-me.yml").stream()
+            ).readYamlMapping(),
+            new TextOf(
+                new ResourceOf(
+                    "git/tracehub/agents/github/Issue.md"
+                )
+            )
+        );
+        final String fmt = job.asString();
+        MatcherAssert.assertThat(
+            "Job %s does not match expected format"
+                .formatted(fmt),
+            fmt,
+            // @checkstyle StringLiteralsConcatenationCheck (3 lines)
+            new IsEqual<>(
+                "Lets update a copyright year in our License to 2024. Its very important task.\n\n"
+                + "Estimation here is 20 minutes."
+            )
+        );
+        final String label = job.label();
         final String expected = "Update License year to 2024";
         MatcherAssert.assertThat(
-            "Job label %s does not match with expected %s"
+            "Job label %s does not match expected %s"
                 .formatted(label, expected),
             label,
-            new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void returnsOnelineDescription() throws Exception {
-        final String description = new GhJob(
-            Yaml.createYamlInput(
-                new ResourceOf(
-                    "github/jobs/oneline-description.yml"
-                ).stream()
+            new IsEqual<>(
+                expected
             )
-        ).verbose();
-        final String expected = "Lets update a copyright year in our License to 2024";
-        MatcherAssert.assertThat(
-            "Job description %s does not match with expected %s"
-                .formatted(description, expected),
-            description,
-            new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void returnsDescription() throws Exception {
-        final String description = new GhJob(
-            Yaml.createYamlInput(
-                new ResourceOf("github/jobs/fix-me.yml").stream()
-            )
-        ).verbose();
-        // @checkstyle StringLiteralsConcatenationCheck (3 lines)
-        final String expected =
-            "Lets update a copyright year in our License to 2024."
-            + " Its very important task.";
-        MatcherAssert.assertThat(
-            "Job description %s does not match with expected %s"
-                .formatted(description, expected),
-            description,
-            new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void returnsCost() throws Exception {
-        final String cost = new GhJob(
-            Yaml.createYamlInput(
-                new ResourceOf("github/jobs/fix-me.yml").stream()
-            )
-        ).cost();
-        final String expected = "20 minutes";
-        MatcherAssert.assertThat(
-            "Job cost %s does not match with expected %s"
-                .formatted(cost, expected),
-            cost,
-            new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void returnsNullOnInvalidYaml() throws Exception {
-        final String label = new GhJob(
-            Yaml.createYamlInput(
-                new ResourceOf("github/jobs/--invalid.yml").stream()
-            )
-        ).label();
-        MatcherAssert.assertThat(
-            "Label %s does not match with NULL".formatted(label),
-            label,
-            new IsNull<>()
         );
     }
 }

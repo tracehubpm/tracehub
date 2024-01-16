@@ -21,23 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.agents.github.issues;
 
-import java.io.IOException;
-import org.cactoos.Text;
+import com.jcabi.github.Issue;
+import com.jcabi.github.Issues;
+import git.tracehub.Job;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Job.
+ * Formatted issue.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+@RequiredArgsConstructor
+public final class CreateIssue implements Scalar<Issue> {
 
     /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
+     * Job to create.
      */
-    String label() throws IOException;
+    private final Job job;
+
+    /**
+     * Issues.
+     */
+    private final Issues issues;
+
+    @Override
+    public Issue value() throws Exception {
+        return this.issues.create(
+            this.job.label(),
+            this.job.asString()
+        );
+    }
 }
