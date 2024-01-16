@@ -26,7 +26,6 @@ package git.tracehub.agents.github;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
-
 import nl.altindag.log.LogCaptor;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
