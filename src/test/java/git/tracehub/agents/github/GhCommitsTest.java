@@ -26,7 +26,10 @@ package git.tracehub.agents.github;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
+
+import nl.altindag.log.LogCaptor;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -80,6 +83,33 @@ final class GhCommitsTest {
                 .formatted(commits, expected),
             commits.size(),
             new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void logsFoundCommits() throws Exception {
+        final LogCaptor capt = LogCaptor.forClass(GhCommits.class);
+        final List<Commit> commits = new GhCommits(
+            new RqFake(
+                "POST",
+                "",
+                new Jocument(
+                    new JsonOf(
+                        new ResourceOf("github/hooks/many-commits.json").stream()
+                    )
+                ).pretty()
+            )
+        ).value();
+        final List<String> infos = capt.getInfoLogs();
+        MatcherAssert.assertThat(
+            "Logs %s for commits %s do not match with expected"
+                .formatted(infos, commits),
+            infos,
+            new IsEqual<>(
+                new ListOf<>(
+                    "found 3 commit(s) in tracehubpm/tracehub"
+                )
+            )
         );
     }
 }
