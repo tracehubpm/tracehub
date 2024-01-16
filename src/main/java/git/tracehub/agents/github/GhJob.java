@@ -67,7 +67,7 @@ public final class GhJob implements Job {
             Yaml.createYamlInput(
                 new GhContent(
                     repo,
-                    ".trace/jobs/%s".formatted(name)
+                    name
                 ).asString()
             ).readYamlMapping(),
             tmplt

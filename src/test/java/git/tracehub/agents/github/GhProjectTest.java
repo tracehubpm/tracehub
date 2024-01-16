@@ -21,11 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.agents.github;
 
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
-import git.tracehub.agents.github.GhProject;
 import javax.json.Json;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.AllOf;

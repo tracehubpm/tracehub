@@ -27,6 +27,7 @@ import com.jcabi.github.Content;
 import com.jcabi.github.Repo;
 import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.codec.binary.Base64;
 import org.cactoos.Text;
 
 /**
@@ -49,11 +50,16 @@ public final class GhContent implements Text {
 
     @Override
     public String asString() throws Exception {
-        return new String(
-            new Content.Smart(
-                this.repo.contents().get(this.path)
-            ).decoded(),
-            StandardCharsets.UTF_8
-        );
+        String content = new Content.Smart(this.repo.contents().get(this.path))
+            .content();
+        if (Base64.isBase64(content)) {
+            content = new String(
+                new Content.Smart(
+                    this.repo.contents().get(this.path)
+                ).decoded(),
+                StandardCharsets.UTF_8
+            );
+        }
+        return content;
     }
 }

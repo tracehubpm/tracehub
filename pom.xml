@@ -151,6 +151,11 @@ SOFTWARE.
       <version>${lombok.version}</version>
     </dependency>
     <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback-classic.version}</version>
