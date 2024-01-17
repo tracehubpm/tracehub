@@ -117,7 +117,7 @@ The element `description` represents description of the job.
 The element `cost` represents an estimation of this job, positive integer value.
 
 Once it committed inside `master`, @tracehubgit will create it in issue-tracker that was
-specified in `.project.yml`.
+specified in `project.yml`.
 
 ### Docs
 
