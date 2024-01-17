@@ -27,7 +27,6 @@ import com.jcabi.github.Github;
 import com.jcabi.github.RtGithub;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.log.Logger;
-import com.jcabi.manifests.Manifests;
 import org.cactoos.Scalar;
 
 /**
@@ -40,9 +39,9 @@ public final class GhIdentity implements Scalar<Github> {
     @Override
     public Github value() throws Exception {
         Logger.info(this, "Connecting to GitHub...");
-        final String token = Manifests.read("Tracehub-GitHubToken");
+        final String token = System.getenv("Tracehub-GitHubToken");
         final Github github;
-        if (token.startsWith("${")) {
+        if (token == null) {
             github = new MkGithub();
         } else {
             github = new RtGithub(
