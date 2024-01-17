@@ -31,7 +31,7 @@ SOFTWARE.
   </parent>
   <groupId>git.tracehub</groupId>
   <artifactId>tracehub</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>Tracehub</name>
   <description>Tracehub and Project as a Code, a VCS-based collaboration tool</description>
   <inceptionYear>2023</inceptionYear>
