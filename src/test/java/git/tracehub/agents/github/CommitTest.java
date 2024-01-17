@@ -165,4 +165,27 @@ final class CommitTest {
             )
         );
     }
+
+    @Test
+    void returnsRepo() throws Exception {
+        final List<Commit> commits = new GhCommits(
+            new RqFake(
+                "POST",
+                "",
+                new Jocument(
+                    new JsonOf(
+                        new ResourceOf("github/hooks/many-commits.json").stream()
+                    )
+                ).pretty()
+            )
+        ).value();
+        final String repo = commits.get(0).repo();
+        final String expected = "tracehubpm/tracehub";
+        MatcherAssert.assertThat(
+            "Repo name %s does not match with expected %s"
+                .formatted(repo, expected),
+            repo,
+            new IsEqual<>(expected)
+        );
+    }
 }

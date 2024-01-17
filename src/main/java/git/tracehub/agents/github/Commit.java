@@ -23,10 +23,12 @@
  */
 package git.tracehub.agents.github;
 
+import java.net.URI;
 import java.util.List;
 import javax.json.JsonValue;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.list.ListOf;
+import org.cactoos.text.Joined;
 
 /**
  * Commit on GitHub.
@@ -34,6 +36,14 @@ import org.cactoos.list.ListOf;
  * @since 0.0.0
  */
 public interface Commit {
+
+    /**
+     * Repository name.
+     *
+     * @return Repo name as a string
+     * @throws Exception if something went wrong
+     */
+    String repo() throws Exception;
 
     /**
      * Created files.
@@ -68,6 +78,15 @@ public interface Commit {
          * Commit.
          */
         private final JsonValue commit;
+
+        @Override
+        public String repo() throws Exception {
+            final String[] split = new URI(
+                this.commit.asJsonObject().getString("url")
+            ).getPath().split("/");
+            return new Joined("/", new ListOf<>(split[1], split[2]))
+                .asString();
+        }
 
         @Override
         public List<String> created() {

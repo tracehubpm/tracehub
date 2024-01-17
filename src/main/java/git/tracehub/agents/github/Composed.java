@@ -52,6 +52,11 @@ public final class Composed implements Commit {
     }
 
     @Override
+    public String repo() throws Exception {
+        return this.chain.get(0).repo();
+    }
+
+    @Override
     @SneakyThrows
     public List<String> created() {
         return this.merge().get("created");

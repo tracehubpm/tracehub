@@ -46,6 +46,11 @@ public final class ThJobs implements Commit {
     private final Commit origin;
 
     @Override
+    public String repo() throws Exception {
+        return this.origin.repo();
+    }
+
+    @Override
     public List<String> created() {
         return this.origin.created().stream()
             .filter(name -> ThJobs.PATTERN.matcher(name).matches())

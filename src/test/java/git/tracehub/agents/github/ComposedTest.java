@@ -173,4 +173,29 @@ final class ComposedTest {
             )
         );
     }
+
+    @Test
+    void returnsRepo() throws Exception {
+        final Commit composed = new Composed(
+            new GhCommits(
+                new RqFake(
+                    "POST",
+                    "",
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf("github/hooks/more-duplicates.json").stream()
+                        )
+                    ).pretty()
+                )
+            )
+        );
+        final String repo = composed.repo();
+        final String expected = "tracehubpm/tracehub";
+        MatcherAssert.assertThat(
+            "Repo name %s does not match with expected %s"
+                .formatted(repo, expected),
+            repo,
+            new IsEqual<>(expected)
+        );
+    }
 }

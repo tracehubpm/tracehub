@@ -41,6 +41,11 @@ public final class TraceLogged implements Commit {
     private final Commit origin;
 
     @Override
+    public String repo() throws Exception {
+        return this.origin.repo();
+    }
+
+    @Override
     public List<String> created() {
         final List<String> created = this.origin.created();
         if (!created.isEmpty()) {

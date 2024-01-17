@@ -39,6 +39,23 @@ import org.cactoos.text.TextOf;
  * New GitHub issues.
  *
  * @since 0.0.0
+ * @todo #28:60min Submit created tickets to a PMO.
+ *  We should submit it directly to a PMO on each issue we created.
+ *  Probably an input will be an issue number, repo, and full file path.
+ *  For now can be postponed. We should prepare PMO for that firstly.
+ *  Don't forget to remove this puzzle.
+ * @todo #28:60min Implement GhClose.java.
+ *  We should implement a logic for closing a GitHub issue
+ *  for each deleted file in ThJobs#deleted().
+ *  As described above we need to reach out to PMO.
+ *  PMO will provide us the issue number by the full path of deleted job.
+ *  We should get the issue and close it in GitHub.
+ *  Don't forget to remove this puzzle.
+ * @todo #28:60min Implement GhUpdate.java.
+ *  We should implement a logic for updating for each updated files in ThJobs#updated().
+ *  We provide a full path of updated job to PMO, PMO gets us an issue number.
+ *  From there, probably we should post a comment to that issue that things gets
+ *  an update.
  */
 @RequiredArgsConstructor
 public final class GhNew implements Scalar<List<Issue>> {

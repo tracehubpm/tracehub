@@ -85,4 +85,33 @@ final class TraceOnlyTest {
             new IsEqual<>(true)
         );
     }
+
+    @Test
+    void returnsRepo() throws Exception {
+        final Commit commit = new TraceOnly(
+            new Composed(
+                new GhCommits(
+                    new RqFake(
+                        "POST",
+                        "",
+                        new Jocument(
+                            new JsonOf(
+                                new ResourceOf(
+                                    "github/hooks/many-commits.json"
+                                ).stream()
+                            )
+                        ).pretty()
+                    )
+                )
+            )
+        );
+        final String repo = commit.repo();
+        final String expected = "tracehubpm/tracehub";
+        MatcherAssert.assertThat(
+            "Repo name %s does not match with expected %s"
+                .formatted(repo, expected),
+            repo,
+            new IsEqual<>(expected)
+        );
+    }
 }
