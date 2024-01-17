@@ -2,16 +2,22 @@ architect:
   - h1alexbel
 docker:
   image: l3r8y/rultor-image:1.0.3
+assets:
+  ghcr.txt: tracehubpm/secrets#assets/ghcr.txt
 merge:
   script: |
     mvn clean install --errors -Dstyle.color=never
-# @todo #1:60min Create release script to rultor configuration.
-#   We should create release script that will be executed by Rultor.com.
-#   Probably it can be a release inside the GitHub with a new tag,
-#   and build+push Docker image to the private Docker registry.
 release:
-  script:
-    - "No release script for now"
+  sensitive:
+    - ghcr.txt
+  script: |-
+    [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9_]+)?$ ]] || exit -1
+    mvn versions:set "-DnewVersion=${tag}"
+    git commit -am "${tag}"
+    mvn clean install -Prelease
+    docker build -t ghcr.io/tracehubpm/tracehub:${tag} .
+    cat ../ghcr.txt | docker login ghcr.io --username h1alexbel --password-stdin
+    docker push ghcr.io/tracehubpm/tracehub:${tag}
 # @todo #1:90min Create deploy script for rultor configuration.
 #  We should create deploy script that will deliver our Java software
 #  into some target platform. For now, we assuming that it will be

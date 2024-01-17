@@ -34,6 +34,7 @@ import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -62,7 +63,16 @@ final class GhContentTest {
         );
     }
 
+    /**
+     * Reads content from a real GitHub.
+     *
+     * @todo #2:45min Make a JUnit extension that won't run tests
+     *  if request quota in GitHub is exceeded.
+     *  Then we can enable this and other tests that are depending on
+     *  real GitHub API. Don't forget to remove this puzzle.
+     */
     @Test
+    @Disabled
     void readsContentInRealGitHub() throws Exception {
         final String path = "README.md";
         final String expected =
