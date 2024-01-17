@@ -98,6 +98,7 @@ SOFTWARE.
     <eokson.version>0.3.2</eokson.version>
     <logcaptor.version>2.9.0</logcaptor.version>
     <logback-classic.version>1.4.8</logback-classic.version>
+    <ghquota.version>0.0.1</ghquota.version>
   </properties>
   <dependencies>
     <dependency>
@@ -207,6 +208,12 @@ SOFTWARE.
       <groupId>io.github.hakky54</groupId>
       <artifactId>logcaptor</artifactId>
       <version>${logcaptor.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.h1alexbel</groupId>
+      <artifactId>ghquota</artifactId>
+      <version>${ghquota.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
