@@ -23,33 +23,56 @@
  */
 package git.tracehub;
 
+import com.amihaiemil.eoyaml.YamlNode;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.list.ListOf;
 
 /**
- * Project.
+ * Performer.
  *
  * @since 0.0.0
  */
-public interface Project {
+public interface Performer {
 
     /**
-     * Project ID in YAML.
+     * Name.
      *
-     * @return ID
+     * @return Name
      */
-    String identity();
+    String name();
 
     /**
-     * Project performers.
+     * Roles.
      *
-     * @return Performers
+     * @return Roles
      */
-    List<Performer> performers();
+    List<String> roles();
 
     /**
-     * Project Dependencies.
+     * Simple performer.
      *
-     * @return Dependencies
+     * @since 0.0.0
      */
-    List<String> dependencies();
+    @RequiredArgsConstructor
+    final class Simple implements Performer {
+
+        /**
+         * Node.
+         */
+        private final YamlNode yaml;
+
+        @Override
+        public String name() {
+            return this.yaml.asMapping().string("name");
+        }
+
+        @Override
+        public List<String> roles() {
+            final List<String> roles = new ListOf<>();
+            this.yaml.asMapping().yamlSequence("roles")
+                .forEach(node -> roles.add(node.asScalar().value()));
+            return roles;
+        }
+    }
 }

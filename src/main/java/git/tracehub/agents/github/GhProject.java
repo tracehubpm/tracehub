@@ -23,25 +23,82 @@
  */
 package git.tracehub.agents.github;
 
+import com.amihaiemil.eoyaml.Yaml;
+import com.amihaiemil.eoyaml.YamlMapping;
 import com.jcabi.github.Repo;
+import git.tracehub.Performer;
 import git.tracehub.Project;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import org.cactoos.list.ListOf;
 
 /**
  * Project in GitHub.
  *
  * @since 0.0.0
+ * @todo #11:90min Transform YAML document into XML.
+ *  For now we are working and parsing YAML directly,
+ *  however, its not the best case for dynamic validation,
+ *  since we need a lot of imperative and verbose checks.
+ *  Lets convert the YAML doc of the project into XML
+ *  document. Any check will be presented as XSL sheet
+ *  and probably an XSD schema for strict format we will introduce.
  */
-@RequiredArgsConstructor
 public final class GhProject implements Project {
 
     /**
-     * Repo.
+     * YAML.
      */
-    private final Repo repo;
+    private final YamlMapping yaml;
+
+    /**
+     * Ctor.
+     *
+     * @param repo Repo
+     * @throws Exception if something went wrong
+     */
+    public GhProject(final Repo repo) throws Exception {
+        this(
+            Yaml.createYamlInput(
+                new GhContent(repo, ".trace/project.yml").asString()
+            ).readYamlMapping()
+        );
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param yml YAML
+     */
+    public GhProject(final YamlMapping yml) {
+        this.yaml = yml;
+    }
 
     @Override
-    public String asString() throws Exception {
-        return new GhContent(this.repo, ".trace/project.yml").asString();
+    public String identity() {
+        final String id = this.yaml.string("id");
+        if (id == null) {
+            throw new IllegalStateException(
+                "ID can't be NULL, please fix your YAML file"
+            );
+        }
+        return id;
+    }
+
+    @Override
+    public List<Performer> performers() {
+        final List<Performer> performers = new ListOf<>();
+        this.yaml.yamlSequence("performers")
+            .forEach(node -> performers.add(new Performer.Simple(node)));
+        return performers;
+    }
+
+    @Override
+    public List<String> dependencies() {
+        final List<String> found = new ListOf<>();
+        if (this.yaml.yamlSequence("dependencies") != null) {
+            this.yaml.yamlSequence("dependencies")
+                .forEach(node -> found.add(node.asScalar().value()));
+        }
+        return found;
     }
 }
