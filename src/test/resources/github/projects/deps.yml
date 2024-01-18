@@ -1,0 +1,3 @@
+dependencies:
+  - github.com/h1alexbel/cdit@master
+  - github.com/h1alexbel/ghquota@master

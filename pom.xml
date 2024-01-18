@@ -99,6 +99,8 @@ SOFTWARE.
     <logcaptor.version>2.9.0</logcaptor.version>
     <logback-classic.version>1.4.8</logback-classic.version>
     <ghquota.version>0.0.1</ghquota.version>
+    <jackson-dataformat-yaml.version>2.16.1</jackson-dataformat-yaml.version>
+    <Saxon-HE.version>12.4</Saxon-HE.version>
   </properties>
   <dependencies>
     <dependency>
@@ -155,6 +157,21 @@ SOFTWARE.
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback-classic.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-yaml</artifactId>
+      <version>${jackson-dataformat-yaml.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-xml</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>${Saxon-HE.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
