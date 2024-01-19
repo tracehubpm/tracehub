@@ -23,6 +23,7 @@
  */
 package git.tracehub;
 
+import com.jcabi.xml.XML;
 import java.util.List;
 
 /**
@@ -52,4 +53,12 @@ public interface Project {
      * @return Dependencies
      */
     List<String> dependencies();
+
+    /**
+     * Project in XML.
+     *
+     * @return XML
+     * @throws Exception if something went wrong
+     */
+    XML asXml() throws Exception;
 }

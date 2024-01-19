@@ -1,0 +1,13 @@
+<LinkedHashMap>
+  <id>many-performers123</id>
+  <name>many-performers</name>
+  <performers>
+    <name>h1alexbel</name>
+    <roles>DEV</roles>
+    <roles>ARC</roles>
+  </performers>
+  <performers>
+    <name>hizmailovich</name>
+    <roles>DEV</roles>
+  </performers>
+</LinkedHashMap>
