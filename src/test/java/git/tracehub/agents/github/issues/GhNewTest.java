@@ -28,9 +28,11 @@ import com.jcabi.github.Contents;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
+import git.tracehub.agents.github.GhProject;
 import git.tracehub.agents.github.ThJobs;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
@@ -41,6 +43,7 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -56,18 +59,21 @@ final class GhNewTest {
 
     @Test
     void createsNewIssues() throws Exception {
-        final Repo repo = new MkGithub().randomRepo();
+        final MkGithub github = new MkGithub();
+        github.users().add("h1alexbel");
+        github.users().add("hizmailovich");
+        final Repo repo = github.randomRepo();
         this.contribute(
             repo,
             ".trace/jobs/job1.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes"
+            + " test description\ncost: 20 minutes\nrole: DEV"
         );
         this.contribute(
             repo,
             ".trace/jobs/job2.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes"
+            + " test description\ncost: 20 minutes\nrole: ARC"
         );
         final Commit commit =
             new ThJobs(
@@ -91,7 +97,12 @@ final class GhNewTest {
                     )
                 )
             );
-        final List<Issue> created = new GhNew(commit, repo).value();
+        final Project project = this.provide("github/projects/many-performers.yml", repo);
+        final List<Issue> created = new GhNew(
+            project,
+            commit,
+            repo
+        ).value();
         final int expected = 2;
         MatcherAssert.assertThat(
             "Created issues %s size does not match with expected %s"
@@ -111,6 +122,18 @@ final class GhNewTest {
             "2nd issue %s is not opened, but it should be"
                 .formatted(second),
             second.isOpen(),
+            new IsEqual<>(true)
+        );
+        MatcherAssert.assertThat(
+            "1st issue %s is not assigned, but should be"
+                .formatted(first),
+            first.hasAssignee(),
+            new IsEqual<>(true)
+        );
+        MatcherAssert.assertThat(
+            "2nd issue %s is not assigned, but should be"
+                .formatted(second),
+            second.hasAssignee(),
             new IsEqual<>(true)
         );
     }
@@ -139,5 +162,19 @@ final class GhNewTest {
         return Json.createObjectBuilder()
             .add("name", "joe")
             .add("email", "joe@contents.com");
+    }
+
+    private Project provide(final String path, final Repo repo) throws Exception {
+        repo.contents().create(
+            Json.createObjectBuilder()
+                .add("path", ".trace/project.yml")
+                .add(
+                    "content",
+                    new TextOf(new ResourceOf(path)).asString()
+                )
+                .add("message", "project created")
+                .build()
+        );
+        return new GhProject(repo);
     }
 }

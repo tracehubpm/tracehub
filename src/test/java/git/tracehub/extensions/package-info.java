@@ -21,30 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
-
-import java.io.IOException;
-import org.cactoos.Text;
 
 /**
- * Job.
+ * Extensions for tests.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
-
-    /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
-     */
-    String label() throws IOException;
-
-    /**
-     * Role.
-     *
-     * @return Role
-     */
-    String role();
-}
+package git.tracehub.extensions;
