@@ -25,7 +25,13 @@ package git.tracehub.agents.github;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcabi.github.Repo;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import git.tracehub.Performer;
 import git.tracehub.Project;
 import java.util.List;
@@ -35,13 +41,6 @@ import org.cactoos.list.ListOf;
  * Project in GitHub.
  *
  * @since 0.0.0
- * @todo #11:90min Transform YAML document into XML.
- *  For now we are working and parsing YAML directly,
- *  however, its not the best case for dynamic validation,
- *  since we need a lot of imperative and verbose checks.
- *  Lets convert the YAML doc of the project into XML
- *  document. Any check will be presented as XSL sheet
- *  and probably an XSD schema for strict format we will introduce.
  */
 public final class GhProject implements Project {
 
@@ -100,5 +99,18 @@ public final class GhProject implements Project {
                 .forEach(node -> found.add(node.asScalar().value()));
         }
         return found;
+    }
+
+    @Override
+    public XML asXml() throws Exception {
+        return new XMLDocument(
+            new XmlMapper().writeValueAsString(
+                new ObjectMapper(new YAMLFactory()).readValue(
+                    this.yaml.toString(),
+                    new TypeReference<>() {
+                    }
+                )
+            )
+        );
     }
 }

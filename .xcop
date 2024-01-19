@@ -1,1 +1,2 @@
 --exclude=paper/**.xml
+--exclude=src/test/resources/github/projects/xml/**.xml

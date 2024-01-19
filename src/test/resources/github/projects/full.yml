@@ -1,0 +1,13 @@
+id: full123
+name: full
+performers:
+  - name: h1alexbel
+    roles:
+      - DEV
+      - ARC
+  - name: hizmailovich
+    roles:
+      - DEV
+dependencies:
+  - github.com/h1alexbel/cdit@master
+  - github.com/h1alexbel/ghquota@master
