@@ -110,11 +110,14 @@ label: Update License year to 2024
 description: |-
   Lets update a copyright year in our License to 2024
 cost: 20 minutes
+role: ARC
 ```
 
 The element `label` represents the job name.
 The element `description` represents description of the job.
 The element `cost` represents an estimation of this job, positive integer value.
+The element `role` represents a required role for assigning on the job.
+If not specified, then it will be DEV.
 
 Once it committed inside `master`, @tracehubgit will create it in issue-tracker that was
 specified in `project.yml`.
