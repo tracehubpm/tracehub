@@ -21,30 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.facts;
 
-import java.io.IOException;
-import org.cactoos.Text;
+import git.tracehub.Performer;
+import java.util.function.Predicate;
+import lombok.RequiredArgsConstructor;
 
 /**
- * Job.
+ * Does performer have a required role?
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+@RequiredArgsConstructor
+public final class HasRole implements Predicate<Performer> {
 
     /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
+     * Required role to have.
      */
-    String label() throws IOException;
+    private final String required;
 
-    /**
-     * Role.
-     *
-     * @return Role
-     */
-    String role();
+    @Override
+    public boolean test(final Performer performer) {
+        return performer.roles().contains(this.required);
+    }
 }

@@ -91,6 +91,15 @@ public final class GhJob implements Job {
     }
 
     @Override
+    public String role() {
+        String role = this.yaml.string("role");
+        if (role == null) {
+            role = "DEV";
+        }
+        return role;
+    }
+
+    @Override
     public String asString() throws Exception {
         return this.template.asString()
             .formatted(

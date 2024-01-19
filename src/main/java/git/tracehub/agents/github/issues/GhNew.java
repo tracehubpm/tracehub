@@ -25,6 +25,8 @@ package git.tracehub.agents.github.issues;
 
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import git.tracehub.Job;
+import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.GhJob;
 import java.util.List;
@@ -61,6 +63,11 @@ import org.cactoos.text.TextOf;
 public final class GhNew implements Scalar<List<Issue>> {
 
     /**
+     * Project.
+     */
+    private final Project project;
+
+    /**
      * Commit.
      */
     private final Commit commit;
@@ -70,6 +77,7 @@ public final class GhNew implements Scalar<List<Issue>> {
      */
     private final Repo repo;
 
+    // @checkstyle AnonInnerLengthCheck (20 lines)
     @Override
     public List<Issue> value() throws Exception {
         return this.commit.created().stream()
@@ -78,17 +86,22 @@ public final class GhNew implements Scalar<List<Issue>> {
                     @SneakyThrows
                     @Override
                     public Issue apply(final String name) {
-                        return new CreateIssue(
-                            new GhJob(
-                                GhNew.this.repo,
-                                name,
-                                new TextOf(
-                                    new ResourceOf(
-                                        "git/tracehub/agents/github/Issue.md"
-                                    )
+                        final Job job = new GhJob(
+                            GhNew.this.repo,
+                            name,
+                            new TextOf(
+                                new ResourceOf(
+                                    "git/tracehub/agents/github/Issue.md"
                                 )
-                            ),
-                            GhNew.this.repo.issues()
+                            )
+                        );
+                        return new AssignOnIssue(
+                            GhNew.this.project,
+                            job,
+                            new CreateIssue(
+                                job,
+                                GhNew.this.repo.issues()
+                            )
                         ).value();
                     }
                 })
