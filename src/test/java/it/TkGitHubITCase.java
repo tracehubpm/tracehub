@@ -23,34 +23,47 @@
  */
 package it;
 
+import com.jcabi.github.Github;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
+import git.tracehub.identity.GhIdentity;
 import git.tracehub.tk.TkGitHub;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.takes.http.FtRemote;
 
 /**
- * Integration test case for {@link git.tracehub.tk.TkGitHub}.
+ * Integration test case for {@link TkGitHub}.
  *
  * @since 0.0.0
- * @todo #22:60min Create test with push webhook JSON payload.
- *  We should create an integration test for push GitHub webhook with it payload.
- *  Probably we need to configure Takes so that it will start accepting JSON payloads
- *  on /github/hook.
- *  Don't forget to remove this puzzle.
  */
 final class TkGitHubITCase {
 
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void returnsResponseOnHook() throws Exception {
-        new FtRemote(new TkGitHub()).exec(
+        final Github github = new GhIdentity().value();
+        new FtRemote(new TkGitHub(github)).exec(
             home -> new JdkRequest(home)
+                .method("POST")
+                .header("Accept", "application/json")
+                .body()
+                .set(
+                    new TextOf(
+                        new ResourceOf("github/it/job-hook.json")
+                    ).asString()
+                )
+                .back()
                 .fetch()
                 .as(RestResponse.class)
                 .assertStatus(200)
-                .assertBody(Matchers.equalTo("GitHub webhook"))
+                .assertBody(
+                    Matchers.equalTo(
+                        "Thanks h1alexbel/test for GitHub webhook"
+                    )
+                )
         );
     }
 }

@@ -1,0 +1,31 @@
+---
+name: daily
+on:
+  schedule:
+    # Run simulation at 01:30 UTC every day
+    - cron: '30 1 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - uses: s4u/maven-settings-action@v3.0.0
+        with:
+          profiles: '[{"id": "simulation", "properties": {"Tracehub-GitHubToken": "${{ secrets.TRACEHUBTOKEN }}"}}]'
+      - run: |
+          mvn clean install -Psimulation --errors -Dstyle.color=never
+  report-fail:
+    name: Create issue on failure
+    needs: build
+    if: failure() && github.even.pull_request == null
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: jayqi/failed-build-issue-action@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
