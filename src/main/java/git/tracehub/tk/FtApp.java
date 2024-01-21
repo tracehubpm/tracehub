@@ -54,6 +54,7 @@ import org.takes.tk.TkSlf4j;
  * @todo #25:45min Test fallbacks.
  *  We should test all fallbacks we have in both:
  *  unit and integration tests.
+ *  Don't forget to remove this puzzle.
  */
 @RequiredArgsConstructor
 public final class FtApp implements Scalar<Front> {
