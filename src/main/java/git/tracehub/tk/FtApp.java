@@ -51,7 +51,7 @@ import org.takes.tk.TkSlf4j;
  * @todo #25:45min Test error.html.vm template.
  *  We should test that error page can be rendered and
  *  shown to the end-users with a exception stacktrace.
- *  @todo #25:45min Test fallbacks.
+ * @todo #25:45min Test fallbacks.
  *  We should test all fallbacks we have in both:
  *  unit and integration tests.
  */
