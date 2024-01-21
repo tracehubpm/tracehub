@@ -5,11 +5,17 @@
 [![mvn](https://github.com/tracehubpm/tracehub/actions/workflows/mvn.yml/badge.svg)](https://github.com/tracehubpm/tracehub/actions/workflows/mvn.yml)
 [![codecov](https://codecov.io/gh/tracehubpm/tracehub/graph/badge.svg?token=hXMw1jvPJo)](https://codecov.io/gh/tracehubpm/tracehub)
 
+[![Hits-of-Code](https://hitsofcode.com/github/tracehubpm/tracehub)](https://hitsofcode.com/view/github/tracehubpm/tracehub)
+[![PDD status](http://www.0pdd.com/svg?name=tracehubpm/tracehub)](http://www.0pdd.com/p?name=tracehubpm/tracehub)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/tracehubpm/tracehub/blob/master/LICENSE.txt)
+
+Tracehub and Project as a Code, a VCS-based collaboration tool, and its robots.
+
 ### How to configure?
 
 The Project itself is defined as a set of [YAML](https://en.wikipedia.org/wiki/YAML) documents.
 
-Documents must be located inside `.trace` directory,
+All files must be located inside `.trace` directory,
 placed in the root of your `master` branch.
 
 ```text
@@ -28,17 +34,18 @@ placed in the root of your `master` branch.
 ...
 ```
 
-Project document (project.yml) is the special document and has the following notation:
+Project document (project.yml in the root of `.trace` directory) is the special document
+and has the following notation:
 
 ```yaml
 id: 5B0185CB-424B-42D4-9631-7B628B7BB78F
 name: Tracehub
-description: Tracehub and Project as a Code, a VCS-based collaboration tool
 active: true
 performers:
-  individuals:
-    - email: aliaksei.bialiauski@hey.com
-      roles: [PO, ARC]
+  - name: h1alexbel
+    roles:
+      - DEV
+      - ARC
 issues:
   type: JIRA
   url: ...
@@ -65,7 +72,7 @@ The element `active` represents that project active-in-development.
 Section `performers` for specifying who is working on the projects.
 Subsection `individuals` allows you to specify independent project people, each one has
 the following schema:
-* `email`: performer email
+* `name`: performer's name
 * `roles`: an array of roles, performer has
 
 For now, we support these roles:
@@ -107,7 +114,7 @@ Take a look at the example:
 
 ```yaml
 label: Update License year to 2024
-description: |-
+description: |
   Lets update a copyright year in our License to 2024
 cost: 20 minutes
 role: ARC
@@ -147,7 +154,7 @@ specified in `.trace/project.yml`.
 ### Rules
 
 Rules is a declarative way to observe and control
-what's happened in the project.
+the situation in the project.
 Can be helpful feature for PM, ARC, or PO, and
 motivation source for others project-performers.
 
@@ -183,7 +190,7 @@ Now, values from these secret variables will be injected when integration happen
 
 ### Supported platforms
 
-We support the following platforms:
+We aim to support the following platforms:
 
 Git-hosted repositories in:
 * [GitHub](https://github.com)
@@ -195,7 +202,7 @@ Issue trackers:
 * [JIRA](https://www.atlassian.com/software/jira)
 
 Document storages:
-* [GitHub](https://docs.github.com/en/communities/documenting-your-project-with-wikis/about-wikis)
+* [GitHub Wikis](https://docs.github.com/en/communities/documenting-your-project-with-wikis/about-wikis)
 * [Confluence](https://www.atlassian.com/software/confluence)
 
 ### How to contribute?
@@ -211,3 +218,8 @@ $ mvn clean install
 The build has to be clean. If it's not, [submit an issue](https://github.com/tracehubpm/tracehub/issues).
 
 Then, make your changes, make sure the build is still clean, and [submit a pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
+
+### Maven profiles
+
+* `release`: for packaging and preparing artifact to become a Docker image.
+* `simulation`: for running integration tests on GitHub, GitLab, JIRA and others.
