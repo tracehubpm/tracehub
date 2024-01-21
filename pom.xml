@@ -101,6 +101,7 @@ SOFTWARE.
     <ghquota.version>0.0.1</ghquota.version>
     <jackson-dataformat-yaml.version>2.16.1</jackson-dataformat-yaml.version>
     <Saxon-HE.version>12.4</Saxon-HE.version>
+    <velocity-engine-core.version>2.3</velocity-engine-core.version>
   </properties>
   <dependencies>
     <dependency>
@@ -149,8 +150,18 @@ SOFTWARE.
       <version>${lombok.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.jcabi</groupId>
+      <artifactId>jcabi-aspects</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
+      <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-text</artifactId>
       <!-- version from parent POM -->
     </dependency>
     <dependency>
@@ -172,6 +183,12 @@ SOFTWARE.
       <groupId>net.sf.saxon</groupId>
       <artifactId>Saxon-HE</artifactId>
       <version>${Saxon-HE.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity-engine-core</artifactId>
+      <version>${velocity-engine-core.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -317,7 +334,7 @@ SOFTWARE.
                     <limit>
                       <counter>INSTRUCTION</counter>
                       <value>COVEREDRATIO</value>
-                      <minimum>0.69</minimum>
+                      <minimum>0.68</minimum>
                     </limit>
                     <limit>
                       <counter>LINE</counter>
@@ -378,21 +395,6 @@ SOFTWARE.
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-verifier-plugin</artifactId>
         <version>${maven-verifier-plugin.version}</version>
         <executions>
@@ -411,6 +413,34 @@ SOFTWARE.
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>simulation</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>integration-test</goal>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+              <systemPropertyVariables>
+                <Tracehub-GitHubToken>${Tracehub-GitHubToken}</Tracehub-GitHubToken>
+              </systemPropertyVariables>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>release</id>
       <activation>

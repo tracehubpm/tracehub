@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8"/>
+  <title>tracehub: error</title>
+  <meta name="description" content="Internal application error"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>oops...</title>
+</head>
+<body>>
+<h1>Internal application error</h1>
+<p>
+  Please, report it
+  <a href="https://github.com/tracehubpm/tracheub/issues">here</a>.
+  We will do our best to fix it as soon as possible.
+  We're very sorry.
+</p>
+<pre>${error}</pre>
+</body>
+</html>

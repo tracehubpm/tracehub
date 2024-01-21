@@ -23,9 +23,10 @@
  */
 package git.tracehub;
 
+import com.jcabi.github.Github;
 import com.jcabi.log.Logger;
+import git.tracehub.identity.GhIdentity;
 import git.tracehub.tk.FtApp;
-import java.io.IOException;
 import org.takes.http.Exit;
 
 /**
@@ -41,10 +42,11 @@ public final class Entry {
      * Application entry point.
      *
      * @param args Application arguments
-     * @throws IOException if I/O fails
+     * @throws Exception if something went wrong
      */
-    public static void main(final String... args) throws IOException {
+    public static void main(final String... args) throws Exception {
         Logger.info(Entry.class, "Starting Tracehub on the command line...");
-        new FtApp().value().start(Exit.NEVER);
+        final Github github = new GhIdentity().value();
+        new FtApp(github).value().start(Exit.NEVER);
     }
 }

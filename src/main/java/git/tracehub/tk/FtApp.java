@@ -23,32 +23,56 @@
  */
 package git.tracehub.tk;
 
-import java.io.IOException;
+import com.jcabi.github.Github;
+import java.net.HttpURLConnection;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.text.StringEscapeUtils;
 import org.cactoos.Scalar;
+import org.cactoos.bytes.BytesOf;
+import org.cactoos.text.TextOf;
 import org.takes.facets.fallback.FbChain;
 import org.takes.facets.fallback.FbStatus;
 import org.takes.facets.fallback.TkFallback;
 import org.takes.facets.fork.FkRegex;
 import org.takes.facets.fork.TkFork;
+import org.takes.facets.fork.TkMethods;
 import org.takes.http.Front;
 import org.takes.http.FtBasic;
+import org.takes.misc.Opt;
 import org.takes.rs.RsText;
+import org.takes.rs.RsVelocity;
+import org.takes.rs.RsWithStatus;
 import org.takes.tk.TkSlf4j;
 
 /**
  * Front Application.
  *
  * @since 0.0.0
+ * @todo #25:45min Test error.html.vm template.
+ *  We should test that error page can be rendered and
+ *  shown to the end-users with a exception stacktrace.
  */
+@RequiredArgsConstructor
 public final class FtApp implements Scalar<Front> {
 
+    /**
+     * GitHub.
+     */
+    private final Github github;
+
     @Override
-    public Front value() throws IOException {
+    public Front value() throws Exception {
         return new FtBasic(
             new TkSlf4j(
                 new TkFallback(
                     new TkFork(
-                        new FkRegex("/github/hook", new TkGitHub()),
+                        new FkRegex(
+                            "/github/hook",
+                            new TkMethods(
+                                new TkGitHub(this.github),
+                                "POST"
+                            )
+                        ),
                         new FkRegex("/gitlab/hook", new TkGitLab()),
                         new FkRegex("/bitbucket/hook", new TkBitbucket()),
                         new FkRegex("/jira/hook", new TkJira()),
@@ -65,6 +89,24 @@ public final class FtApp implements Scalar<Front> {
                             405,
                             new RsText(
                                 "This method is not allowed here"
+                            )
+                        ),
+                        req -> new Opt.Single<>(
+                            new RsWithStatus(
+                                new RsVelocity(
+                                    FtApp.class.getResource("error.html.vm"),
+                                    new RsVelocity.Pair(
+                                        "error",
+                                        StringEscapeUtils.escapeHtml4(
+                                            new TextOf(
+                                                new BytesOf(
+                                                    req.throwable()
+                                                )
+                                            ).asString()
+                                        )
+                                    )
+                                ),
+                                HttpURLConnection.HTTP_INTERNAL_ERROR
                             )
                         )
                     )
