@@ -41,6 +41,10 @@ import org.takes.http.FtRemote;
  * Integration test case for {@link TkGitHub}.
  *
  * @since 0.0.0
+ * @todo #15:45min Fix formatting in response with an errors.
+ *  We should fix formatting in response that contains validation errors.
+ *  Now it just inlines them. However, we should print them with a new line.
+ *  Don't forget to remove this puzzle.
  */
 final class TkGitHubITCase {
 
@@ -56,7 +60,7 @@ final class TkGitHubITCase {
                 .body()
                 .set(
                     new TextOf(
-                        new ResourceOf("github/it/job-hook.json")
+                        new ResourceOf("it/github/job-hook.json")
                     ).asString()
                 )
                 .back()
@@ -83,7 +87,7 @@ final class TkGitHubITCase {
                 .body()
                 .set(
                     new TextOf(
-                        new ResourceOf("github/it/project-with-errors.json")
+                        new ResourceOf("it/github/project-with-errors.json")
                     ).asString()
                 )
                 .back()
@@ -92,7 +96,7 @@ final class TkGitHubITCase {
                 .assertStatus(400)
                 .assertBody(
                     Matchers.equalTo(
-                        "Project contains some errors:"
+                        "Project contains some errors:Project must have exactly one Architect.\nAt least one performer must have the DEV role.\n"
                     )
                 )
         );

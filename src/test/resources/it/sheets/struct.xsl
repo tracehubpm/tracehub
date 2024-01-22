@@ -22,13 +22,20 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <profiles>
-    <profile>
-      <id>simulation</id>
-      <properties>
-        <Tracehub-GitHubToken>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</Tracehub-GitHubToken>
-      </properties>
-    </profile>
-  </profiles>
-</settings>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+  <xsl:template match="/">
+    <data>
+      <xsl:apply-templates select="//LinkedHashMap"/>
+    </data>
+  </xsl:template>
+  <xsl:template match="LinkedHashMap">
+    <src>
+      <xsl:apply-templates select="@*|node()"/>
+    </src>
+  </xsl:template>
+  <xsl:template match="@*|node()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()"/>
+    </xsl:copy>
+  </xsl:template>
+</xsl:stylesheet>

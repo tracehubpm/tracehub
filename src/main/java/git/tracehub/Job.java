@@ -52,6 +52,7 @@ public interface Job extends Text {
     /**
      * Job in XML.
      * @return XML
+     * @throws Exception if something went wrong
      */
     XML asXml() throws Exception;
 }

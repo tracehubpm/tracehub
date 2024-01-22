@@ -26,13 +26,9 @@ package git.tracehub.validation;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLChain;
-import com.jcabi.xml.XSLDocument;
 import java.util.List;
-import java.util.function.Function;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.cactoos.Scalar;
-import org.cactoos.io.ResourceOf;
 
 /**
  * Validated XML document.
@@ -48,25 +44,12 @@ public final class XsApplied implements Scalar<XML> {
     private final XML origin;
 
     /**
-     * Sheet names.
+     * Sheets.
      */
-    private final Scalar<List<String>> sheets;
+    private final Scalar<List<XSL>> sheets;
 
     @Override
     public XML value() throws Exception {
-        return new XSLChain(
-            this.sheets.value().stream()
-                .map(
-                    new Function<String, XSL>() {
-                        @SneakyThrows
-                        @Override
-                        public XSL apply(final String sheet) {
-                            return new XSLDocument(
-                                new ResourceOf(sheet).stream()
-                            );
-                        }
-                    }
-                ).toList()
-        ).transform(this.origin);
+        return new XSLChain(this.sheets.value()).transform(this.origin);
     }
 }

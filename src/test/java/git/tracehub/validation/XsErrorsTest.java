@@ -24,6 +24,8 @@
 package git.tracehub.validation;
 
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.XSLDocument;
 import java.util.List;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
@@ -48,10 +50,24 @@ final class XsErrorsTest {
                     ).stream()
                 ),
                 () -> new ListOf<>(
-                    "git/tracehub/validation/struct.xsl",
-                    "git/tracehub/validation/errors.xsl",
-                    "git/tracehub/validation/arc.xsl",
-                    "git/tracehub/validation/dev.xsl"
+                    new XSLChain(
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/struct.xsl")
+                                .stream()
+                        ),
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/errors.xsl")
+                                .stream()
+                        ),
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/arc.xsl")
+                                .stream()
+                        ),
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/dev.xsl")
+                                .stream()
+                        )
+                    )
                 )
             )
         ).value();
@@ -77,10 +93,24 @@ final class XsErrorsTest {
                     ).stream()
                 ),
                 () -> new ListOf<>(
-                    "git/tracehub/validation/struct.xsl",
-                    "git/tracehub/validation/errors.xsl",
-                    "git/tracehub/validation/arc.xsl",
-                    "git/tracehub/validation/dev.xsl"
+                    new XSLChain(
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/struct.xsl")
+                                .stream()
+                        ),
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/errors.xsl")
+                                .stream()
+                        ),
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/arc.xsl")
+                                .stream()
+                        ),
+                        new XSLDocument(
+                            new ResourceOf("git/tracehub/validation/dev.xsl")
+                                .stream()
+                        )
+                    )
                 )
             )
         ).value();

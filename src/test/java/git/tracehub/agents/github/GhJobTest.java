@@ -42,6 +42,7 @@ import org.llorllale.cactoos.matchers.Throws;
  *
  * @since 0.0.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class GhJobTest {
 
     @Test
@@ -95,9 +96,9 @@ final class GhJobTest {
      * Test case for invalid YAML input.
      *
      * @todo #22:25min Throw custom validation exception after applying validations.
-     * This puzzle can be resolved probably after GhJob will be empowered with
-     * XSD schema/validation decorator.
-     * Don't forget to remove this puzzle.
+     *  This puzzle can be resolved probably after GhJob will be empowered with
+     *  XSD schema/validation decorator.
+     *  Don't forget to remove this puzzle.
      */
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
