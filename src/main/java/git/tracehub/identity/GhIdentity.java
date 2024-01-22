@@ -34,11 +34,6 @@ import org.cactoos.Scalar;
  * GitHub Identity.
  *
  * @since 0.0.0
- * @todo #25:20min verify compatibility with Docker environment variables.
- *  After replacing System#getEnv() to System#getProperty() for setting
- *  properties during integration build with github, we probably
- *  can break ENV settings during docker run. We should double check
- *  that. Don't forget to remove this puzzle.
  */
 public final class GhIdentity implements Scalar<Github> {
 
@@ -46,7 +41,10 @@ public final class GhIdentity implements Scalar<Github> {
     @Cacheable(forever = true)
     public Github value() throws Exception {
         Logger.info(this, "Connecting to GitHub...");
-        final String token = System.getProperty("Tracehub-GitHubToken");
+        String token = System.getProperty("Tracehub-GitHubToken");
+        if (token == null) {
+            token = System.getenv("Tracehub-GitHubToken");
+        }
         final Github github;
         if (token == null) {
             github = new MkGithub();
