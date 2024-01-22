@@ -26,12 +26,15 @@ package it;
 import com.jcabi.github.Github;
 import com.jcabi.http.request.JdkRequest;
 import com.jcabi.http.response.RestResponse;
+import com.yegor256.WeAreOnline;
 import git.tracehub.identity.GhIdentity;
 import git.tracehub.tk.TkGitHub;
+import io.github.h1alexbel.ghquota.Quota;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.takes.http.FtRemote;
 
 /**
@@ -42,6 +45,7 @@ import org.takes.http.FtRemote;
 final class TkGitHubITCase {
 
     @Test
+    @ExtendWith({WeAreOnline.class, Quota.class})
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void returnsResponseOnHook() throws Exception {
         final Github github = new GhIdentity().value();
@@ -62,6 +66,33 @@ final class TkGitHubITCase {
                 .assertBody(
                     Matchers.equalTo(
                         "Thanks h1alexbel/test for GitHub webhook"
+                    )
+                )
+        );
+    }
+
+    @Test
+    @ExtendWith({WeAreOnline.class, Quota.class})
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void foundsErrors() throws Exception {
+        final Github github = new GhIdentity().value();
+        new FtRemote(new TkGitHub(github)).exec(
+            home -> new JdkRequest(home)
+                .method("POST")
+                .header("Accept", "application/json")
+                .body()
+                .set(
+                    new TextOf(
+                        new ResourceOf("github/it/project-with-errors.json")
+                    ).asString()
+                )
+                .back()
+                .fetch()
+                .as(RestResponse.class)
+                .assertStatus(400)
+                .assertBody(
+                    Matchers.equalTo(
+                        "Project contains some errors:"
                     )
                 )
         );

@@ -26,20 +26,15 @@ package git.tracehub.agents.github;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.jcabi.github.Repo;
+import com.jcabi.xml.XML;
 import git.tracehub.Job;
+import git.tracehub.validation.DocTransformed;
 import org.cactoos.Text;
 
 /**
  * Job in GitHub.
  *
  * @since 0.0.0
- *
- * @todo #10:60min YAML Job document validation.
- *  We should validate all incoming job documents.
- *  probably we should have some sort of schema.
- *  Alternatively we can transform YAML into XML
- *  with attached XSD schema to it.
- *  Don't forget to remove this puzzle.
  */
 public final class GhJob implements Job {
 
@@ -61,7 +56,11 @@ public final class GhJob implements Job {
      * @param tmplt Job template
      * @throws Exception if something went wrong
      */
-    public GhJob(final Repo repo, final String name, final Text tmplt)
+    public GhJob(
+        final Repo repo,
+        final String name,
+        final Text tmplt
+    )
         throws Exception {
         this(
             Yaml.createYamlInput(
@@ -109,5 +108,10 @@ public final class GhJob implements Job {
                 ),
                 this.yaml.string("cost")
             );
+    }
+
+    @Override
+    public XML asXml() throws Exception {
+        return new DocTransformed(this.yaml).value();
     }
 }

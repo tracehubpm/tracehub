@@ -21,37 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.validation;
 
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Text;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.XSLDocument;
+import java.util.List;
+import java.util.function.Function;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.cactoos.Scalar;
+import org.cactoos.io.ResourceOf;
 
 /**
- * Job.
+ * Validated XML document.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+@RequiredArgsConstructor
+public final class XsApplied implements Scalar<XML> {
 
     /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
+     * XML to validate.
      */
-    String label() throws IOException;
+    private final XML origin;
 
     /**
-     * Role.
-     *
-     * @return Role
+     * Sheet names.
      */
-    String role();
+    private final Scalar<List<String>> sheets;
 
-    /**
-     * Job in XML.
-     * @return XML
-     */
-    XML asXml() throws Exception;
+    @Override
+    public XML value() throws Exception {
+        return new XSLChain(
+            this.sheets.value().stream()
+                .map(
+                    new Function<String, XSL>() {
+                        @SneakyThrows
+                        @Override
+                        public XSL apply(final String sheet) {
+                            return new XSLDocument(
+                                new ResourceOf(sheet).stream()
+                            );
+                        }
+                    }
+                ).toList()
+        ).transform(this.origin);
+    }
 }

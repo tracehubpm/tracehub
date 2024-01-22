@@ -1,0 +1,19 @@
+<data>
+  <src>
+    <id>full123</id>
+    <name>full</name>
+    <performers>
+      <name>h1alexbel</name>
+      <roles>DEV</roles>
+    </performers>
+    <performers>
+      <name>hizmailovich</name>
+      <roles>DEV</roles>
+    </performers>
+    <dependencies>github.com/h1alexbel/cdit@master</dependencies>
+    <dependencies>github.com/h1alexbel/ghquota@master</dependencies>
+  </src>
+  <errors>
+    <error>Project must have exactly one Architect.</error>
+  </errors>
+</data>

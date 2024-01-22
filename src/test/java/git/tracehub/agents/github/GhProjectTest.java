@@ -23,16 +23,10 @@
  */
 package git.tracehub.agents.github;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLChain;
-import com.jcabi.xml.XSLDocument;
 import git.tracehub.Performer;
 import git.tracehub.Project;
 import java.util.List;
@@ -249,55 +243,6 @@ final class GhProjectTest {
             "XML %s for project %s does not match with expected %s"
                 .formatted(xml, project.identity(), expected),
             xml,
-            new IsEqual<>(expected)
-        );
-    }
-
-    /**
-     * Runs a PoC that transforms YAML document and validates it.
-     *
-     * @throws Exception if something went wrong
-     * @todo #11:45min Extract this PoC to a validating objects.
-     *  We should extract this proof of concept, where we are
-     *  getting YAML document, converting it into XML, applying XSL sheets,
-     *  and checking the result of validation.
-     */
-    @Test
-    void readsArcDevErrors() throws Exception {
-        final ObjectMapper yaml = new ObjectMapper(new YAMLFactory());
-        final Map<String, Object> map = yaml.readValue(
-            new ResourceOf("github/projects/--to-xml.yml").stream(),
-            new TypeReference<>() {
-            }
-        );
-        final XML transform =
-            new XSLChain(
-                new XSLDocument(
-                    new ResourceOf("github/validation/src.xsl").stream()
-                ),
-                new XSLDocument(
-                    new ResourceOf("github/validation/errors.xsl").stream()
-                ),
-                new XSLDocument(
-                    new ResourceOf("github/validation/arc.xsl").stream()
-                ),
-                new XSLDocument(
-                    new ResourceOf("github/validation/dev.xsl").stream()
-                )
-            ).transform(
-                new XMLDocument(
-                    new XmlMapper().writeValueAsString(map)
-                )
-            );
-        final List<String> errors = transform.xpath("//errors/error/text()");
-        final List<String> expected = new ListOf<>(
-            "Only one performer can be an Architect in the team.",
-            "At least one performer should have the DEV role."
-        );
-        MatcherAssert.assertThat(
-            "Errors %s do not match with expected %s"
-                .formatted(errors, expected),
-            errors,
             new IsEqual<>(expected)
         );
     }

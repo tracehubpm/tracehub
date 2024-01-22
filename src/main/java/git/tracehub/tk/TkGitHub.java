@@ -26,6 +26,8 @@ package git.tracehub.tk;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
+import com.jcabi.log.Logger;
+import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
@@ -33,12 +35,19 @@ import git.tracehub.agents.github.GhProject;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.agents.github.issues.GhNew;
+import git.tracehub.validation.Collected;
+import git.tracehub.validation.XsApplied;
+import git.tracehub.validation.XsErrors;
+import java.net.HttpURLConnection;
+import java.util.LinkedList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
 import org.takes.rs.RsJson;
 import org.takes.rs.RsText;
+import org.takes.rs.RsWithStatus;
 
 /**
  * GitHub Take.
@@ -55,6 +64,10 @@ import org.takes.rs.RsText;
  *  we should branch our TraceLogged commits into ThJobs,
  *  ThJobs into created, updated and deleted. We should make it as much generic
  *  as possible, since we aim to process all kinds of GitHub webhooks using Takes.
+ * @todo #15:60min Send validation errors and warnings with a response.
+ *  We should return a full list of problems with project.yml and
+ *  found jobs/docs. Probably we should comment the commit where it was
+ *  discovered, but for now lets just flush it into response.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -66,6 +79,8 @@ public final class TkGitHub implements Take {
 
     @Override
     public Response act(final Request req) throws Exception {
+        final StringBuilder response = new StringBuilder();
+        int status = HttpURLConnection.HTTP_ACCEPTED;
         final Commit commit = new TraceLogged(
             new TraceOnly(
                 new Composed(
@@ -78,17 +93,35 @@ public final class TkGitHub implements Take {
         final Repo repo = this.github.repos().get(
             new Coordinates.Simple(commit.repo())
         );
-        new GhNew(
-            new GhProject(repo),
-            commit,
-            repo
+        final Project project = new GhProject(repo);
+        final List<String> err = new XsErrors(
+            new XsApplied(
+                project.asXml(),
+                new Collected()
+            )
         ).value();
-        return new RsJson(
-            new RsText(
+        if (!err.isEmpty()) {
+            response.append("Project contains some errors:").append(err);
+            status = HttpURLConnection.HTTP_BAD_REQUEST;
+        }
+        if (err.isEmpty()) {
+            new GhNew(
+                project,
+                commit,
+                repo
+            ).value();
+            response.append(
                 "Thanks %s for GitHub webhook".formatted(
                     new Repo.Smart(repo).coordinates()
                 )
-            )
+            );
+            status = HttpURLConnection.HTTP_OK;
+        }
+        return new RsWithStatus(
+            new RsJson(
+                new RsText(response)
+            ),
+            status
         );
     }
 }

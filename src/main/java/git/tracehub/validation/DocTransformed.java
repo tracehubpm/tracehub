@@ -21,37 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.validation;
 
+import com.amihaiemil.eoyaml.YamlMapping;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Text;
+import com.jcabi.xml.XMLDocument;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Job.
+ * Transformed document.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+@RequiredArgsConstructor
+public final class DocTransformed implements Scalar<XML> {
 
     /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
+     * YAML Document.
      */
-    String label() throws IOException;
+    private final YamlMapping yaml;
 
-    /**
-     * Role.
-     *
-     * @return Role
-     */
-    String role();
-
-    /**
-     * Job in XML.
-     * @return XML
-     */
-    XML asXml() throws Exception;
+    @Override
+    public XML value() throws Exception {
+        return new XMLDocument(
+            new XmlMapper().writeValueAsString(
+                new ObjectMapper(new YAMLFactory()).readValue(
+                    this.yaml.toString(),
+                    new TypeReference<>() {
+                    }
+                )
+            )
+        );
+    }
 }

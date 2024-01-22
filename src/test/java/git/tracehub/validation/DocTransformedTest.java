@@ -21,37 +21,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.validation;
 
+import com.amihaiemil.eoyaml.Yaml;
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Text;
+import com.jcabi.xml.XMLDocument;
+import org.cactoos.io.ResourceOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Job.
+ * Test case for {@link DocTransformed}.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+final class DocTransformedTest {
 
-    /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
-     */
-    String label() throws IOException;
-
-    /**
-     * Role.
-     *
-     * @return Role
-     */
-    String role();
-
-    /**
-     * Job in XML.
-     * @return XML
-     */
-    XML asXml() throws Exception;
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "simple",
+        "escaping",
+        "list",
+        "ru"
+    })
+    void transformsYamlToXml(final String name) throws Exception {
+        final XML xml = new DocTransformed(
+            Yaml.createYamlInput(
+                new ResourceOf(
+                    "git/tracehub/validation/%s.yml".formatted(name)
+                ).stream()
+            ).readYamlMapping()
+        ).value();
+        final XML expected = new XMLDocument(
+            new ResourceOf(
+                "git/tracehub/validation/%s.xml".formatted(name)
+            ).stream()
+        );
+        MatcherAssert.assertThat(
+            "XML %s does not match with expected %s"
+                .formatted(xml, expected),
+            xml,
+            new IsEqual<>(expected)
+        );
+    }
 }
