@@ -97,7 +97,7 @@ SOFTWARE.
     <jping.version>0.0.1</jping.version>
     <eokson.version>0.3.2</eokson.version>
     <logcaptor.version>2.9.0</logcaptor.version>
-    <logback-classic.version>1.4.8</logback-classic.version>
+    <logback-classic.version>1.4.14</logback-classic.version>
     <ghquota.version>0.0.1</ghquota.version>
     <jackson-dataformat-yaml.version>2.16.1</jackson-dataformat-yaml.version>
     <Saxon-HE.version>12.4</Saxon-HE.version>
