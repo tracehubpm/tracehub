@@ -58,6 +58,10 @@ import org.cactoos.text.TextOf;
  *  We provide a full path of updated job to PMO, PMO gets us an issue number.
  *  From there, probably we should post a comment to that issue that things gets
  *  an update.
+ * @todo #15:90min Apply validations on the Job.
+ *  We should apply validations on the Job. For now
+ *  we should wait for vsheets sheets for Jobs.
+ *  Don't forget to remove this puzzle.
  */
 @RequiredArgsConstructor
 public final class GhNew implements Scalar<List<Issue>> {

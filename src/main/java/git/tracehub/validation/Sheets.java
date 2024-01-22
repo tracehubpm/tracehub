@@ -21,38 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.validation;
 
-import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Text;
+import com.jcabi.xml.XSL;
+import org.cactoos.Scalar;
 
 /**
- * Job.
+ * Sheets.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
-
-    /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
-     */
-    String label() throws IOException;
-
-    /**
-     * Role.
-     *
-     * @return Role
-     */
-    String role();
-
-    /**
-     * Job in XML.
-     * @return XML
-     * @throws Exception if something went wrong
-     */
-    XML asXml() throws Exception;
+public interface Sheets extends Scalar<XSL> {
 }

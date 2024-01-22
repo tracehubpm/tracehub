@@ -21,38 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.validation;
 
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Text;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Job.
+ * Validation errors.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+@RequiredArgsConstructor
+public final class XsErrors implements Scalar<List<String>> {
 
     /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
+     * XML.
      */
-    String label() throws IOException;
+    private final Scalar<XML> xml;
 
-    /**
-     * Role.
-     *
-     * @return Role
-     */
-    String role();
-
-    /**
-     * Job in XML.
-     * @return XML
-     * @throws Exception if something went wrong
-     */
-    XML asXml() throws Exception;
+    @Override
+    public List<String> value() throws Exception {
+        return this.xml.value().xpath("//errors/error/text()");
+    }
 }

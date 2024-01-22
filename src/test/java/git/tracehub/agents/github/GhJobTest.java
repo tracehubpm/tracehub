@@ -24,12 +24,16 @@
 package git.tracehub.agents.github;
 
 import com.amihaiemil.eoyaml.Yaml;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import git.tracehub.Job;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.llorllale.cactoos.matchers.Assertion;
 import org.llorllale.cactoos.matchers.Throws;
 
@@ -38,6 +42,7 @@ import org.llorllale.cactoos.matchers.Throws;
  *
  * @since 0.0.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class GhJobTest {
 
     @Test
@@ -146,6 +151,37 @@ final class GhJobTest {
             new IsEqual<>(
                 expected
             )
+        );
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "all-attributes",
+        "no-role",
+        "description-escape"
+    })
+    void transformsJobToXml(final String name) throws Exception {
+        final Job job = new GhJob(
+            Yaml.createYamlInput(
+                new ResourceOf(
+                    "github/jobs/%s.yml".formatted(name)
+                ).stream()
+            ).readYamlMapping(),
+            new TextOf(
+                new ResourceOf(
+                    "git/tracehub/agents/github/Issue.md"
+                )
+            )
+        );
+        final XML xml = job.asXml();
+        final XML expected = new XMLDocument(
+            new ResourceOf("github/jobs/xml/%s.xml".formatted(name)).stream()
+        );
+        MatcherAssert.assertThat(
+            "XML %s for job %s does not match with expected %s"
+                .formatted(xml, job.label(), expected),
+            xml,
+            new IsEqual<>(expected)
         );
     }
 }

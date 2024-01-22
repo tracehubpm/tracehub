@@ -21,38 +21,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.validation;
 
 import com.jcabi.xml.XML;
-import java.io.IOException;
-import org.cactoos.Text;
+import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLChain;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Job.
+ * Validated XML document.
  *
  * @since 0.0.0
  */
-public interface Job extends Text {
+@RequiredArgsConstructor
+public final class XsApplied implements Scalar<XML> {
 
     /**
-     * Label.
-     *
-     * @return Job label
-     * @throws IOException if I/O fails
+     * XML to validate.
      */
-    String label() throws IOException;
+    private final XML origin;
 
     /**
-     * Role.
-     *
-     * @return Role
+     * Sheets.
      */
-    String role();
+    private final Scalar<List<XSL>> sheets;
 
-    /**
-     * Job in XML.
-     * @return XML
-     * @throws Exception if something went wrong
-     */
-    XML asXml() throws Exception;
+    @Override
+    public XML value() throws Exception {
+        return new XSLChain(this.sheets.value()).transform(this.origin);
+    }
 }

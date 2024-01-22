@@ -25,7 +25,7 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:variable name="arcError">
     <xsl:if test="count(//performers[roles='ARC']) != 1">
-      <error>Only one performer can be an Architect in the team.</error>
+      <error>Project must have exactly one Architect.</error>
     </xsl:if>
   </xsl:variable>
   <xsl:template match="/">

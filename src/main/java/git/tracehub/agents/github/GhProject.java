@@ -25,15 +25,11 @@ package git.tracehub.agents.github;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.jcabi.github.Repo;
 import com.jcabi.xml.XML;
-import com.jcabi.xml.XMLDocument;
 import git.tracehub.Performer;
 import git.tracehub.Project;
+import git.tracehub.validation.DocTransformed;
 import java.util.List;
 import org.cactoos.list.ListOf;
 
@@ -103,14 +99,6 @@ public final class GhProject implements Project {
 
     @Override
     public XML asXml() throws Exception {
-        return new XMLDocument(
-            new XmlMapper().writeValueAsString(
-                new ObjectMapper(new YAMLFactory()).readValue(
-                    this.yaml.toString(),
-                    new TypeReference<>() {
-                    }
-                )
-            )
-        );
+        return new DocTransformed(this.yaml).value();
     }
 }

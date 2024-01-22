@@ -1,0 +1,7 @@
+<LinkedHashMap>
+  <name>Metrics</name>
+  <metrics>CAM</metrics>
+  <metrics>ACAM</metrics>
+  <metrics>CC</metrics>
+  <metrics>LCC</metrics>
+</LinkedHashMap>

@@ -25,20 +25,17 @@ SOFTWARE.
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
   <xsl:template match="/">
     <data>
-      <src>
-        <xsl:apply-templates select="@*|node()"/>
-      </src>
-      <errors>
-        <xsl:apply-templates select="@*|node()" mode="error"/>
-      </errors>
+      <xsl:apply-templates select="//LinkedHashMap"/>
     </data>
+  </xsl:template>
+  <xsl:template match="LinkedHashMap">
+    <src>
+      <xsl:apply-templates select="@*|node()"/>
+    </src>
   </xsl:template>
   <xsl:template match="@*|node()">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
     </xsl:copy>
-  </xsl:template>
-  <xsl:template match="roles[text()='ARC']" mode="error">
-    <error>Invalid role: ARC</error>
   </xsl:template>
 </xsl:stylesheet>
