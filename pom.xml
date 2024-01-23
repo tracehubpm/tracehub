@@ -303,16 +303,21 @@ SOFTWARE.
         <artifactId>maven-failsafe-plugin</artifactId>
         <executions>
           <execution>
+            <id>default-integration-test</id>
             <goals>
               <goal>integration-test</goal>
+            </goals>
+            <configuration>
+              <excludedGroups>simulation</excludedGroups>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-verify</id>
+            <goals>
               <goal>verify</goal>
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-          <excludedGroups>simulation</excludedGroups>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>com.github.volodya-lombrozo</groupId>
@@ -323,65 +328,6 @@ SOFTWARE.
             <goals>
               <goal>check</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>jacoco-initialize</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-check</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-              <goal>report</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <rule>
-                  <element>BUNDLE</element>
-                  <limits>
-                    <limit>
-                      <counter>INSTRUCTION</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.61</minimum>
-                    </limit>
-                    <limit>
-                      <counter>LINE</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.65</minimum>
-                    </limit>
-                    <limit>
-                      <counter>BRANCH</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.65</minimum>
-                    </limit>
-                    <limit>
-                      <counter>COMPLEXITY</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.65</minimum>
-                    </limit>
-                    <limit>
-                      <counter>METHOD</counter>
-                      <value>COVEREDRATIO</value>
-                      <minimum>0.65</minimum>
-                    </limit>
-                    <limit>
-                      <counter>CLASS</counter>
-                      <value>MISSEDCOUNT</value>
-                      <maximum>12</maximum>
-                    </limit>
-                  </limits>
-                </rule>
-              </rules>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -441,11 +387,11 @@ SOFTWARE.
             <artifactId>maven-surefire-plugin</artifactId>
             <version>${maven-surefire-plugin.version}</version>
             <configuration>
-              <groups>simulation</groups>
               <includes>
                 <include>**/*Spec.*</include>
                 <include>**/*Test.*</include>
               </includes>
+              <excludedGroups>mock</excludedGroups>
             </configuration>
           </plugin>
           <plugin>
@@ -453,19 +399,24 @@ SOFTWARE.
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
               <execution>
+                <id>simulation-integration-test</id>
                 <goals>
                   <goal>integration-test</goal>
+                </goals>
+                <configuration>
+                  <groups>simulation</groups>
+                  <systemPropertyVariables>
+                    <Tracehub-GitHubToken>${Tracehub-GitHubToken}</Tracehub-GitHubToken>
+                  </systemPropertyVariables>
+                </configuration>
+              </execution>
+              <execution>
+                <id>simulation-verify</id>
+                <goals>
                   <goal>verify</goal>
                 </goals>
               </execution>
             </executions>
-            <configuration>
-              <classesDirectory>${project.build.outputDirectory}</classesDirectory>
-              <groups>simulation</groups>
-              <systemPropertyVariables>
-                <Tracehub-GitHubToken>${Tracehub-GitHubToken}</Tracehub-GitHubToken>
-              </systemPropertyVariables>
-            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -496,6 +447,75 @@ SOFTWARE.
                 <goals>
                   <goal>single</goal>
                 </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>jacoco</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>jacoco-initialize</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>jacoco-check</id>
+                <phase>test</phase>
+                <goals>
+                  <goal>check</goal>
+                  <goal>report</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <rule>
+                      <element>BUNDLE</element>
+                      <limits>
+                        <limit>
+                          <counter>INSTRUCTION</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.61</minimum>
+                        </limit>
+                        <limit>
+                          <counter>LINE</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.65</minimum>
+                        </limit>
+                        <limit>
+                          <counter>BRANCH</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.65</minimum>
+                        </limit>
+                        <limit>
+                          <counter>COMPLEXITY</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.65</minimum>
+                        </limit>
+                        <limit>
+                          <counter>METHOD</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.65</minimum>
+                        </limit>
+                        <limit>
+                          <counter>CLASS</counter>
+                          <value>MISSEDCOUNT</value>
+                          <maximum>12</maximum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
               </execution>
             </executions>
           </plugin>

@@ -223,3 +223,4 @@ Then, make your changes, make sure the build is still clean, and [submit a pull 
 
 * `release`: for packaging and preparing artifact to become a Docker image.
 * `simulation`: for running integration tests on GitHub, GitLab, JIRA and others.
+* `jacoco`: for running coverage control.

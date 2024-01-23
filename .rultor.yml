@@ -4,10 +4,9 @@ docker:
   image: l3r8y/rultor-image:1.0.3
 assets:
   ghcr.txt: tracehubpm/secrets#assets/ghcr.txt
-  settings.xml: tracehubpm/secrets#assets/settings.xml
 merge:
   script: |
-    mvn clean install -Psimulation --errors -Dstyle.color=never --settings ../settings.xml
+    mvn clean install -Pjacoco --errors -Dstyle.color=never
 release:
   sensitive:
     - ghcr.txt

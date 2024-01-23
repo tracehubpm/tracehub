@@ -25,6 +25,7 @@ package git.tracehub.identity;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -35,6 +36,7 @@ import org.junit.jupiter.api.Test;
 final class GhIdentityTest {
 
     @Test
+    @Tag("mock")
     void loginsAsJeff() throws Exception {
         final String self = new GhIdentity().value().users().self().login();
         final String expected = "jeff";
