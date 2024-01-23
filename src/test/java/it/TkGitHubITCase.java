@@ -33,6 +33,7 @@ import io.github.h1alexbel.ghquota.Quota;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.takes.http.FtRemote;
@@ -49,6 +50,7 @@ import org.takes.http.FtRemote;
 final class TkGitHubITCase {
 
     @Test
+    @Tag("simulation")
     @ExtendWith({WeAreOnline.class, Quota.class})
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void returnsResponseOnHook() throws Exception {
@@ -76,6 +78,7 @@ final class TkGitHubITCase {
     }
 
     @Test
+    @Tag("simulation")
     @ExtendWith({WeAreOnline.class, Quota.class})
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void foundsErrors() throws Exception {
