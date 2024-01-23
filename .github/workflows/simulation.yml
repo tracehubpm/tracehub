@@ -13,15 +13,13 @@ concurrency:
   group: mvn-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  mvn:
-    name: mvn
+  simulation:
+    name: simulation
     strategy:
       matrix:
         os: [ ubuntu-20.04 ]
         java: [ 17 ]
     runs-on: ${{ matrix.os }}
-    env:
-      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - uses: actions/setup-java@v4
@@ -37,7 +35,7 @@ jobs:
           mvn clean install -Psimulation -DTracehub-GitHubToken=${{ secrets.TRACEHUBTOKEN }} --errors -Dstyle.color=never
   report-fail:
     name: Create issue on failure
-    needs: mvn
+    needs: simulation
     if: failure() && github.even.pull_request == null
     runs-on: ubuntu-22.04
     steps:
