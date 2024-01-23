@@ -212,7 +212,7 @@ It is a Java project. First install [Java SDK 17+](https://www.oracle.com/java/t
 Then:
 
 ```shell
-$ mvn clean install
+$ mvn clean install -Pjacoco
 ```
 
 The build has to be clean. If it's not, [submit an issue](https://github.com/tracehubpm/tracehub/issues).
