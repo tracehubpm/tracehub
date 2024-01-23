@@ -13,7 +13,7 @@ concurrency:
   group: mvn-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  mvn:
+  simulation:
     name: mvn
     strategy:
       matrix:
@@ -37,7 +37,7 @@ jobs:
           mvn clean install -Psimulation -DTracehub-GitHubToken=${{ secrets.TRACEHUBTOKEN }} --errors -Dstyle.color=never
   report-fail:
     name: Create issue on failure
-    needs: mvn
+    needs: simulation
     if: failure() && github.even.pull_request == null
     runs-on: ubuntu-22.04
     steps:
