@@ -295,6 +295,23 @@ SOFTWARE.
             <include>**/*Spec.*</include>
             <include>**/*Test.*</include>
           </includes>
+          <excludedGroups>simulation</excludedGroups>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+          <excludedGroups>simulation</excludedGroups>
         </configuration>
       </plugin>
       <plugin>
@@ -421,6 +438,17 @@ SOFTWARE.
       <build>
         <plugins>
           <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
+            <configuration>
+              <groups>simulation</groups>
+              <includes>
+                <include>**/*Spec.*</include>
+                <include>**/*Test.*</include>
+              </includes>
+            </configuration>
+          </plugin>
+          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
             <executions>
@@ -433,6 +461,7 @@ SOFTWARE.
             </executions>
             <configuration>
               <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+              <groups>simulation</groups>
               <systemPropertyVariables>
                 <Tracehub-GitHubToken>${Tracehub-GitHubToken}</Tracehub-GitHubToken>
               </systemPropertyVariables>

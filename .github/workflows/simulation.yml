@@ -1,0 +1,40 @@
+---
+name: simulation
+on:
+  push:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'diagrams/**' ]
+  pull_request:
+    branches:
+      - master
+    paths-ignore: [ 'paper/**', 'diagrams/**' ]
+concurrency:
+  group: mvn-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  mvn:
+    name: mvn
+    strategy:
+      matrix:
+        os: [ ubuntu-20.04 ]
+        java: [ 17 ]
+    runs-on: ${{ matrix.os }}
+    env:
+      CONVERT_PATH: /tmp/antlr4-to-bnf-converter
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+      - uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
+      - uses: s4u/maven-settings-action@v3.0.0
+        with:
+          profiles: '[{"id": "simulation", "properties": {"Tracehub-GitHubToken": "${{ secrets.TRACEHUBTOKEN }}"}}]'
+      - run: |
+          mvn clean install -Psimulation --errors -Dstyle.color=never

@@ -18,8 +18,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: | #add new path with glob pattern https://www.npmjs.com/package/glob
             **/LICENSE.txt
-            **/*.xml
-            **/*.xsl
             **/*.java
-            **/*.groovy
           commitTitle: "update license year"
