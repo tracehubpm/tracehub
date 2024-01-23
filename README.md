@@ -212,15 +212,21 @@ It is a Java project. First install [Java SDK 17+](https://www.oracle.com/java/t
 Then:
 
 ```shell
-$ mvn clean install
+$ mvn clean install -Pjacoco
 ```
 
 The build has to be clean. If it's not, [submit an issue](https://github.com/tracehubpm/tracehub/issues).
 
 Then, make your changes, make sure the build is still clean, and [submit a pull request](https://www.yegor256.com/2014/04/15/github-guidelines.html).
 
-### Maven profiles
+If you want to run a real simulation run this:
 
-* `release`: for packaging and preparing artifact to become a Docker image.
-* `simulation`: for running integration tests on GitHub, GitLab, JIRA and others.
-* `jacoco`: for running coverage control.
+```shell
+$ mvn clean install -Psimulation -DTracehub-GitHubToken=...
+```
+
+Provide your GitHub [token](https://github.com/settings/tokens) with write permissions 
+to the next repositories:
+
+* [h1alexbel/test](https://github.com/h1alexbel/test)
+* [h1alexbel/invalid-project](https://github.com/h1alexbel/invalid-project)
