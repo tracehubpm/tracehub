@@ -64,6 +64,11 @@ public final class FtApp implements Scalar<Front> {
      */
     private final Github github;
 
+    /**
+     * Vsheets repo tag.
+     */
+    private final String vtag;
+
     @Override
     public Front value() throws Exception {
         return new FtBasic(
@@ -73,7 +78,7 @@ public final class FtApp implements Scalar<Front> {
                         new FkRegex(
                             "/github/hook",
                             new TkMethods(
-                                new TkGitHub(this.github, ""),
+                                new TkGitHub(this.github, this.vtag),
                                 "POST"
                             )
                         ),

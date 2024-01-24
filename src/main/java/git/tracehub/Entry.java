@@ -47,6 +47,7 @@ public final class Entry {
     public static void main(final String... args) throws Exception {
         Logger.info(Entry.class, "Starting Tracehub on the command line...");
         final Github github = new GhIdentity().value();
-        new FtApp(github).value().start(Exit.NEVER);
+        final String vtag = System.getenv("Vsheets-Tag");
+        new FtApp(github, vtag).value().start(Exit.NEVER);
     }
 }
