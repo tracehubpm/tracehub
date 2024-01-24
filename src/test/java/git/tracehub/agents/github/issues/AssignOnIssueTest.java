@@ -24,6 +24,7 @@
 package git.tracehub.agents.github.issues;
 
 import com.amihaiemil.eoyaml.Yaml;
+import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import git.tracehub.Project;
@@ -130,6 +131,38 @@ final class AssignOnIssueTest {
                 ).value()
             ).hasAssignee(),
             new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(RepoWithCollaborator.class)
+    void commentsAfterAssigning(final Repo repo) throws Exception {
+        final String expected = "@h1alexbel, take a look, please";
+        final String text = new Comment.Smart(
+            new Issue.Smart(
+                new AssignOnIssue(
+                    this.provide("github/projects/single-dev-arc.yml", repo),
+                    new GhJob(
+                        Yaml.createYamlInput(
+                            new ResourceOf("github/jobs/for-arc.yml").stream()
+                        ).readYamlMapping(),
+                        new TextOf(
+                            new ResourceOf(
+                                "git/tracehub/agents/github/Issue.md"
+                            )
+                        )
+                    ),
+                    () -> repo.issues().create(
+                        "Test issue", "this needs to be fixed:..."
+                    )
+                ).value()
+            ).comments().get(1)
+        ).body();
+        MatcherAssert.assertThat(
+            "Issue assignee %s does not match with expected %s"
+                .formatted(text, expected),
+            text,
+            new IsEqual<>(expected)
         );
     }
 

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.cactoos.text.TextOf;
 
 /**
  * Assign performer on issue in GitHub.
@@ -47,6 +48,9 @@ import org.cactoos.Scalar;
  *  We should handle somehow a situation where there is no
  *  candidates in pool. Possible way to do that is to
  *  respond in issue that we don't have a candidates in pool.
+ * @todo #84:30min Clean up code inside 'if candidates are not empty' statement.
+ *  We should introduce a small composable objects to replace this semi-procedural
+ *  script that will be unmaintainable very soon.
  */
 @RequiredArgsConstructor
 public final class AssignOnIssue implements Scalar<Issue> {
@@ -81,11 +85,17 @@ public final class AssignOnIssue implements Scalar<Issue> {
             issue.number()
         );
         if (!candidates.isEmpty()) {
-            new Issue.Smart(issue).assign(
-                candidates.get(
-                    new Random().nextInt(candidates.size())
-                ).name()
-            );
+            final String assignee = candidates.get(
+                new Random().nextInt(candidates.size())
+            ).name();
+            new Issue.Smart(issue).assign(assignee);
+            new Commented(
+                issue,
+                new TextOf(
+                    "@%s, take a look, please"
+                        .formatted(assignee)
+                )
+            ).value();
         }
         return issue;
     }
