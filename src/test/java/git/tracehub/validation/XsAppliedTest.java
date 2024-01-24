@@ -25,10 +25,11 @@ package git.tracehub.validation;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLChain;
+import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,6 +49,39 @@ final class XsAppliedTest {
         "no-arc-no-dev"
     })
     void appliesXsls(final String name) throws Exception {
+        final Map<String, XSL> pipeline = new LinkedHashMap<>(4);
+        pipeline.put(
+            "struct.xsl",
+            new XSLDocument(
+                new ResourceOf(
+                    "git/tracehub/validation/struct.xsl"
+                ).stream()
+            )
+        );
+        pipeline.put(
+            "errors.xsl",
+            new XSLDocument(
+                new ResourceOf(
+                    "git/tracehub/validation/errors.xsl"
+                ).stream()
+            )
+        );
+        pipeline.put(
+            "arc.xsl",
+            new XSLDocument(
+                new ResourceOf(
+                    "git/tracehub/validation/arc.xsl"
+                ).stream()
+            )
+        );
+        pipeline.put(
+            "dev.xsl",
+            new XSLDocument(
+                new ResourceOf(
+                    "git/tracehub/validation/dev.xsl"
+                ).stream()
+            )
+        );
         final XML out = new XsApplied(
             new XMLDocument(
                 new ResourceOf(
@@ -55,26 +89,7 @@ final class XsAppliedTest {
                         .formatted(name)
                 ).stream()
             ),
-            () -> new ListOf<>(
-                new XSLChain(
-                    new XSLDocument(
-                        new ResourceOf("git/tracehub/validation/struct.xsl")
-                            .stream()
-                    ),
-                    new XSLDocument(
-                        new ResourceOf("git/tracehub/validation/errors.xsl")
-                            .stream()
-                    ),
-                    new XSLDocument(
-                        new ResourceOf("git/tracehub/validation/arc.xsl")
-                            .stream()
-                    ),
-                    new XSLDocument(
-                        new ResourceOf("git/tracehub/validation/dev.xsl")
-                            .stream()
-                    )
-                )
-            )
+            () -> pipeline
         ).value();
         final XML expected = new XMLDocument(
             new ResourceOf(

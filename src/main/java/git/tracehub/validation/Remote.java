@@ -31,7 +31,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 import org.cactoos.io.InputOf;
 import org.cactoos.io.InputWithFallback;
 
@@ -39,9 +45,13 @@ import org.cactoos.io.InputWithFallback;
  * Remote sheet, located in tracehubpm/vsheets.
  *
  * @since 0.0.0
+ * @todo #65:45min Implement CdRemote decorator.
+ *  Lets cache remote requests to raw.githubusercontent.com.
+ *  To prevent latency and some response failure problems.
+ *  Its not urgent, but crucial in general.
  */
 @RequiredArgsConstructor
-public final class Remote implements Sheets {
+public final class Remote implements Scalar<Map<String, XSL>> {
 
     /**
      * URL.
@@ -49,45 +59,76 @@ public final class Remote implements Sheets {
     private final URL url;
 
     /**
-     * Sheet name.
+     * Sheets to fetch.
      */
-    private final String sheet;
+    private final Scalar<List<String>> names;
 
     /**
      * Ctor.
-     * @param tag Repo tag
-     * @param sht Sheet name
+     *
+     * @param sht Sheets  to fetch
      * @throws MalformedURLException if URL is malformed
-     * @throws URISyntaxException if URL syntax is wrong
+     * @throws URISyntaxException    if URL syntax is wrong
      */
-    public Remote(final String tag, final String sht)
+    public Remote(final Scalar<List<String>> sht)
+        throws MalformedURLException, URISyntaxException {
+        this("master", sht);
+    }
+
+    /**
+     * Ctor.
+     *
+     * @param tag Repo tag
+     * @param sht Sheets to fetch
+     * @throws MalformedURLException if URL is malformed
+     * @throws URISyntaxException    if URL syntax is wrong
+     */
+    public Remote(final String tag, final Scalar<List<String>> sht)
         throws MalformedURLException, URISyntaxException {
         this(
             new URI(
-                "https://raw.githubusercontent.com/tracehubpm/vsheets/%s/xsl/%s.xsl"
-                    .formatted(tag, sht)
+                "https://raw.githubusercontent.com/tracehubpm/vsheets/%s/xsl/"
+                    .formatted(tag)
             ).toURL(),
             sht
         );
     }
 
+    // @checkstyle AnonInnerLengthCheck (30 lines)
     @Override
-    public XSL value() throws Exception {
-        Logger.debug(
-            this, "The sheet '%s' will be pulled from %s...",
-            this.sheet, this.url
-        );
-        return new XSLDocument(
-            new InputWithFallback(
-                new InputOf(this.url),
-                input -> {
-                    throw new IOException(
-                        "XSL sheet '%s' is not found in %s"
-                            .formatted(this.sheet, this.url),
-                        input
+    public Map<String, XSL> value() throws Exception {
+        final Map<String, XSL> sheets = new LinkedHashMap<>(16);
+        this.names.value().forEach(
+            new Consumer<>() {
+                @SneakyThrows
+                @Override
+                public void accept(final String name) {
+                    final String named = "%s%s.%s".formatted(
+                        Remote.this.url,
+                        name,
+                        "xsl"
+                    );
+                    Logger.debug(
+                        this, "The sheet '%s' will be pulled from %s...",
+                        name, named
+                    );
+                    sheets.put(
+                        name,
+                        new XSLDocument(
+                            new InputWithFallback(
+                                new InputOf(new URI(named)),
+                                input -> {
+                                    throw new IOException(
+                                        "XSL sheet '%s' is not found in %s"
+                                            .formatted(name, named),
+                                        input
+                                    );
+                                }
+                            ).stream()
+                        )
                     );
                 }
-            ).stream()
-        );
+            });
+        return sheets;
     }
 }

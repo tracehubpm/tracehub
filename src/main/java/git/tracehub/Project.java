@@ -30,6 +30,10 @@ import java.util.List;
  * Project.
  *
  * @since 0.0.0
+ * @todo #65:60min Fetch excluded warnings.
+ *  We need to fetch all excluded warnings from project.yml.
+ *  Firstly we should wait for warnings.xsl to be released
+ *  by vsheets. Only then we can include this logic into GhProject.
  */
 public interface Project {
 

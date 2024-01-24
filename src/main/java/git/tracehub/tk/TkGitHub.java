@@ -26,7 +26,6 @@ package git.tracehub.tk;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
-import com.jcabi.xml.XSL;
 import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
@@ -52,7 +51,6 @@ import org.takes.rs.RsWithStatus;
 /**
  * GitHub Take.
  *
- * @since 0.0.0
  * @todo #25:45min Return the result of webhook.
  *  Instead of thanks for webhook, I believe we should
  *  return a result of sent webhook. A number of created issues,
@@ -64,9 +62,6 @@ import org.takes.rs.RsWithStatus;
  *  we should branch our TraceLogged commits into ThJobs,
  *  ThJobs into created, updated and deleted. We should make it as much generic
  *  as possible, since we aim to process all kinds of GitHub webhooks using Takes.
- * @todo #15:90min Fetch all XSL sheets from vsheets repo.
- *  We should fetch all XSL sheets into list with possibility to
- *  exclude some of them. Don't forget to remove this puzzle.
  * @todo #15:30min Clean up procedural code.
  *  We should clean up the code inside TkGitHub.
  *  Validation with XeErrors must be handled outside of this Take.
@@ -74,6 +69,7 @@ import org.takes.rs.RsWithStatus;
  * @todo #15:45min Create a comment on the head commit with errors.
  *  Instead of sending errors as webhook result, we should create a comment
  *  on a head commit from hook we got.
+ * @since 0.0.0
  */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.InsufficientStringBufferDeclaration")
@@ -83,6 +79,11 @@ public final class TkGitHub implements Take {
      * GitHub.
      */
     private final Github github;
+
+    /**
+     * Vsheets repo tag.
+     */
+    private final String tag;
 
     @Override
     public Response act(final Request req) throws Exception {
@@ -104,18 +105,15 @@ public final class TkGitHub implements Take {
         final List<String> err = new XsErrors(
             new XsApplied(
                 project.asXml(),
-                () -> {
-                    final XSL struct = new Remote("master", "struct").value();
-                    final XSL errors = new Remote("master", "errors").value();
-                    final XSL arc = new Remote("master", "project/arc").value();
-                    final XSL dev = new Remote("master", "project/dev").value();
-                    return new ListOf<>(
-                        struct,
-                        errors,
-                        arc,
-                        dev
-                    );
-                }
+                new Remote(
+                    this.tag,
+                    () -> new ListOf<>(
+                        "struct",
+                        "errors",
+                        "project/arc",
+                        "project/dev"
+                    )
+                )
             )
         ).value();
         if (!err.isEmpty()) {

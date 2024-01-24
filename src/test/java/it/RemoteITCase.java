@@ -26,9 +26,13 @@ package it;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLDocument;
 import com.yegor256.WeAreOnline;
+import git.tracehub.validation.Excluded;
 import git.tracehub.validation.Remote;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -46,14 +50,66 @@ final class RemoteITCase {
     @Test
     @ExtendWith(WeAreOnline.class)
     void readsRemoteXsl() throws Exception {
-        final XSL sheet = new Remote("master", "struct").value();
+        final String struct = "struct";
+        final Map<String, XSL> master = new Remote(
+            () -> new ListOf<>(
+                struct
+            )
+        ).value();
+        final XSL sxsl = master.get(struct);
         final XSL expected = new XSLDocument(
             new ResourceOf("it/sheets/struct.xsl").stream()
         );
         MatcherAssert.assertThat(
             "Fetched XSL sheet %s does not match with expected %s"
-                .formatted(sheet, expected),
-            sheet,
+                .formatted(sxsl, expected),
+            sxsl,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void readsManyXsls() throws Exception {
+        final Map<String, XSL> master = new Remote(
+            () -> new ListOf<>(
+                "struct",
+                "errors",
+                "project/dev"
+            )
+        ).value();
+        final Collection<XSL> sheets = master.values();
+        final int expected = 3;
+        MatcherAssert.assertThat(
+            "Sheets %s size %s does not match with expected %s"
+                .formatted(sheets, sheets.size(), expected),
+            sheets.size(),
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    @ExtendWith(WeAreOnline.class)
+    void readsWithExclusion() throws Exception {
+        final Map<String, XSL> master = new Remote(
+            new Excluded(
+                new ListOf<>(
+                    "struct",
+                    "errors",
+                    "project/arc",
+                    "project/dev"
+                ),
+                new ListOf<>(
+                    "errors"
+                )
+            )
+        ).value();
+        final Collection<XSL> sheets = master.values();
+        final int expected = 3;
+        MatcherAssert.assertThat(
+            "Sheets %s size %s does not match with expected %s"
+                .formatted(sheets, sheets.size(), expected),
+            sheets.size(),
             new IsEqual<>(expected)
         );
     }
@@ -65,8 +121,7 @@ final class RemoteITCase {
         final String name = "does-not-exist";
         new Assertion<>(
             "Remote does not throw exception on fetching sheet that does not exists",
-            () -> new Remote("master", name)
-                .value(),
+            () -> new Remote(() -> new ListOf<>(name)).value(),
             new Throws<>(
                 "XSL sheet '%s' is not found in https://raw.githubusercontent.com/tracehubpm/vsheets/master/xsl/%s.xsl"
                     .formatted(name, name),

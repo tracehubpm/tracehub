@@ -23,10 +23,11 @@
  */
 package git.tracehub.validation;
 
+import com.jcabi.log.Logger;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
 import com.jcabi.xml.XSLChain;
-import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 
@@ -46,10 +47,16 @@ public final class XsApplied implements Scalar<XML> {
     /**
      * Sheets.
      */
-    private final Scalar<List<XSL>> sheets;
+    private final Scalar<Map<String, XSL>> sheets;
 
     @Override
     public XML value() throws Exception {
-        return new XSLChain(this.sheets.value()).transform(this.origin);
+        final Map<String, XSL> pipeline = this.sheets.value();
+        Logger.info(
+            this,
+            "Applying validation, sheets activated: %s",
+            pipeline.keySet()
+        );
+        return new XSLChain(pipeline.values()).transform(this.origin);
     }
 }
