@@ -46,6 +46,11 @@ import org.takes.http.FtRemote;
  *  We should fix formatting in response that contains validation errors.
  *  Now it just inlines them. However, we should print them with a new line.
  *  Don't forget to remove this puzzle.
+ * @todo #84:45min Create assertions after issue was created in #returnsResponseOnHook.
+ *  Right now we are just checking the response and the status of it.
+ *  Its not enough for this integration test. We should make an assertions that checks
+ *  whether issue is created/commented/assigned or not.
+ *  Depends on this <a href="https://github.com/tracehubpm/tracehub/issues/55">issue</a>.
  */
 final class TkGitHubITCase {
 
