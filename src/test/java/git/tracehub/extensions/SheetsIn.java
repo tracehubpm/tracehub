@@ -21,46 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.tk;
+package git.tracehub.extensions;
 
-import com.jcabi.github.mock.MkGithub;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
-import org.takes.rs.RsPrint;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
- * Test case for {@link TkGitHub}.
+ * Include local into pipeline.
  *
  * @since 0.0.0
  */
-final class TkGitHubTest {
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SheetsIn {
 
     /**
-     * OK test case.
+     * Sheets names.
      *
-     * @throws Exception if something went wrong
-     * @todo #25:60min Introduce unit test for {@link TkGitHub}.
-     *  We should create a simple, maintainable unit test.
-     *  For now it can't be done, since {@link MkGithub} does not
-     *  have configuration from JSON webhook we accepting.
+     * @return Array of names
      */
-    @Test
-    @Disabled
-    void returnsOkOnRequest() throws Exception {
-        final String expected = "GitHub webhook";
-        final String response = new RsPrint(
-            new TkGitHub(new MkGithub(), "").act(new RqFake("GET", "/"))
-        ).printBody();
-        MatcherAssert.assertThat(
-            "Response %s does not match with expected format %s"
-                .formatted(response, expected),
-            response,
-            new IsEqual<>(
-                expected
-            )
-        );
-    }
+    String[] value();
 }

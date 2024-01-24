@@ -24,14 +24,17 @@
 package git.tracehub.validation;
 
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLChain;
-import com.jcabi.xml.XSLDocument;
+import com.jcabi.xml.XSL;
+import git.tracehub.extensions.ProjectPipeline;
+import git.tracehub.extensions.SheetsIn;
 import java.util.List;
+import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link XsErrors}.
@@ -41,7 +44,14 @@ import org.junit.jupiter.api.Test;
 final class XsErrorsTest {
 
     @Test
-    void returnsErrors() throws Exception {
+    @SheetsIn({
+        "struct",
+        "errors",
+        "arc",
+        "dev"
+    })
+    @ExtendWith(ProjectPipeline.class)
+    void returnsErrors(final Map<String, XSL> pipeline) throws Exception {
         final List<String> errors = new XsErrors(
             new XsApplied(
                 new XMLDocument(
@@ -49,26 +59,7 @@ final class XsErrorsTest {
                         "git/tracehub/validation/no-arc-no-dev-in.xml"
                     ).stream()
                 ),
-                () -> new ListOf<>(
-                    new XSLChain(
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/struct.xsl")
-                                .stream()
-                        ),
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/errors.xsl")
-                                .stream()
-                        ),
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/arc.xsl")
-                                .stream()
-                        ),
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/dev.xsl")
-                                .stream()
-                        )
-                    )
-                )
+                () -> pipeline
             )
         ).value();
         final List<String> expected = new ListOf<>(
@@ -84,7 +75,14 @@ final class XsErrorsTest {
     }
 
     @Test
-    void returnsNoErrors() throws Exception {
+    @SheetsIn({
+        "struct",
+        "errors",
+        "arc",
+        "dev"
+    })
+    @ExtendWith(ProjectPipeline.class)
+    void returnsNoErrors(final Map<String, XSL> pipeline) throws Exception {
         final List<String> errors = new XsErrors(
             new XsApplied(
                 new XMLDocument(
@@ -92,26 +90,7 @@ final class XsErrorsTest {
                         "git/tracehub/validation/valid-project-in.xml"
                     ).stream()
                 ),
-                () -> new ListOf<>(
-                    new XSLChain(
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/struct.xsl")
-                                .stream()
-                        ),
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/errors.xsl")
-                                .stream()
-                        ),
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/arc.xsl")
-                                .stream()
-                        ),
-                        new XSLDocument(
-                            new ResourceOf("git/tracehub/validation/dev.xsl")
-                                .stream()
-                        )
-                    )
-                )
+                () -> pipeline
             )
         ).value();
         MatcherAssert.assertThat(

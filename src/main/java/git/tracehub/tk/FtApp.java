@@ -73,7 +73,7 @@ public final class FtApp implements Scalar<Front> {
                         new FkRegex(
                             "/github/hook",
                             new TkMethods(
-                                new TkGitHub(this.github),
+                                new TkGitHub(this.github, ""),
                                 "POST"
                             )
                         ),

@@ -55,7 +55,7 @@ final class TkGitHubITCase {
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void returnsResponseOnHook() throws Exception {
         final Github github = new GhIdentity().value();
-        new FtRemote(new TkGitHub(github)).exec(
+        new FtRemote(new TkGitHub(github, "master")).exec(
             home -> new JdkRequest(home)
                 .method("POST")
                 .header("Accept", "application/json")
@@ -83,7 +83,7 @@ final class TkGitHubITCase {
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void foundsErrors() throws Exception {
         final Github github = new GhIdentity().value();
-        new FtRemote(new TkGitHub(github)).exec(
+        new FtRemote(new TkGitHub(github, "master")).exec(
             home -> new JdkRequest(home)
                 .method("POST")
                 .header("Accept", "application/json")

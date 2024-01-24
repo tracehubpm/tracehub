@@ -23,13 +23,32 @@
  */
 package git.tracehub.validation;
 
-import com.jcabi.xml.XSL;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 
 /**
- * Sheets.
+ * Sheets after exclusion some of them.
  *
  * @since 0.0.0
  */
-public interface Sheets extends Scalar<XSL> {
+@RequiredArgsConstructor
+public final class Excluded implements Scalar<List<String>> {
+
+    /**
+     * Origin.
+     */
+    private final List<String> origin;
+
+    /**
+     * Sheets to exclude.
+     */
+    private final List<String> exclude;
+
+    @Override
+    public List<String> value() throws Exception {
+        return this.origin.stream()
+            .filter(element -> !this.exclude.contains(element))
+            .toList();
+    }
 }
