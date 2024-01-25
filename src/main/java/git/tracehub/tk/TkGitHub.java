@@ -63,6 +63,10 @@ import org.takes.Take;
  * @todo #15:45min Create a comment on the head commit with errors.
  *  Instead of sending errors as webhook result, we should create a comment
  *  on a head commit from hook we got.
+ * @todo #66:60min Fetch the target place for jobs from project.yml.
+ *  We should fetch the target place (JIRA, GitHub), basically where
+ *  we will create/update/delete our jobs. Now we just hard-coding
+ *  GitHub. We should fix that.
  */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.InsufficientStringBufferDeclaration")
