@@ -22,7 +22,7 @@
 # SOFTWARE.
 #
 
-FROM openjdk:17-jdk
+FROM openjdk:22-ea-31
 WORKDIR /app
 COPY ./target/tracehub-*-jar-with-dependencies.jar /app/app.jar
 CMD ["java", "-jar", "/app/app.jar"]
