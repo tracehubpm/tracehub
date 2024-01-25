@@ -1,0 +1,12 @@
+id: no-arc123
+name: no-arc
+performers:
+  - name: h1alexbel
+    roles:
+      - DEV
+  - name: hizmailovich
+    roles:
+      - TST
+dependencies:
+  - github.com/h1alexbel/cdit@master
+  - github.com/h1alexbel/ghquota@master

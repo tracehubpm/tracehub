@@ -42,10 +42,6 @@ import org.takes.http.FtRemote;
  * Integration test case for {@link TkGitHub}.
  *
  * @since 0.0.0
- * @todo #15:45min Fix formatting in response with an errors.
- *  We should fix formatting in response that contains validation errors.
- *  Now it just inlines them. However, we should print them with a new line.
- *  Don't forget to remove this puzzle.
  * @todo #84:45min Create assertions after issue was created in #returnsResponseOnHook.
  *  Right now we are just checking the response and the status of it.
  *  Its not enough for this integration test. We should make an assertions that checks
@@ -86,6 +82,7 @@ final class TkGitHubITCase {
     @Tag("simulation")
     @ExtendWith({WeAreOnline.class, Quota.class})
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    // @checkstyle StringLiteralsConcatenationCheck (25 lines)
     void foundsErrors() throws Exception {
         final Github github = new GhIdentity().value();
         new FtRemote(new TkGitHub(github, "master")).exec(
@@ -104,7 +101,9 @@ final class TkGitHubITCase {
                 .assertStatus(400)
                 .assertBody(
                     Matchers.equalTo(
-                        "Project contains some errors:Project must have exactly one Architect.\nAt least one performer must have the DEV role.\n"
+                        "`project.yml` document contains errors:\n"
+                        + "Project must have exactly one Architect.\n"
+                        + "At least one performer must have the DEV role."
                     )
                 )
         );

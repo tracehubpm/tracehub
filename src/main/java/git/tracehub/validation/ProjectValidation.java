@@ -24,44 +24,47 @@
 package git.tracehub.validation;
 
 import com.jcabi.log.Logger;
-import com.jcabi.xml.XML;
 import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLChain;
+import git.tracehub.Project;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.cactoos.Text;
+import org.cactoos.text.Joined;
 
 /**
- * Validated XML document.
+ * Project (project.yml) validation.
  *
  * @since 0.0.0
- * @todo #69:25min Log root sheets only in DEBUG mode.
- *  We should log only non-root sheets like project/*,
- *  jobs/*, docs/* and so on. Those sheets that are located
- *  just inside xsl, must be excluded, since they are used for constructing
- *  output XML only.
  */
 @RequiredArgsConstructor
-public final class XsApplied implements Scalar<XML> {
+public final class ProjectValidation implements Text {
 
     /**
-     * XML to validate.
+     * Project.
      */
-    private final XML origin;
+    private final Project project;
 
     /**
-     * Sheets.
+     * Sheets to apply.
      */
     private final Scalar<Map<String, XSL>> sheets;
 
     @Override
-    public XML value() throws Exception {
-        final Map<String, XSL> pipeline = this.sheets.value();
+    public String asString() throws Exception {
         Logger.info(
             this,
-            "Applying validation, sheets activated: %s",
-            pipeline.keySet()
+            "Starting validation of project.yml in %s",
+            this.project.identity()
         );
-        return new XSLChain(pipeline.values()).transform(this.origin);
+        return new Joined(
+            "\n",
+            new XsErrors(
+                new XsApplied(
+                    this.project.asXml(),
+                    this.sheets
+                )
+            ).value()
+        ).asString();
     }
 }
