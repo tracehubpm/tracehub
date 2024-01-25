@@ -159,7 +159,7 @@ final class AssignOnIssueTest {
             ).comments().get(1)
         ).body();
         MatcherAssert.assertThat(
-            "Issue assignee %s does not match with expected %s"
+            "Posted comment %s does not match with expected %s"
                 .formatted(text, expected),
             text,
             new IsEqual<>(expected)
