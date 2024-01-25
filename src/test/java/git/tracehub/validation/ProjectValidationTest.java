@@ -1,0 +1,108 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023-2024 Tracehub.git
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package git.tracehub.validation;
+
+import com.jcabi.github.Repo;
+import com.jcabi.github.mock.MkGithub;
+import com.jcabi.xml.XSL;
+import git.tracehub.Project;
+import git.tracehub.agents.github.GhProject;
+import git.tracehub.extensions.ProjectPipeline;
+import git.tracehub.extensions.SheetsIn;
+import java.util.Map;
+import javax.json.Json;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.text.TextOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+/**
+ * Test case for {@link ProjectValidation}.
+ *
+ * @since 0.0.0
+ */
+final class ProjectValidationTest {
+
+    @Test
+    @SheetsIn({
+        "struct",
+        "errors",
+        "arc",
+        "dev"
+    })
+    @ExtendWith(ProjectPipeline.class)
+    void validatesCleanProject(final Map<String, XSL> sheets) throws Exception {
+        final String message = new ProjectValidation(
+            this.provide("github/projects/good.yml"),
+            () -> sheets
+        ).asString();
+        MatcherAssert.assertThat(
+            "Error message %s is not empty, but should be"
+                .formatted(message),
+            message.isEmpty(),
+            new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    @SheetsIn({
+        "struct",
+        "errors",
+        "arc",
+        "dev"
+    })
+    @ExtendWith(ProjectPipeline.class)
+    void foundsErrors(final Map<String, XSL> sheets) throws Exception {
+        final String message = new ProjectValidation(
+            this.provide("github/projects/no-arc.yml"),
+            () -> sheets
+        ).asString();
+        final String expected = "Project must have exactly one Architect.";
+        MatcherAssert.assertThat(
+            "Error message %s does not match with expected %s"
+                .formatted(message, expected),
+            message,
+            new IsEqual<>(expected)
+        );
+    }
+
+    private Project provide(final String path) throws Exception {
+        final Repo repo = new MkGithub().randomRepo();
+        repo.contents().create(
+            Json.createObjectBuilder()
+                .add("path", ".trace/project.yml")
+                .add(
+                    "content",
+                    new TextOf(
+                        new ResourceOf(path)
+                    ).asString()
+                )
+                .add("message", "project created")
+                .build()
+        );
+        return new GhProject(repo);
+    }
+}

@@ -23,10 +23,13 @@
  */
 package git.tracehub.identity;
 
+import com.yegor256.WeAreOnline;
+import io.github.h1alexbel.ghquota.Quota;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link GhIdentity}.
@@ -40,6 +43,20 @@ final class GhIdentityTest {
     void loginsAsJeff() throws Exception {
         final String self = new GhIdentity().value().users().self().login();
         final String expected = "jeff";
+        MatcherAssert.assertThat(
+            "GitHub login %s does not match with expected one %s"
+                .formatted(self, expected),
+            self,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    @Tag("simulation")
+    @ExtendWith({WeAreOnline.class, Quota.class})
+    void loginsAsBot() throws Exception {
+        final String self = new GhIdentity().value().users().self().login();
+        final String expected = "tracehubgit";
         MatcherAssert.assertThat(
             "GitHub login %s does not match with expected one %s"
                 .formatted(self, expected),

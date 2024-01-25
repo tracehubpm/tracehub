@@ -31,26 +31,24 @@ import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
 import git.tracehub.agents.github.GhProject;
+import git.tracehub.agents.github.ThJobs;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.agents.github.issues.GhNew;
+import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
-import git.tracehub.validation.XsApplied;
-import git.tracehub.validation.XsErrors;
-import java.net.HttpURLConnection;
-import java.util.List;
+import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.cactoos.list.ListOf;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rs.RsJson;
-import org.takes.rs.RsText;
-import org.takes.rs.RsWithStatus;
 
 /**
  * GitHub Take.
  *
+ * @since 0.0.0
  * @todo #25:45min Return the result of webhook.
  *  Instead of thanks for webhook, I believe we should
  *  return a result of sent webhook. A number of created issues,
@@ -62,14 +60,9 @@ import org.takes.rs.RsWithStatus;
  *  we should branch our TraceLogged commits into ThJobs,
  *  ThJobs into created, updated and deleted. We should make it as much generic
  *  as possible, since we aim to process all kinds of GitHub webhooks using Takes.
- * @todo #15:30min Clean up procedural code.
- *  We should clean up the code inside TkGitHub.
- *  Validation with XeErrors must be handled outside of this Take.
- *  The same with response construction.
  * @todo #15:45min Create a comment on the head commit with errors.
  *  Instead of sending errors as webhook result, we should create a comment
  *  on a head commit from hook we got.
- * @since 0.0.0
  */
 @RequiredArgsConstructor
 @SuppressWarnings("PMD.InsufficientStringBufferDeclaration")
@@ -87,8 +80,6 @@ public final class TkGitHub implements Take {
 
     @Override
     public Response act(final Request req) throws Exception {
-        final StringBuilder response = new StringBuilder();
-        int status = HttpURLConnection.HTTP_ACCEPTED;
         final Commit commit = new TraceLogged(
             new TraceOnly(
                 new Composed(
@@ -102,9 +93,9 @@ public final class TkGitHub implements Take {
             new Coordinates.Simple(commit.repo())
         );
         final Project project = new GhProject(repo);
-        final List<String> err = new XsErrors(
-            new XsApplied(
-                project.asXml(),
+        return new ErrorsCase(
+            new ProjectValidation(
+                project,
                 new Remote(
                     this.tag,
                     () -> new ListOf<>(
@@ -114,35 +105,24 @@ public final class TkGitHub implements Take {
                         "project/dev"
                     )
                 )
-            )
-        ).value();
-        if (!err.isEmpty()) {
-            response.append("Project contains some errors:");
-            err.forEach(
-                e -> {
-                    response.append(e);
-                    response.append('\n');
-                });
-            status = HttpURLConnection.HTTP_BAD_REQUEST;
-        }
-        if (err.isEmpty()) {
-            new GhNew(
-                project,
-                commit,
-                repo
-            ).value();
-            response.append(
-                "Thanks %s for GitHub webhook".formatted(
-                    new Repo.Smart(repo).coordinates()
-                )
-            );
-            status = HttpURLConnection.HTTP_OK;
-        }
-        return new RsWithStatus(
-            new RsJson(
-                new RsText(response)
             ),
-            status
-        );
+            () -> "`project.yml` document contains errors:",
+            new Consumer<StringBuilder>() {
+                @SneakyThrows
+                @Override
+                public void accept(final StringBuilder out) {
+                    new GhNew(
+                        project,
+                        new ThJobs(commit),
+                        repo
+                    ).value();
+                    out.append(
+                        "Thanks %s for GitHub webhook".formatted(
+                            new Repo.Smart(repo).coordinates()
+                        )
+                    );
+                }
+            }
+        ).value();
     }
 }
