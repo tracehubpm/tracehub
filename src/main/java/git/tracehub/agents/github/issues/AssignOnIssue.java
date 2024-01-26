@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 
 /**
@@ -73,10 +74,11 @@ public final class AssignOnIssue implements Scalar<Issue> {
     @Override
     public Issue value() throws Exception {
         final Issue issue = this.before.value();
+        final String role = this.job.role();
         final List<Performer> candidates = this.project.performers().stream()
             .filter(
                 performer ->
-                    new HasRole(this.job.role()).test(performer)
+                    new HasRole(role).test(performer)
             ).toList();
         Logger.info(
             this,
@@ -84,6 +86,7 @@ public final class AssignOnIssue implements Scalar<Issue> {
             candidates.size(),
             issue.number()
         );
+        new Labeled(() -> issue, new ListOf<>(role)).value();
         if (!candidates.isEmpty()) {
             final String assignee = candidates.get(
                 new Random().nextInt(candidates.size())

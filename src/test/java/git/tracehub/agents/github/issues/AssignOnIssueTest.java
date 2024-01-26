@@ -26,6 +26,7 @@ package git.tracehub.agents.github.issues;
 import com.amihaiemil.eoyaml.Yaml;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
+import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import git.tracehub.agents.github.GhJob;
 import git.tracehub.extensions.LocalGhProject;
@@ -49,7 +50,7 @@ final class AssignOnIssueTest {
     @ExtendWith(RepoWithCollaborator.class)
     void assignsOnIssue(final Repo repo) throws Exception {
         final String expected = "h1alexbel";
-        final String who = new Issue.Smart(
+        final Issue.Smart issue = new Issue.Smart(
             new AssignOnIssue(
                 new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
                 new GhJob(
@@ -66,12 +67,18 @@ final class AssignOnIssueTest {
                     "Test issue", "this needs to be fixed:..."
                 )
             ).value()
-        ).assignee().login();
+        );
+        final String who = issue.assignee().login();
         MatcherAssert.assertThat(
             "Issue assignee %s does not match with expected %s"
                 .formatted(who, expected),
             who,
             new IsEqual<>(expected)
+        );
+        MatcherAssert.assertThat(
+            "ARC label does not present, but should be",
+            new IssueLabels.Smart(issue.labels()).contains("ARC"),
+            new IsEqual<>(true)
         );
     }
 
@@ -79,7 +86,7 @@ final class AssignOnIssueTest {
     @ExtendWith(RepoWithCollaborator.class)
     void assignsDevOnUnspecifiedRole(final Repo repo) throws Exception {
         final String expected = "h1alexbel";
-        final String who = new Issue.Smart(
+        final Issue.Smart issue = new Issue.Smart(
             new AssignOnIssue(
                 new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
                 new GhJob(
@@ -96,12 +103,18 @@ final class AssignOnIssueTest {
                     "Test issue", "this needs to be fixed:..."
                 )
             ).value()
-        ).assignee().login();
+        );
+        final String who = issue.assignee().login();
         MatcherAssert.assertThat(
             "Issue assignee %s does not match with expected %s"
                 .formatted(who, expected),
             who,
             new IsEqual<>(expected)
+        );
+        MatcherAssert.assertThat(
+            "DEV label does not present, but should be",
+            new IssueLabels.Smart(issue.labels()).contains("DEV"),
+            new IsEqual<>(true)
         );
     }
 

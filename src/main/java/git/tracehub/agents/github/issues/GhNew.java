@@ -35,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 
 /**
@@ -99,13 +100,16 @@ public final class GhNew implements Scalar<List<Issue>> {
                                 )
                             )
                         );
-                        return new AssignOnIssue(
-                            GhNew.this.project,
-                            job,
-                            new CreateIssue(
+                        return new Labeled(
+                            new AssignOnIssue(
+                                GhNew.this.project,
                                 job,
-                                GhNew.this.repo.issues()
-                            )
+                                new CreateIssue(
+                                    job,
+                                    GhNew.this.repo.issues()
+                                )
+                            ),
+                            new ListOf<>("synced")
                         ).value();
                     }
                 })
