@@ -23,17 +23,12 @@
  */
 package git.tracehub.validation;
 
-import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.xml.XSL;
-import git.tracehub.Project;
-import git.tracehub.agents.github.GhProject;
+import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.ProjectPipeline;
 import git.tracehub.extensions.SheetsIn;
 import java.util.Map;
-import javax.json.Json;
-import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -56,7 +51,10 @@ final class ProjectValidationTest {
     @ExtendWith(ProjectPipeline.class)
     void validatesCleanProject(final Map<String, XSL> sheets) throws Exception {
         final String message = new ProjectValidation(
-            this.provide("github/projects/good.yml"),
+            new LocalGhProject(
+                "github/projects/good.yml",
+                new MkGithub().randomRepo()
+            ).value(),
             () -> sheets
         ).asString();
         MatcherAssert.assertThat(
@@ -77,7 +75,10 @@ final class ProjectValidationTest {
     @ExtendWith(ProjectPipeline.class)
     void foundsErrors(final Map<String, XSL> sheets) throws Exception {
         final String message = new ProjectValidation(
-            this.provide("github/projects/no-arc.yml"),
+            new LocalGhProject(
+                "github/projects/no-arc.yml",
+                new MkGithub().randomRepo()
+            ).value(),
             () -> sheets
         ).asString();
         final String expected = "Project must have exactly one Architect.";
@@ -87,22 +88,5 @@ final class ProjectValidationTest {
             message,
             new IsEqual<>(expected)
         );
-    }
-
-    private Project provide(final String path) throws Exception {
-        final Repo repo = new MkGithub().randomRepo();
-        repo.contents().create(
-            Json.createObjectBuilder()
-                .add("path", ".trace/project.yml")
-                .add(
-                    "content",
-                    new TextOf(
-                        new ResourceOf(path)
-                    ).asString()
-                )
-                .add("message", "project created")
-                .build()
-        );
-        return new GhProject(repo);
     }
 }

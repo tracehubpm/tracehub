@@ -32,10 +32,10 @@ import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
-import git.tracehub.agents.github.GhProject;
 import git.tracehub.agents.github.ThJobs;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
+import git.tracehub.extensions.LocalGhProject;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
@@ -43,7 +43,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -97,7 +96,9 @@ final class GhNewTest {
                     )
                 )
             );
-        final Project project = this.provide("github/projects/many-performers.yml", repo);
+        final Project project = new LocalGhProject(
+            "github/projects/many-performers.yml", repo
+        ).value();
         final List<Issue> created = new GhNew(
             project,
             commit,
@@ -162,19 +163,5 @@ final class GhNewTest {
         return Json.createObjectBuilder()
             .add("name", "joe")
             .add("email", "joe@contents.com");
-    }
-
-    private Project provide(final String path, final Repo repo) throws Exception {
-        repo.contents().create(
-            Json.createObjectBuilder()
-                .add("path", ".trace/project.yml")
-                .add(
-                    "content",
-                    new TextOf(new ResourceOf(path)).asString()
-                )
-                .add("message", "project created")
-                .build()
-        );
-        return new GhProject(repo);
     }
 }
