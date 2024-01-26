@@ -26,6 +26,7 @@ package git.tracehub.agents.github.issues;
 import com.jcabi.github.Content;
 import com.jcabi.github.Contents;
 import com.jcabi.github.Issue;
+import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
 import git.tracehub.Project;
@@ -135,6 +136,18 @@ final class GhNewTest {
             "2nd issue %s is not assigned, but should be"
                 .formatted(second),
             second.hasAssignee(),
+            new IsEqual<>(true)
+        );
+        MatcherAssert.assertThat(
+            "1st issue %s is not synced, but should be"
+                .formatted(first),
+            new IssueLabels.Smart(first.labels()).contains("synced"),
+            new IsEqual<>(true)
+        );
+        MatcherAssert.assertThat(
+            "2nd issue %s is not synced, but should be"
+                .formatted(second),
+            new IssueLabels.Smart(second.labels()).contains("synced"),
             new IsEqual<>(true)
         );
     }
