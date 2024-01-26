@@ -23,10 +23,17 @@
  */
 package git.tracehub.tk;
 
+import com.jcabi.github.Repo;
+import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
+import git.tracehub.extensions.LocalGhProject;
+import io.github.eocqrs.eokson.Jocument;
+import io.github.eocqrs.eokson.JsonOf;
+import javax.json.Json;
+import javax.json.JsonObjectBuilder;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.takes.rq.RqFake;
 import org.takes.rs.RsPrint;
@@ -35,24 +42,41 @@ import org.takes.rs.RsPrint;
  * Test case for {@link TkGitHub}.
  *
  * @since 0.0.0
+ * @checkstyle StringLiteralsConcatenationCheck (50 lines)
  */
 final class TkGitHubTest {
 
-    /**
-     * OK test case.
-     *
-     * @throws Exception if something went wrong
-     * @todo #25:60min Introduce unit test for {@link TkGitHub}.
-     *  We should create a simple, maintainable unit test.
-     *  For now it can't be done, since {@link MkGithub} does not
-     *  have configuration from JSON webhook we accepting.
-     */
     @Test
-    @Disabled
     void returnsOkOnRequest() throws Exception {
-        final String expected = "GitHub webhook";
+        final String expected = "Thanks h1alexbel/test for GitHub webhook";
+        final MkGithub github = new MkGithub();
+        final Repo repo = github.users().add("h1alexbel")
+            .github()
+            .repos()
+            .create(new Repos.RepoCreate("test", false));
+        repo.contents().create(
+            TkGitHubTest.content(
+                ".trace/jobs/fix-me.yml",
+                "mocked fix me",
+                "label: Update License year to 2024\ndescription:"
+                + " test description\ncost: 20 minutes\nrole: DEV"
+            ).build()
+        );
+        new LocalGhProject("github/projects/single-dev-arc.yml", repo).value();
         final String response = new RsPrint(
-            new TkGitHub(new MkGithub(), "").act(new RqFake("GET", "/"))
+            new TkGitHub(github, "master").act(
+                new RqFake(
+                    "POST",
+                    "/",
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf(
+                                "github/hooks/mock.json"
+                            ).stream()
+                        )
+                    ).pretty()
+                )
+            )
         ).printBody();
         MatcherAssert.assertThat(
             "Response %s does not match with expected format %s"
@@ -62,5 +86,14 @@ final class TkGitHubTest {
                 expected
             )
         );
+    }
+
+    private static JsonObjectBuilder content(
+        final String path, final String message, final String content
+    ) {
+        return Json.createObjectBuilder()
+            .add("path", path)
+            .add("message", message)
+            .add("content", content);
     }
 }
