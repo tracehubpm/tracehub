@@ -27,12 +27,10 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
-import git.tracehub.Project;
 import git.tracehub.agents.github.GhJob;
-import git.tracehub.agents.github.GhProject;
+import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.RepoWithCollaborator;
 import git.tracehub.extensions.RepoWithCollaborators;
-import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -53,7 +51,7 @@ final class AssignOnIssueTest {
         final String expected = "h1alexbel";
         final String who = new Issue.Smart(
             new AssignOnIssue(
-                this.provide("github/projects/single-dev-arc.yml", repo),
+                new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
                 new GhJob(
                     Yaml.createYamlInput(
                         new ResourceOf("github/jobs/for-arc.yml").stream()
@@ -83,7 +81,7 @@ final class AssignOnIssueTest {
         final String expected = "h1alexbel";
         final String who = new Issue.Smart(
             new AssignOnIssue(
-                this.provide("github/projects/single-dev-arc.yml", repo),
+                new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
                 new GhJob(
                     Yaml.createYamlInput(
                         new ResourceOf("github/jobs/no-role.yml").stream()
@@ -114,7 +112,7 @@ final class AssignOnIssueTest {
             "Issue was not assigned, but it should be",
             new Issue.Smart(
                 new AssignOnIssue(
-                    this.provide("github/projects/many-performers.yml", repo),
+                    new LocalGhProject("github/projects/many-performers.yml", repo).value(),
                     new GhJob(
                         Yaml.createYamlInput(
                             new ResourceOf("github/jobs/no-role.yml").stream()
@@ -141,7 +139,7 @@ final class AssignOnIssueTest {
         final String text = new Comment.Smart(
             new Issue.Smart(
                 new AssignOnIssue(
-                    this.provide("github/projects/single-dev-arc.yml", repo),
+                    new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
                     new GhJob(
                         Yaml.createYamlInput(
                             new ResourceOf("github/jobs/for-arc.yml").stream()
@@ -164,19 +162,5 @@ final class AssignOnIssueTest {
             text,
             new IsEqual<>(expected)
         );
-    }
-
-    private Project provide(final String path, final Repo repo) throws Exception {
-        repo.contents().create(
-            Json.createObjectBuilder()
-                .add("path", ".trace/project.yml")
-                .add(
-                    "content",
-                    new TextOf(new ResourceOf(path)).asString()
-                )
-                .add("message", "project created")
-                .build()
-        );
-        return new GhProject(repo);
     }
 }

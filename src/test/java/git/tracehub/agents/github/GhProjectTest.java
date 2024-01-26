@@ -29,13 +29,13 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import git.tracehub.Performer;
 import git.tracehub.Project;
+import git.tracehub.extensions.LocalGhProject;
 import java.util.List;
 import java.util.Map;
 import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.map.MapOf;
-import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNot;
@@ -79,9 +79,10 @@ final class GhProjectTest {
 
     @Test
     void returnsDependencies() throws Exception {
-        final Project project = this.provide(
-            "github/projects/deps.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/deps.yml",
+            new MkGithub().randomRepo()
+        ).value();
         final List<String> deps = project.dependencies();
         final List<String> expected = new ListOf<>(
             "github.com/h1alexbel/cdit@master",
@@ -97,9 +98,10 @@ final class GhProjectTest {
 
     @Test
     void returnsPerformerName() throws Exception {
-        final Project project = this.provide(
-            "github/projects/with-performer.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/with-performer.yml",
+            new MkGithub().randomRepo()
+        ).value();
         final Performer performer = project.performers().get(0);
         final String expected = "h1alexbel";
         MatcherAssert.assertThat(
@@ -112,9 +114,10 @@ final class GhProjectTest {
 
     @Test
     void returnsPerformerRoles() throws Exception {
-        final Project project = this.provide(
-            "github/projects/with-performer.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/with-performer.yml",
+            new MkGithub().randomRepo()
+        ).value();
         final Performer performer = project.performers().get(0);
         final List<String> roles = performer.roles();
         final List<String> expected = new ListOf<>("PO", "ARC");
@@ -128,9 +131,10 @@ final class GhProjectTest {
 
     @Test
     void returnsRightPerformersSize() throws Exception {
-        final Project project = this.provide(
-            "github/projects/with-performer.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/with-performer.yml",
+            new MkGithub().randomRepo()
+        ).value();
         final List<Performer> performers = project.performers();
         final int esize = 1;
         MatcherAssert.assertThat(
@@ -143,9 +147,10 @@ final class GhProjectTest {
 
     @Test
     void returnsRightPerformersSizeWhenMorePerformers() throws Exception {
-        final Project project = this.provide(
-            "github/projects/with-more-performers.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/with-more-performers.yml",
+            new MkGithub().randomRepo()
+        ).value();
         final List<Performer> performers = project.performers();
         final int esize = 2;
         MatcherAssert.assertThat(
@@ -158,9 +163,10 @@ final class GhProjectTest {
 
     @Test
     void returnsRolesWhenMorePerformers() throws Exception {
-        final Project project = this.provide(
-            "github/projects/with-more-performers.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/with-more-performers.yml",
+            new MkGithub().randomRepo()
+        ).value();
         final List<Performer> performers = project.performers();
         final Map<String, List<String>> accum = new MapOf<>();
         performers.forEach(
@@ -188,7 +194,10 @@ final class GhProjectTest {
     void throwsOnNoId() throws Exception {
         new Assertion<>(
             "Project does not throw an exception, but should be, id is NULL",
-            this.provide("github/projects/--no-id.yml")::identity,
+            new LocalGhProject(
+                "github/projects/--no-id.yml",
+                new MkGithub().randomRepo()
+            ).value()::identity,
             new Throws<>(
                 "ID can't be NULL, please fix your YAML file",
                 IllegalStateException.class
@@ -199,9 +208,10 @@ final class GhProjectTest {
     @Test
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void ignoresAbsenceOfDependencies() throws Exception {
-        final Project project = this.provide(
-            "github/projects/no-dependencies.yml"
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/no-dependencies.yml",
+            new MkGithub().randomRepo()
+        ).value();
         new Assertion<>(
             "Project is not ignores the absence of dependencies, but it should be",
             project::dependencies,
@@ -216,7 +226,10 @@ final class GhProjectTest {
     void throwsOnNoPerformers() throws Exception {
         new Assertion<>(
             "Project is not ignores the absence of dependencies, but it should be",
-            this.provide("github/projects/no-dependencies.yml")::dependencies,
+            new LocalGhProject(
+                "github/projects/no-dependencies.yml",
+                new MkGithub().randomRepo()
+            ).value()::dependencies,
             new IsNot<>(
                 new Throws<>(Exception.class)
             )
@@ -232,9 +245,10 @@ final class GhProjectTest {
         "many-performers"
     })
     void transformsProjectsToXml(final String name) throws Exception {
-        final Project project = this.provide(
-            "github/projects/%s.yml".formatted(name)
-        );
+        final Project project = new LocalGhProject(
+            "github/projects/%s.yml".formatted(name),
+            new MkGithub().randomRepo()
+        ).value();
         final XML xml = project.asXml();
         final XML expected = new XMLDocument(
             new ResourceOf("github/projects/xml/%s.xml".formatted(name)).stream()
@@ -245,33 +259,5 @@ final class GhProjectTest {
             xml,
             new IsEqual<>(expected)
         );
-    }
-
-    /**
-     * Provide a project from path.
-     * @param path Path to YAML document
-     * @return Project
-     * @throws Exception if something went wrong
-     * @todo #38:25min Resolve code duplication with Project providing.
-     *  We should resolve a code duplication for a project providing
-     *  in tests. Possible some JUnit extension/Argument provider
-     *  that will provide us a projects by list of path we feed to it.
-     *  Don't forget to remove this puzzle.
-     */
-    private Project provide(final String path) throws Exception {
-        final Repo repo = new MkGithub().randomRepo();
-        repo.contents().create(
-            Json.createObjectBuilder()
-                .add("path", ".trace/project.yml")
-                .add(
-                    "content",
-                    new TextOf(
-                        new ResourceOf(path)
-                    ).asString()
-                )
-                .add("message", "project created")
-                .build()
-        );
-        return new GhProject(repo);
     }
 }

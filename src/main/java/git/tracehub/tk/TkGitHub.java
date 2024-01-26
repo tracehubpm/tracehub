@@ -69,7 +69,6 @@ import org.takes.Take;
  *  GitHub. We should fix that.
  */
 @RequiredArgsConstructor
-@SuppressWarnings("PMD.InsufficientStringBufferDeclaration")
 public final class TkGitHub implements Take {
 
     /**
