@@ -21,28 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.tk;
+package git.tracehub.agents;
 
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rs.RsText;
+import com.amihaiemil.eoyaml.Yaml;
+import git.tracehub.Backlog;
+import java.io.IOException;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * GitLab Take.
+ * Test case for {@link YmlBacklog}.
  *
  * @since 0.0.0
- * @todo #96:60min Instantiate Project that located in GitLab.
- *  We should create a Project object (GbProject.java) that located
- *  in GitLab. Lets do it similar to {@link git.tracehub.agents.github.GhProject}.
- *  During this ticket, probably you should resolve code duplication in order
- *  to keep objects in sync with DRY principle.
- *  Don't forget to remove this puzzle.
  */
-public final class TkGitLab implements Take {
+final class YmlBacklogTest {
 
-    @Override
-    public Response act(final Request req) {
-        return new RsText("GitLab webhook");
+    @Test
+    void readsPlatform() throws IOException {
+        final String expected = "GitHub";
+        final Backlog backlog = new YmlBacklog(
+            Yaml.createYamlInput(
+                "type: GitHub"
+            ).readYamlMapping()
+        );
+        final String platform = backlog.where();
+        MatcherAssert.assertThat(
+            "Backlogs platform %s does not match with expected %s"
+                .formatted(platform, expected),
+            platform,
+            new IsEqual<>(expected)
+        );
     }
 }

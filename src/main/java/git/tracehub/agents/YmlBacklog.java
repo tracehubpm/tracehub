@@ -21,28 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.tk;
+package git.tracehub.agents;
 
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rs.RsText;
+import com.amihaiemil.eoyaml.YamlNode;
+import git.tracehub.Backlog;
+import lombok.RequiredArgsConstructor;
 
 /**
- * GitLab Take.
+ * Backlog in YAML.
  *
  * @since 0.0.0
- * @todo #96:60min Instantiate Project that located in GitLab.
- *  We should create a Project object (GbProject.java) that located
- *  in GitLab. Lets do it similar to {@link git.tracehub.agents.github.GhProject}.
- *  During this ticket, probably you should resolve code duplication in order
- *  to keep objects in sync with DRY principle.
- *  Don't forget to remove this puzzle.
  */
-public final class TkGitLab implements Take {
+@RequiredArgsConstructor
+public final class YmlBacklog implements Backlog {
+
+    /**
+     * YAML backlog node.
+     */
+    private final YamlNode yaml;
 
     @Override
-    public Response act(final Request req) {
-        return new RsText("GitLab webhook");
+    public String where() {
+        return this.yaml.asMapping().string("type");
     }
 }

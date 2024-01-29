@@ -46,7 +46,7 @@ performers:
     roles:
       - DEV
       - ARC
-issues:
+backlog:
   type: JIRA
   url: ...
   token: ...
@@ -84,7 +84,7 @@ For now, we support these roles:
 * `SA`: System Analyst
 
 
-Section `issues` represents the place where all issues from `/jobs` package
+Section `backlog` represents the place where all issues from `/jobs` package
 will be placed.
 * `type`: issue tracker type, take a look at [supported](#supported-platforms) ones.
 
