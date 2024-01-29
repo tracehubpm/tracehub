@@ -28,6 +28,7 @@ import com.jcabi.log.Logger;
 import git.tracehub.Job;
 import git.tracehub.Performer;
 import git.tracehub.Project;
+import git.tracehub.facts.Architect;
 import git.tracehub.facts.HasRole;
 import java.util.List;
 import java.util.Random;
@@ -45,13 +46,6 @@ import org.cactoos.text.TextOf;
  *  just a random. That should be replaced with something
  *  more reasonable.
  *  Don't forget to remove this puzzle.
- * @todo #41:30min Handle if eligible candidates are empty.
- *  We should handle somehow a situation where there is no
- *  candidates in pool. Possible way to do that is to
- *  respond in issue that we don't have a candidates in pool.
- * @todo #84:30min Clean up code inside 'if candidates are not empty' statement.
- *  We should introduce a small composable objects to replace this semi-procedural
- *  script that will be unmaintainable very soon.
  */
 @RequiredArgsConstructor
 public final class AssignOnIssue implements Scalar<Issue> {
@@ -75,7 +69,8 @@ public final class AssignOnIssue implements Scalar<Issue> {
     public Issue value() throws Exception {
         final Issue issue = this.before.value();
         final String role = this.job.role();
-        final List<Performer> candidates = this.project.performers().stream()
+        final List<Performer> performers = this.project.performers();
+        final List<Performer> candidates = performers.stream()
             .filter(
                 performer ->
                     new HasRole(role).test(performer)
@@ -87,7 +82,12 @@ public final class AssignOnIssue implements Scalar<Issue> {
             issue.number()
         );
         new Labeled(() -> issue, new ListOf<>(role)).value();
-        if (!candidates.isEmpty()) {
+        if (candidates.isEmpty()) {
+            issue.comments().post(
+                "@%s, I'm failed to find any eligible candidates for this issue."
+                    .formatted(new Architect(performers).name())
+            );
+        } else {
             final String assignee = candidates.get(
                 new Random().nextInt(candidates.size())
             ).name();

@@ -28,6 +28,7 @@ import com.jcabi.github.Comment;
 import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
+import com.jcabi.github.mock.MkGithub;
 import git.tracehub.agents.github.GhJob;
 import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.RepoWithCollaborator;
@@ -44,6 +45,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  *
  * @since 0.0.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class AssignOnIssueTest {
 
     @Test
@@ -169,6 +171,40 @@ final class AssignOnIssueTest {
                 ).value()
             ).comments().get(1)
         ).body();
+        MatcherAssert.assertThat(
+            "Posted comment %s does not match with expected %s"
+                .formatted(text, expected),
+            text,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void postsCommentWhenNoCandidates() throws Exception {
+        final Repo repo = new MkGithub().randomRepo();
+        repo.collaborators().add("h1alexbel");
+        final String text = new Comment.Smart(
+            new Issue.Smart(
+                new AssignOnIssue(
+                    new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
+                    new GhJob(
+                        Yaml.createYamlInput(
+                            new ResourceOf("github/jobs/testing.yml").stream()
+                        ).readYamlMapping(),
+                        new TextOf(
+                            new ResourceOf(
+                                "git/tracehub/agents/github/Issue.md"
+                            )
+                        )
+                    ),
+                    () -> repo.issues().create(
+                        "Testing", "lets test this one.."
+                    )
+                ).value()
+            ).comments().get(1)
+        ).body();
+        final String expected =
+            "@h1alexbel, I'm failed to find any eligible candidates for this issue.";
         MatcherAssert.assertThat(
             "Posted comment %s does not match with expected %s"
                 .formatted(text, expected),
