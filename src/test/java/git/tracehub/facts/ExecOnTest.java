@@ -21,36 +21,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub.facts;
 
-import com.amihaiemil.eoyaml.Yaml;
-import git.tracehub.Backlog;
-import java.io.IOException;
+import com.jcabi.github.mock.MkGithub;
+import git.tracehub.extensions.LocalGhProject;
+import java.util.List;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link YmlBacklog}.
+ * Test case for {@link ExecOn}.
  *
  * @since 0.0.0
  */
-final class YmlBacklogTest {
+final class ExecOnTest {
 
     @Test
-    void readsPlatform() throws IOException {
-        final String expected = "GitHub";
-        final Backlog backlog = new YmlBacklog(
-            Yaml.createYamlInput(
-                "type: GitHub"
-            ).readYamlMapping()
+    void executesOnTrue() throws Exception {
+        final List<String> ids = new ListOf<>();
+        new ExecOn(true, project -> ids.add(project.identity())).exec(
+            new LocalGhProject(
+                "github/projects/backed.yml",
+                new MkGithub().randomRepo()
+            ).value()
         );
-        final String platform = backlog.where();
         MatcherAssert.assertThat(
-            "Backlogs platform %s does not match with expected %s"
-                .formatted(platform, expected),
-            platform,
-            new IsEqual<>(expected)
+            "Order was not executed, but should be",
+            ids.isEmpty(),
+            new IsEqual<>(false)
+        );
+    }
+
+    @Test
+    void ignoresOnFalse() throws Exception {
+        final List<String> ids = new ListOf<>();
+        new ExecOn(false, p -> ids.add(p.identity())).exec(
+            new LocalGhProject(
+                "github/projects/backed.yml",
+                new MkGithub().randomRepo()
+            ).value()
+        );
+        MatcherAssert.assertThat(
+            "Order was executed, but should not be",
+            ids.isEmpty(),
+            new IsEqual<>(true)
         );
     }
 }

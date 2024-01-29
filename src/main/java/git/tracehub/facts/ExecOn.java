@@ -30,10 +30,6 @@ import lombok.RequiredArgsConstructor;
  * Exec order on true fact.
  *
  * @since 0.0.0
- * @todo Create a unit tests for ExecOn.
- *  We should create a few unit tests that
- *  will check the results on exec on true,
- *  and exec on false.
  */
 @RequiredArgsConstructor
 public final class ExecOn implements Order {

@@ -269,7 +269,7 @@ final class GhProjectTest {
             "github/projects/backed.yml",
             new MkGithub().randomRepo()
         ).value();
-        final String type = project.backlog().platform();
+        final String type = project.backlog().where();
         MatcherAssert.assertThat(
             "Project %s backlog type %s does not match with expected %s"
                 .formatted(

@@ -67,6 +67,10 @@ import org.takes.Take;
  *  We should remove that complexity required to append strings to StringBuilder
  *  we pass between objects. Lets make it more simple.
  *  Don't forget to remove this puzzle.
+ * @todo #96:60min Adopt a support for multiple webhook types in TkGitHub.
+ *  We should adopt TkGitHub to handle multiple webhook types.
+ *  For now lets start with push event (currently supported and processed),
+ *  issue_comment_created, issue_created.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -84,13 +88,7 @@ public final class TkGitHub implements Take {
     @Override
     public Response act(final Request req) throws Exception {
         final Commit commit = new TraceLogged(
-            new TraceOnly(
-                new Composed(
-                    new GhCommits(
-                        req
-                    )
-                )
-            )
+            new TraceOnly(new Composed(new GhCommits(req)))
         );
         final Repo repo = this.github.repos().get(
             new Coordinates.Simple(commit.repo())
@@ -115,7 +113,7 @@ public final class TkGitHub implements Take {
                 @Override
                 public void accept(final StringBuilder out) {
                     new ExecOn(
-                        "GitHub".equals(project.backlog().platform()),
+                        "GitHub".equals(project.backlog().where()),
                         new GhOrder(commit, repo, () -> out)
                     ).exec(project);
                 }

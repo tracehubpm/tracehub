@@ -41,7 +41,7 @@ public final class YmlBacklog implements Backlog {
     private final YamlNode yaml;
 
     @Override
-    public String platform() {
+    public String where() {
         return this.yaml.asMapping().string("type");
     }
 }
