@@ -60,6 +60,7 @@ final class FirstWithRoleTest {
     }
 
     @Test
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void throwsException() {
         final String role = "DEV";
         new Assertion<>(
