@@ -21,28 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.tk;
+package git.tracehub.facts;
 
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rs.RsText;
+import git.tracehub.Project;
+import lombok.RequiredArgsConstructor;
 
 /**
- * GitLab Take.
+ * Exec order on true fact.
  *
  * @since 0.0.0
- * @todo #96:60min Instantiate Project that located in GitLab.
- *  We should create a Project object (GbProject.java) that located
- *  in GitLab. Lets do it similar to {@link git.tracehub.agents.github.GhProject}.
- *  During this ticket, probably you should resolve code duplication in order
- *  to keep objects in sync with DRY principle.
- *  Don't forget to remove this puzzle.
+ * @todo Create a unit tests for ExecOn.
+ *  We should create a few unit tests that
+ *  will check the results on exec on true,
+ *  and exec on false.
  */
-public final class TkGitLab implements Take {
+@RequiredArgsConstructor
+public final class ExecOn implements Order {
+
+    /**
+     * Fact.
+     */
+    private final Boolean fact;
+
+    /**
+     * Origin.
+     */
+    private final Order origin;
 
     @Override
-    public Response act(final Request req) {
-        return new RsText("GitLab webhook");
+    public void exec(final Project project) {
+        if (this.fact) {
+            this.origin.exec(project);
+        }
     }
 }

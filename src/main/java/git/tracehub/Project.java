@@ -48,6 +48,7 @@ public interface Project {
      * Project performers.
      *
      * @return Performers
+     * @see Performer
      */
     List<Performer> performers();
 
@@ -57,6 +58,14 @@ public interface Project {
      * @return Dependencies
      */
     List<String> dependencies();
+
+    /**
+     * Backlog.
+     *
+     * @return Backlog
+     * @see Backlog
+     */
+    Backlog backlog();
 
     /**
      * Project in XML.

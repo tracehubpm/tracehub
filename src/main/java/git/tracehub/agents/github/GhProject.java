@@ -27,8 +27,10 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.jcabi.github.Repo;
 import com.jcabi.xml.XML;
+import git.tracehub.Backlog;
 import git.tracehub.Performer;
 import git.tracehub.Project;
+import git.tracehub.agents.YmlBacklog;
 import git.tracehub.validation.DocTransformed;
 import java.util.List;
 import org.cactoos.list.ListOf;
@@ -95,6 +97,11 @@ public final class GhProject implements Project {
                 .forEach(node -> found.add(node.asScalar().value()));
         }
         return found;
+    }
+
+    @Override
+    public Backlog backlog() {
+        return new YmlBacklog(this.yaml.value("backlog"));
     }
 
     @Override

@@ -30,6 +30,7 @@ import com.jcabi.xml.XMLDocument;
 import git.tracehub.Performer;
 import git.tracehub.Project;
 import git.tracehub.extensions.LocalGhProject;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javax.json.Json;
@@ -242,7 +243,8 @@ final class GhProjectTest {
         "full",
         "just-id",
         "name-and-performer",
-        "many-performers"
+        "many-performers",
+        "backed"
     })
     void transformsProjectsToXml(final String name) throws Exception {
         final Project project = new LocalGhProject(
@@ -257,6 +259,26 @@ final class GhProjectTest {
             "XML %s for project %s does not match with expected %s"
                 .formatted(xml, project.identity(), expected),
             xml,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void returnsBacklog() throws Exception {
+        final String expected = "JIRA";
+        final Project project = new LocalGhProject(
+            "github/projects/backed.yml",
+            new MkGithub().randomRepo()
+        ).value();
+        final String type = project.backlog().platform();
+        MatcherAssert.assertThat(
+            "Project %s backlog type %s does not match with expected %s"
+                .formatted(
+                    project.asXml(),
+                    type,
+                    expected
+                ),
+            type,
             new IsEqual<>(expected)
         );
     }

@@ -30,11 +30,11 @@ import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
+import git.tracehub.agents.github.GhOrder;
 import git.tracehub.agents.github.GhProject;
-import git.tracehub.agents.github.ThJobs;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
-import git.tracehub.agents.github.issues.GhNew;
+import git.tracehub.facts.ExecOn;
 import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
 import java.util.function.Consumer;
@@ -63,10 +63,6 @@ import org.takes.Take;
  * @todo #15:45min Create a comment on the head commit with errors.
  *  Instead of sending errors as webhook result, we should create a comment
  *  on a head commit from hook we got.
- * @todo #66:60min Fetch the target place for jobs from project.yml.
- *  We should fetch the target place (JIRA, GitHub), basically where
- *  we will create/update/delete our jobs. Now we just hard-coding
- *  GitHub. We should fix that.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -114,16 +110,10 @@ public final class TkGitHub implements Take {
                 @SneakyThrows
                 @Override
                 public void accept(final StringBuilder out) {
-                    new GhNew(
-                        project,
-                        new ThJobs(commit),
-                        repo
-                    ).value();
-                    out.append(
-                        "Thanks %s for GitHub webhook".formatted(
-                            new Repo.Smart(repo).coordinates()
-                        )
-                    );
+                    new ExecOn(
+                        "GitHub".equals(project.backlog().platform()),
+                        new GhOrder(commit, repo, out)
+                    ).exec(project);
                 }
             }
         ).value();

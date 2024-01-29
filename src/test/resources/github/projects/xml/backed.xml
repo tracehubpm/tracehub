@@ -1,0 +1,18 @@
+<LinkedHashMap>
+  <id>backed123</id>
+  <name>backed</name>
+  <performers>
+    <name>h1alexbel</name>
+    <roles>DEV</roles>
+    <roles>ARC</roles>
+  </performers>
+  <performers>
+    <name>hizmailovich</name>
+    <roles>DEV</roles>
+  </performers>
+  <backlog>
+    <type>JIRA</type>
+  </backlog>
+  <dependencies>github.com/h1alexbel/cdit@master</dependencies>
+  <dependencies>github.com/h1alexbel/ghquota@master</dependencies>
+</LinkedHashMap>

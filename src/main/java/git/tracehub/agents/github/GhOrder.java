@@ -21,28 +21,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.tk;
+package git.tracehub.agents.github;
 
-import org.takes.Request;
-import org.takes.Response;
-import org.takes.Take;
-import org.takes.rs.RsText;
+import com.jcabi.github.Repo;
+import git.tracehub.Project;
+import git.tracehub.agents.github.issues.GhNew;
+import git.tracehub.facts.Order;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
- * GitLab Take.
+ * GitHub order execution.
  *
  * @since 0.0.0
- * @todo #96:60min Instantiate Project that located in GitLab.
- *  We should create a Project object (GbProject.java) that located
- *  in GitLab. Lets do it similar to {@link git.tracehub.agents.github.GhProject}.
- *  During this ticket, probably you should resolve code duplication in order
- *  to keep objects in sync with DRY principle.
- *  Don't forget to remove this puzzle.
  */
-public final class TkGitLab implements Take {
+@RequiredArgsConstructor
+public final class GhOrder implements Order {
 
+    /**
+     * Commit.
+     */
+    private final Commit commit;
+
+    /**
+     * Repo.
+     */
+    private final Repo repo;
+
+    /**
+     * Output.
+     */
+    private final StringBuilder out;
+
+    @SneakyThrows
     @Override
-    public Response act(final Request req) {
-        return new RsText("GitLab webhook");
+    public void exec(final Project project) {
+        new GhNew(
+            project,
+            new ThJobs(this.commit),
+            this.repo
+        ).value();
+        this.out.append(
+            "Thanks %s for GitHub webhook".formatted(
+                new Repo.Smart(this.repo).coordinates()
+            )
+        );
     }
 }

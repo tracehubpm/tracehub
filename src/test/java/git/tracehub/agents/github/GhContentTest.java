@@ -96,7 +96,7 @@ final class GhContentTest {
      *  We should create a reusable code structures for contribution
      *  inside GitHub repositories (both mock and real).
      *  \@Before code block in JUnit is not an option.
-     *  Code duplication should be resolved in GhNewTest.java also.
+     *  Code duplication should be resolved in GhNewTest.java and GhOrder.java also.
      *  Don't forget to remove this puzzle.
      */
     private Content contribute(
