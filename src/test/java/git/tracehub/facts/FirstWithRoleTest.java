@@ -26,9 +26,12 @@ package git.tracehub.facts;
 import com.amihaiemil.eoyaml.Yaml;
 import git.tracehub.agents.github.GhProject;
 import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
+import org.llorllale.cactoos.matchers.Assertion;
+import org.llorllale.cactoos.matchers.Throws;
 
 /**
  * Test case for {@link FirstWithRole}.
@@ -54,5 +57,21 @@ final class FirstWithRoleTest {
             name,
             new IsEqual<>(expected)
         );
+    }
+
+    @Test
+    void throwsException() {
+        final String role = "DEV";
+        new Assertion<>(
+            "Exception was not thrown, but should be",
+            () -> new FirstWithRole(
+                new ListOf<>(),
+                role
+            ).value(),
+            new Throws<>(
+                "Can not find any performers with %s role".formatted(role),
+                IllegalStateException.class
+            )
+        ).affirm();
     }
 }

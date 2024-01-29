@@ -26,6 +26,7 @@ package git.tracehub.facts;
 import git.tracehub.Performer;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 
 /**
@@ -46,6 +47,7 @@ public final class FirstWithRole implements Scalar<Performer> {
      */
     private final String role;
 
+    @SneakyThrows
     @Override
     public Performer value() throws Exception {
         return this.crew.stream()
@@ -53,6 +55,12 @@ public final class FirstWithRole implements Scalar<Performer> {
                 performer ->
                     performer.roles().contains(this.role)
             ).findFirst()
-            .orElseThrow();
+            .orElseThrow(
+                () ->
+                    new IllegalStateException(
+                        "Can not find any performers with %s role"
+                            .formatted(this.role)
+                    )
+            );
     }
 }
