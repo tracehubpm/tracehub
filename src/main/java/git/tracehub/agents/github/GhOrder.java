@@ -29,6 +29,7 @@ import git.tracehub.agents.github.issues.GhNew;
 import git.tracehub.facts.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 
 /**
  * GitHub order execution.
@@ -51,7 +52,7 @@ public final class GhOrder implements Order {
     /**
      * Output.
      */
-    private final StringBuilder out;
+    private final Scalar<StringBuilder> out;
 
     @SneakyThrows
     @Override
@@ -61,7 +62,7 @@ public final class GhOrder implements Order {
             new ThJobs(this.commit),
             this.repo
         ).value();
-        this.out.append(
+        this.out.value().append(
             "Thanks %s for GitHub webhook".formatted(
                 new Repo.Smart(this.repo).coordinates()
             )

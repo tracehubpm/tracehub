@@ -47,6 +47,7 @@ import org.takes.rq.RqFake;
  * Test case for {@link GhOrder}.
  *
  * @since 0.0.0
+ * @checkstyle StringLiteralsConcatenationCheck (20 lines)
  */
 final class GhOrderTest {
 
@@ -89,7 +90,7 @@ final class GhOrderTest {
                 )
             ),
             repo,
-            out
+            () -> out
         ).exec(
             new LocalGhProject(
                 "github/projects/backed.yml",

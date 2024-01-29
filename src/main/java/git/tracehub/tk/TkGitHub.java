@@ -63,6 +63,10 @@ import org.takes.Take;
  * @todo #15:45min Create a comment on the head commit with errors.
  *  Instead of sending errors as webhook result, we should create a comment
  *  on a head commit from hook we got.
+ * @todo #96:45min Resolve code complexity with appending responses to StringBuilder.
+ *  We should remove that complexity required to append strings to StringBuilder
+ *  we pass between objects. Lets make it more simple.
+ *  Don't forget to remove this puzzle.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -112,7 +116,7 @@ public final class TkGitHub implements Take {
                 public void accept(final StringBuilder out) {
                     new ExecOn(
                         "GitHub".equals(project.backlog().platform()),
-                        new GhOrder(commit, repo, out)
+                        new GhOrder(commit, repo, () -> out)
                     ).exec(project);
                 }
             }

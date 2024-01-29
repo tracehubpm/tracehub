@@ -30,7 +30,6 @@ import com.jcabi.xml.XMLDocument;
 import git.tracehub.Performer;
 import git.tracehub.Project;
 import git.tracehub.extensions.LocalGhProject;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javax.json.Json;
