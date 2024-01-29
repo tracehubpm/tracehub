@@ -62,7 +62,7 @@ final class TkGitHubTest {
                 + " test description\ncost: 20 minutes\nrole: DEV"
             ).build()
         );
-        new LocalGhProject("github/projects/single-dev-arc.yml", repo).value();
+        new LocalGhProject("github/projects/single-backed.yml", repo).value();
         final String response = new RsPrint(
             new TkGitHub(github, "master").act(
                 new RqFake(
