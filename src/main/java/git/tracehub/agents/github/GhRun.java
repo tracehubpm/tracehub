@@ -21,35 +21,61 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.agents.github;
 
 import com.jcabi.github.Github;
-import com.jcabi.log.Logger;
-import git.tracehub.agents.github.GhRun;
-import git.tracehub.identity.GhIdentity;
-import git.tracehub.tk.FtApp;
-import org.takes.http.Exit;
+import com.jcabi.log.VerboseRunnable;
+import com.jcabi.log.VerboseThreads;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import lombok.SneakyThrows;
+import org.cactoos.proc.IoCheckedProc;
 
 /**
- * Entry point.
+ * GitHub Invites.
  *
  * @since 0.0.0
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  */
-@SuppressWarnings("PMD.UseUtilityClass")
-public final class Entry {
+public final class GhRun implements Runnable {
 
     /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     * @throws Exception if something went wrong
+     * GitHub.
      */
-    public static void main(final String... args) throws Exception {
-        Logger.info(Entry.class, "Starting Tracehub on the command line...");
-        final Github github = new GhIdentity().value();
-        final String vtag = System.getenv("Vsheets-Tag");
-        new GhRun(github).start();
-        new FtApp(github, vtag).value().start(Exit.NEVER);
+    private final Github github;
+
+    /**
+     * Schedule Service.
+     */
+    private final ScheduledExecutorService service;
+
+    /**
+     * Ctor.
+     *
+     * @param gthb GitHub
+     */
+    public GhRun(final Github gthb) {
+        this.github = gthb;
+        this.service = Executors.newSingleThreadScheduledExecutor(
+            new VerboseThreads(GhRun.class)
+        );
+    }
+
+    @SneakyThrows
+    @Override
+    public void run() {
+        new IoCheckedProc<>(
+            new AcceptInvites(this.github)
+        ).exec(true);
+    }
+
+    /**
+     * Start it.
+     */
+    public void start() {
+        this.service.scheduleWithFixedDelay(
+            new VerboseRunnable(this, true, true),
+            1L, 1L, TimeUnit.MINUTES
+        );
     }
 }

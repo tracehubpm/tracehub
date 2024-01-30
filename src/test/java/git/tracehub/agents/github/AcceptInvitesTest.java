@@ -21,35 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub;
+package git.tracehub.agents.github;
 
-import com.jcabi.github.Github;
-import com.jcabi.log.Logger;
-import git.tracehub.agents.github.GhRun;
+import com.yegor256.WeAreOnline;
 import git.tracehub.identity.GhIdentity;
-import git.tracehub.tk.FtApp;
-import org.takes.http.Exit;
+import io.github.h1alexbel.ghquota.Quota;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
- * Entry point.
+ * Test case for {@link AcceptInvites}.
  *
  * @since 0.0.0
- * @checkstyle HideUtilityClassConstructorCheck (10 lines)
  */
-@SuppressWarnings("PMD.UseUtilityClass")
-public final class Entry {
+final class AcceptInvitesTest {
 
-    /**
-     * Application entry point.
-     *
-     * @param args Application arguments
-     * @throws Exception if something went wrong
-     */
-    public static void main(final String... args) throws Exception {
-        Logger.info(Entry.class, "Starting Tracehub on the command line...");
-        final Github github = new GhIdentity().value();
-        final String vtag = System.getenv("Vsheets-Tag");
-        new GhRun(github).start();
-        new FtApp(github, vtag).value().start(Exit.NEVER);
+    @Test
+    @Tag("simulation")
+    @ExtendWith({WeAreOnline.class, Quota.class})
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void acceptsInvites() {
+        Assertions.assertDoesNotThrow(
+            () -> new AcceptInvites(new GhIdentity().value()).exec(true),
+            () -> "AcceptInvites throws an exception, but should not"
+        );
     }
 }
