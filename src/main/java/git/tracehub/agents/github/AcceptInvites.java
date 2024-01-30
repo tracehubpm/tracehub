@@ -28,23 +28,19 @@ import com.jcabi.github.RtPagination;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.RestResponse;
 import com.jcabi.log.Logger;
-import git.tracehub.agents.Act;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
+import org.cactoos.Proc;
 
 /**
- * GitHub Invites.
+ * Accept invites.
  *
  * @since 0.0.0
- * @todo #1:45min Schedule Invites#exec in the background.
- *   We should schedule GitHub invitations accepting to run it in the background
- *   while application is running.
- *   Don't forget to remove this puzzle.
  */
 @RequiredArgsConstructor
-public final class Invites implements Act {
+public final class AcceptInvites implements Proc<Boolean> {
 
     /**
      * GitHub.
@@ -52,7 +48,7 @@ public final class Invites implements Act {
     private final Github github;
 
     @Override
-    public void exec() throws IOException {
+    public void exec(final Boolean input) throws IOException {
         final Request entry = this.github.entry().reset("Accept").header(
             "Accept", "application/vnd.github.swamp-thing-preview+json"
         );
@@ -61,45 +57,25 @@ public final class Invites implements Act {
             RtPagination.COPYING
         );
         for (final JsonObject json : all) {
-            this.accept(
-                entry, json.getInt("id"),
-                json.getJsonObject("repository").getString("full_name")
-            );
-        }
-    }
-
-    /**
-     * Accept one invite.
-     *
-     * @param entry Entry
-     * @param invitation Invitation
-     * @param repo Repo
-     * @throws IOException if I/O fails
-     * @todo #1:25min Resolve private method with invite accepting.
-     *  Let's create a new class instead of this #accept() private method.
-     *  Don't forget to remove this puzzle.
-     */
-    private void accept(
-        final Request entry,
-        final int invitation,
-        final String repo
-    ) throws IOException {
-        try {
-            entry.uri().path("/user/repository_invitations/")
-                .path(Integer.toString(invitation)).back()
-                .method(Request.PATCH)
-                .fetch()
-                .as(RestResponse.class)
-                .assertStatus(HttpURLConnection.HTTP_NO_CONTENT);
-            Logger.info(
-                this, "Invitation #%d to %s accepted",
-                invitation, repo
-            );
-        } catch (final AssertionError ex) {
-            Logger.info(
-                this, "Failed to accept invitation #%d in %s: %s",
-                invitation, repo, ex.getLocalizedMessage()
-            );
+            final String repo = json.getJsonObject("repository").getString("full_name");
+            final int invitation = json.getInt("id");
+            try {
+                entry.uri().path("/user/repository_invitations/")
+                    .path(Integer.toString(invitation)).back()
+                    .method(Request.PATCH)
+                    .fetch()
+                    .as(RestResponse.class)
+                    .assertStatus(HttpURLConnection.HTTP_NO_CONTENT);
+                Logger.info(
+                    this, "Invitation #%d to %s accepted",
+                    invitation, repo
+                );
+            } catch (final AssertionError ex) {
+                Logger.info(
+                    this, "Failed to accept invitation #%d in %s: %s",
+                    invitation, repo, ex.getLocalizedMessage()
+                );
+            }
         }
     }
 }
