@@ -23,62 +23,47 @@
  */
 package git.tracehub;
 
-import com.jcabi.xml.XML;
+import com.amihaiemil.eoyaml.Yaml;
+import java.util.Collection;
 import java.util.List;
+import org.cactoos.io.ResourceOf;
+import org.cactoos.list.ListOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * Project.
+ * Test case for {@link YmlRules}.
  *
  * @since 0.0.0
- * @todo #65:60min Fetch excluded warnings.
- *  We need to fetch all excluded warnings from project.yml.
- *  Firstly we should wait for warnings.xsl to be released
- *  by vsheets. Only then we can include this logic into GhProject.
  */
-public interface Project {
+final class YmlRulesTest {
 
-    /**
-     * Project ID in YAML.
-     *
-     * @return ID
-     */
-    String identity();
-
-    /**
-     * Project performers.
-     *
-     * @return Performers
-     * @see Performer
-     */
-    List<Performer> performers();
-
-    /**
-     * Project Dependencies.
-     *
-     * @return Dependencies
-     */
-    List<String> dependencies();
-
-    /**
-     * Backlog.
-     *
-     * @return Backlog
-     * @see Backlog
-     */
-    Backlog backlog();
-
-    /**
-     * Suppressed warnings.
-     *
-     * @return List of suppressions
-     */
-    List<String> suppressed();
-
-    /**
-     * Project in XML.
-     *
-     * @return XML
-     * @throws Exception if something went wrong
-     */
-    XML asXml() throws Exception;
+    @Test
+    void returnsMap() throws Exception {
+        final Collection<String> values = new YmlRules(
+            Yaml.createYamlInput(
+                new ResourceOf(
+                    "yml/projects/with-rules.yml"
+                ).stream()
+            ).readYamlMapping().value("backlog").asMapping().value("rules"),
+            new ListOf<>(
+                "min-words",
+                "min-estimate",
+                "max-estimate"
+            )
+        ).value().values();
+        final List<String> expected = new ListOf<>(
+            "25m",
+            "20",
+            "90m"
+        );
+        MatcherAssert.assertThat(
+            "Map values %s does not match with expected %s".formatted(
+                values, expected
+            ),
+            new ListOf<>(values),
+            new IsEqual<>(expected)
+        );
+    }
 }

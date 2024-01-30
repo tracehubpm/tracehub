@@ -21,11 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub;
 
 import com.amihaiemil.eoyaml.Yaml;
-import git.tracehub.Backlog;
 import java.io.IOException;
+import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 final class YmlBacklogTest {
 
     @Test
-    void readsPlatform() throws IOException {
+    void readsType() throws IOException {
         final String expected = "GitHub";
         final Backlog backlog = new YmlBacklog(
             Yaml.createYamlInput(
@@ -50,6 +50,23 @@ final class YmlBacklogTest {
             "Backlogs platform %s does not match with expected %s"
                 .formatted(platform, expected),
             platform,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void readsRules() throws Exception {
+        final Rules rules = new YmlBacklog(
+            Yaml.createYamlInput(
+                new ResourceOf("yml/projects/with-rules.yml").stream()
+            ).readYamlMapping().value("backlog")
+        ).rules();
+        final int size = rules.value().size();
+        final int expected = 3;
+        MatcherAssert.assertThat(
+            "Rules size %s does not match with expected %s"
+                .formatted(size, expected),
+            size,
             new IsEqual<>(expected)
         );
     }

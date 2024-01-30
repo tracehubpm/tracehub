@@ -23,62 +23,37 @@
  */
 package git.tracehub;
 
-import com.jcabi.xml.XML;
-import java.util.List;
+import com.amihaiemil.eoyaml.YamlNode;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.list.ListOf;
 
 /**
- * Project.
+ * Backlog in YAML.
  *
  * @since 0.0.0
- * @todo #65:60min Fetch excluded warnings.
- *  We need to fetch all excluded warnings from project.yml.
- *  Firstly we should wait for warnings.xsl to be released
- *  by vsheets. Only then we can include this logic into GhProject.
  */
-public interface Project {
+@RequiredArgsConstructor
+public final class YmlBacklog implements Backlog {
 
     /**
-     * Project ID in YAML.
-     *
-     * @return ID
+     * YAML backlog node.
      */
-    String identity();
+    private final YamlNode yaml;
 
-    /**
-     * Project performers.
-     *
-     * @return Performers
-     * @see Performer
-     */
-    List<Performer> performers();
+    @Override
+    public String where() {
+        return this.yaml.asMapping().string("type");
+    }
 
-    /**
-     * Project Dependencies.
-     *
-     * @return Dependencies
-     */
-    List<String> dependencies();
-
-    /**
-     * Backlog.
-     *
-     * @return Backlog
-     * @see Backlog
-     */
-    Backlog backlog();
-
-    /**
-     * Suppressed warnings.
-     *
-     * @return List of suppressions
-     */
-    List<String> suppressed();
-
-    /**
-     * Project in XML.
-     *
-     * @return XML
-     * @throws Exception if something went wrong
-     */
-    XML asXml() throws Exception;
+    @Override
+    public Rules rules() {
+        return new YmlRules(
+            this.yaml.asMapping().value("rules"),
+            new ListOf<>(
+                "min-words",
+                "min-estimate",
+                "max-estimate"
+            )
+        );
+    }
 }

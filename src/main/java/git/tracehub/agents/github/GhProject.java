@@ -30,7 +30,7 @@ import com.jcabi.xml.XML;
 import git.tracehub.Backlog;
 import git.tracehub.Performer;
 import git.tracehub.Project;
-import git.tracehub.agents.YmlBacklog;
+import git.tracehub.YmlBacklog;
 import git.tracehub.validation.DocTransformed;
 import java.util.List;
 import org.cactoos.list.ListOf;
@@ -102,6 +102,14 @@ public final class GhProject implements Project {
     @Override
     public Backlog backlog() {
         return new YmlBacklog(this.yaml.value("backlog"));
+    }
+
+    @Override
+    public List<String> suppressed() {
+        final List<String> found = new ListOf<>();
+        this.yaml.yamlSequence("suppressions")
+            .forEach(node -> found.add(node.asScalar().value()));
+        return found;
     }
 
     @Override
