@@ -23,8 +23,6 @@
  */
 package git.tracehub.agents.github.issues;
 
-import com.jcabi.github.Content;
-import com.jcabi.github.Contents;
 import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
@@ -37,12 +35,10 @@ import git.tracehub.agents.github.ThJobs;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.extensions.LocalGhProject;
+import git.tracehub.extensions.MkContribution;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -63,18 +59,18 @@ final class GhNewTest {
         github.users().add("h1alexbel");
         github.users().add("hizmailovich");
         final Repo repo = github.randomRepo();
-        this.contribute(
+        new MkContribution(
             repo,
             ".trace/jobs/job1.yml",
             "label: Update License year to 2024\ndescription:"
             + " test description\ncost: 20 minutes\nrole: DEV"
-        );
-        this.contribute(
+        ).value();
+        new MkContribution(
             repo,
             ".trace/jobs/job2.yml",
             "label: Update License year to 2024\ndescription:"
             + " test description\ncost: 20 minutes\nrole: ARC"
-        );
+        ).value();
         final Commit commit =
             new ThJobs(
                 new TraceLogged(
@@ -150,31 +146,5 @@ final class GhNewTest {
             new IssueLabels.Smart(second.labels()).contains("synced"),
             new IsEqual<>(true)
         );
-    }
-
-    private Content contribute(
-        final Repo repo, final String path, final String yml
-    ) throws Exception {
-        final Contents contents = repo.contents();
-        final JsonObject json = GhNewTest
-            .content(path, "theCreateMessage", yml)
-            .add("committer", GhNewTest.committer())
-            .build();
-        return contents.create(json);
-    }
-
-    private static JsonObjectBuilder content(
-        final String path, final String message, final String content
-    ) {
-        return Json.createObjectBuilder()
-            .add("path", path)
-            .add("message", message)
-            .add("content", content);
-    }
-
-    private static JsonObjectBuilder committer() {
-        return Json.createObjectBuilder()
-            .add("name", "joe")
-            .add("email", "joe@contents.com");
     }
 }

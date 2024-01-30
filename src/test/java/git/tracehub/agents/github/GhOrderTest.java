@@ -23,19 +23,15 @@
  */
 package git.tracehub.agents.github;
 
-import com.jcabi.github.Content;
-import com.jcabi.github.Contents;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
 import git.tracehub.extensions.LocalGhProject;
+import git.tracehub.extensions.MkContribution;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import java.util.HashMap;
 import java.util.List;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -54,18 +50,18 @@ final class GhOrderTest {
     @Test
     void executesOrder() throws Exception {
         final Repo repo = new MkGithub().randomRepo();
-        this.contribute(
+        new MkContribution(
             repo,
             ".trace/jobs/job1.yml",
             "label: Update License year to 2024\ndescription:"
             + " test description\ncost: 20 minutes\nrole: DEV"
-        );
-        this.contribute(
+        ).value();
+        new MkContribution(
             repo,
             ".trace/jobs/job2.yml",
             "label: Update License year to 2024\ndescription:"
             + " test description\ncost: 20 minutes\nrole: ARC"
-        );
+        ).value();
         final StringBuilder out = new StringBuilder();
         new GhOrder(
             new ThJobs(
@@ -116,31 +112,5 @@ final class GhOrderTest {
             out.toString(),
             new IsEqual<>(oexpected)
         );
-    }
-
-    private Content contribute(
-        final Repo repo, final String path, final String yml
-    ) throws Exception {
-        final Contents contents = repo.contents();
-        final JsonObject json = GhOrderTest
-            .content(path, "theCreateMessage", yml)
-            .add("committer", GhOrderTest.committer())
-            .build();
-        return contents.create(json);
-    }
-
-    private static JsonObjectBuilder content(
-        final String path, final String message, final String content
-    ) {
-        return Json.createObjectBuilder()
-            .add("path", path)
-            .add("message", message)
-            .add("content", content);
-    }
-
-    private static JsonObjectBuilder committer() {
-        return Json.createObjectBuilder()
-            .add("name", "joe")
-            .add("email", "joe@contents.com");
     }
 }
