@@ -23,16 +23,12 @@
  */
 package git.tracehub.agents.github;
 
-import com.jcabi.github.Content;
-import com.jcabi.github.Contents;
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Repo;
 import com.jcabi.github.RtGithub;
 import com.jcabi.github.mock.MkGithub;
+import git.tracehub.extensions.MkContribution;
 import io.github.h1alexbel.ghquota.Quota;
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
@@ -51,11 +47,11 @@ final class GhContentTest {
         final Repo repo = new MkGithub().randomRepo();
         final String path = ".trace/test.yml";
         final String expected = "test: true";
-        this.contribute(
+        new MkContribution(
             repo,
             path,
             expected
-        );
+        ).value();
         MatcherAssert.assertThat(
             "%s does not match with expected format %s"
                 .formatted(path, expected),
@@ -82,46 +78,5 @@ final class GhContentTest {
             ).asString(),
             new IsEqual<>(expected)
         );
-    }
-
-    /**
-     * Contribute to repository.
-     *
-     * @param repo Repo
-     * @param path Path
-     * @param yml YML
-     * @return Content
-     * @throws Exception if something went wrong
-     * @todo #26:30min Resolve code duplication in tests.
-     *  We should create a reusable code structures for contribution
-     *  inside GitHub repositories (both mock and real).
-     *  \@Before code block in JUnit is not an option.
-     *  Code duplication should be resolved in GhNewTest.java, GhOrderTest.java,
-     *  TkGitHubTest.java also. Don't forget to remove this puzzle.
-     */
-    private Content contribute(
-        final Repo repo, final String path, final String yml
-    ) throws Exception {
-        final Contents contents = repo.contents();
-        final JsonObject json = GhContentTest
-            .content(path, "theCreateMessage", yml)
-            .add("committer", GhContentTest.committer())
-            .build();
-        return contents.create(json);
-    }
-
-    private static JsonObjectBuilder content(
-        final String path, final String message, final String content
-    ) {
-        return Json.createObjectBuilder()
-            .add("path", path)
-            .add("message", message)
-            .add("content", content);
-    }
-
-    private static JsonObjectBuilder committer() {
-        return Json.createObjectBuilder()
-            .add("name", "joe")
-            .add("email", "joe@contents.com");
     }
 }

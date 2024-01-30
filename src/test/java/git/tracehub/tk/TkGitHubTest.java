@@ -27,10 +27,9 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
 import git.tracehub.extensions.LocalGhProject;
+import git.tracehub.extensions.MkContribution;
 import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -54,14 +53,12 @@ final class TkGitHubTest {
             .github()
             .repos()
             .create(new Repos.RepoCreate("test", false));
-        repo.contents().create(
-            TkGitHubTest.content(
-                ".trace/jobs/fix-me.yml",
-                "mocked fix me",
-                "label: Update License year to 2024\ndescription:"
-                + " test description\ncost: 20 minutes\nrole: DEV"
-            ).build()
-        );
+        new MkContribution(
+            repo,
+            ".trace/jobs/fix-me.yml",
+            "label: Update License year to 2024\ndescription:"
+            + " test description\ncost: 20 minutes\nrole: DEV"
+        ).value();
         new LocalGhProject("github/projects/single-backed.yml", repo).value();
         final String response = new RsPrint(
             new TkGitHub(github, "master").act(
@@ -86,14 +83,5 @@ final class TkGitHubTest {
                 expected
             )
         );
-    }
-
-    private static JsonObjectBuilder content(
-        final String path, final String message, final String content
-    ) {
-        return Json.createObjectBuilder()
-            .add("path", path)
-            .add("message", message)
-            .add("content", content);
     }
 }
