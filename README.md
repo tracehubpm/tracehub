@@ -48,8 +48,10 @@ performers:
       - ARC
 backlog:
   type: JIRA
-  url: ...
-  token: ...
+  rules:
+    min-words: 20
+    min-estimate: 25m
+    max-estimate: 90m
 docs:
   type: Confluence
   url: ...
@@ -73,7 +75,7 @@ Section `performers` for specifying who is working on the projects.
 Subsection `individuals` allows you to specify independent project people, each one has
 the following schema:
 * `name`: performer's name
-* `roles`: an array of roles, performer has
+* `roles`: an array of roles, that performer has
 
 For now, we support these roles:
 * `PO`: Product Owner
@@ -87,6 +89,7 @@ For now, we support these roles:
 Section `backlog` represents the place where all issues from `/jobs` package
 will be placed.
 * `type`: issue tracker type, take a look at [supported](#supported-platforms) ones.
+* `rules`: rules, related to the backlog.
 
 Section `docs` represents the place where all documentation from `/docs` package
 will be placed.
