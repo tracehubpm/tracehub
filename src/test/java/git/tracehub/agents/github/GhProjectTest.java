@@ -281,4 +281,36 @@ final class GhProjectTest {
             new IsEqual<>(expected)
         );
     }
+
+    @Test
+    void returnsBacklogWithRules() throws Exception {
+        final Project project = new LocalGhProject(
+            "yml/projects/with-rules.yml",
+            new MkGithub().randomRepo()
+        ).value();
+        final String words = project.backlog().rules().value().get("min-words");
+        final String expected = "20";
+        MatcherAssert.assertThat(
+            "Rule %s does not match with expected %s"
+                .formatted(words, expected),
+            words,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void returnsSuppressions() throws Exception {
+        final Project project = new LocalGhProject(
+            "yml/projects/with-suppressions.yml",
+            new MkGithub().randomRepo()
+        ).value();
+        final List<String> suppressed = project.suppressed();
+        final List<String> expected = new ListOf<>("dev", "arc");
+        MatcherAssert.assertThat(
+            "Suppressed values %s do not match with expected %s"
+                .formatted(suppressed, expected),
+            suppressed,
+            new IsEqual<>(expected)
+        );
+    }
 }

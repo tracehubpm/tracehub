@@ -1,0 +1,19 @@
+id: with-rules123
+name: with-rules
+performers:
+  - name: h1alexbel
+    roles:
+      - DEV
+      - ARC
+  - name: hizmailovich
+    roles:
+      - DEV
+backlog:
+  type: JIRA
+  rules:
+    min-words: 20
+    min-estimate: 25m
+    max-estimate: 90m
+dependencies:
+  - github.com/h1alexbel/cdit@master
+  - github.com/h1alexbel/ghquota@master

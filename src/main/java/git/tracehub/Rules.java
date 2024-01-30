@@ -21,36 +21,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub;
 
-import com.amihaiemil.eoyaml.Yaml;
-import git.tracehub.Backlog;
-import java.io.IOException;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Test;
+import java.util.Map;
+import org.cactoos.Scalar;
 
 /**
- * Test case for {@link YmlBacklog}.
+ * Rules.
  *
  * @since 0.0.0
  */
-final class YmlBacklogTest {
-
-    @Test
-    void readsPlatform() throws IOException {
-        final String expected = "GitHub";
-        final Backlog backlog = new YmlBacklog(
-            Yaml.createYamlInput(
-                "type: GitHub"
-            ).readYamlMapping()
-        );
-        final String platform = backlog.where();
-        MatcherAssert.assertThat(
-            "Backlogs platform %s does not match with expected %s"
-                .formatted(platform, expected),
-            platform,
-            new IsEqual<>(expected)
-        );
-    }
+public interface Rules extends Scalar<Map<String, String>> {
 }

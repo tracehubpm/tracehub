@@ -1,0 +1,22 @@
+id: with-suppressions123
+name: with-suppressions
+performers:
+  - name: h1alexbel
+    roles:
+      - DEV
+      - ARC
+  - name: hizmailovich
+    roles:
+      - DEV
+backlog:
+  type: JIRA
+  rules:
+    min-words: 20
+    min-estimate: 25m
+    max-estimate: 90m
+suppressions:
+  - dev
+  - arc
+dependencies:
+  - github.com/h1alexbel/cdit@master
+  - github.com/h1alexbel/ghquota@master

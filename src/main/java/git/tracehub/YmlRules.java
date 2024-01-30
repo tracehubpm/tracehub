@@ -21,27 +21,41 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub;
 
+import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
-import git.tracehub.Backlog;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Backlog in YAML.
+ * Rules in YAML.
  *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class YmlBacklog implements Backlog {
+public final class YmlRules implements Rules {
 
     /**
-     * YAML backlog node.
+     * YAML.
      */
     private final YamlNode yaml;
 
+    /**
+     * Supported rules.
+     */
+    private final List<String> supported;
+
     @Override
-    public String where() {
-        return this.yaml.asMapping().string("type");
+    public Map<String, String> value() throws Exception {
+        final Map<String, String> all = new HashMap<>(16);
+        final YamlMapping rules = this.yaml.asMapping();
+        this.supported.forEach(
+            name ->
+                all.put(name, rules.value(name).asScalar().value())
+        );
+        return all;
     }
 }
