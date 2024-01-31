@@ -107,8 +107,10 @@ public final class GhProject implements Project {
     @Override
     public List<String> suppressed() {
         final List<String> found = new ListOf<>();
-        this.yaml.yamlSequence("suppressions")
-            .forEach(node -> found.add(node.asScalar().value()));
+        if (this.yaml.yamlSequence("suppressions") != null) {
+            this.yaml.yamlSequence("suppressions")
+                .forEach(node -> found.add(node.asScalar().value()));
+        }
         return found;
     }
 

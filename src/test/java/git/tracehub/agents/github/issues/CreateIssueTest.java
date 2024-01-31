@@ -51,7 +51,7 @@ final class CreateIssueTest {
                 new CreateIssue(
                     new GhJob(
                         Yaml.createYamlInput(
-                            new ResourceOf("github/jobs/fix-me.yml").stream()
+                            new ResourceOf("yml/jobs/fix-me.yml").stream()
                         ).readYamlMapping(),
                         new TextOf(
                             new ResourceOf("git/tracehub/agents/github/Issue.md")

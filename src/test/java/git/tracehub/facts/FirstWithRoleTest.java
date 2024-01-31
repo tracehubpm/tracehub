@@ -46,7 +46,7 @@ final class FirstWithRoleTest {
         final String name = new FirstWithRole(
             new GhProject(
                 Yaml.createYamlInput(
-                    new ResourceOf("github/projects/backed.yml").stream()
+                    new ResourceOf("yml/projects/backed.yml").stream()
                 ).readYamlMapping()
             ).performers(),
             "ARC"

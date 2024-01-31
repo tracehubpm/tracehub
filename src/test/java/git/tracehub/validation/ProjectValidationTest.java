@@ -52,7 +52,7 @@ final class ProjectValidationTest {
     void validatesCleanProject(final Map<String, XSL> sheets) throws Exception {
         final String message = new ProjectValidation(
             new LocalGhProject(
-                "github/projects/good.yml",
+                "yml/projects/good.yml",
                 new MkGithub().randomRepo()
             ).value(),
             () -> sheets
@@ -76,7 +76,7 @@ final class ProjectValidationTest {
     void foundsErrors(final Map<String, XSL> sheets) throws Exception {
         final String message = new ProjectValidation(
             new LocalGhProject(
-                "github/projects/no-arc.yml",
+                "yml/projects/no-arc.yml",
                 new MkGithub().randomRepo()
             ).value(),
             () -> sheets

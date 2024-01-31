@@ -80,7 +80,7 @@ final class GhProjectTest {
     @Test
     void returnsDependencies() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/deps.yml",
+            "yml/projects/deps.yml",
             new MkGithub().randomRepo()
         ).value();
         final List<String> deps = project.dependencies();
@@ -99,7 +99,7 @@ final class GhProjectTest {
     @Test
     void returnsPerformerName() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/with-performer.yml",
+            "yml/projects/with-performer.yml",
             new MkGithub().randomRepo()
         ).value();
         final Performer performer = project.performers().get(0);
@@ -115,7 +115,7 @@ final class GhProjectTest {
     @Test
     void returnsPerformerRoles() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/with-performer.yml",
+            "yml/projects/with-performer.yml",
             new MkGithub().randomRepo()
         ).value();
         final Performer performer = project.performers().get(0);
@@ -132,7 +132,7 @@ final class GhProjectTest {
     @Test
     void returnsRightPerformersSize() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/with-performer.yml",
+            "yml/projects/with-performer.yml",
             new MkGithub().randomRepo()
         ).value();
         final List<Performer> performers = project.performers();
@@ -148,7 +148,7 @@ final class GhProjectTest {
     @Test
     void returnsRightPerformersSizeWhenMorePerformers() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/with-more-performers.yml",
+            "yml/projects/with-more-performers.yml",
             new MkGithub().randomRepo()
         ).value();
         final List<Performer> performers = project.performers();
@@ -164,7 +164,7 @@ final class GhProjectTest {
     @Test
     void returnsRolesWhenMorePerformers() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/with-more-performers.yml",
+            "yml/projects/with-more-performers.yml",
             new MkGithub().randomRepo()
         ).value();
         final List<Performer> performers = project.performers();
@@ -195,7 +195,7 @@ final class GhProjectTest {
         new Assertion<>(
             "Project does not throw an exception, but should be, id is NULL",
             new LocalGhProject(
-                "github/projects/--no-id.yml",
+                "yml/projects/--no-id.yml",
                 new MkGithub().randomRepo()
             ).value()::identity,
             new Throws<>(
@@ -209,7 +209,7 @@ final class GhProjectTest {
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
     void ignoresAbsenceOfDependencies() throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/no-dependencies.yml",
+            "yml/projects/no-dependencies.yml",
             new MkGithub().randomRepo()
         ).value();
         new Assertion<>(
@@ -227,7 +227,7 @@ final class GhProjectTest {
         new Assertion<>(
             "Project is not ignores the absence of dependencies, but it should be",
             new LocalGhProject(
-                "github/projects/no-dependencies.yml",
+                "yml/projects/no-dependencies.yml",
                 new MkGithub().randomRepo()
             ).value()::dependencies,
             new IsNot<>(
@@ -247,12 +247,12 @@ final class GhProjectTest {
     })
     void transformsProjectsToXml(final String name) throws Exception {
         final Project project = new LocalGhProject(
-            "github/projects/%s.yml".formatted(name),
+            "yml/projects/%s.yml".formatted(name),
             new MkGithub().randomRepo()
         ).value();
         final XML xml = project.asXml();
         final XML expected = new XMLDocument(
-            new ResourceOf("github/projects/xml/%s.xml".formatted(name)).stream()
+            new ResourceOf("yml/projects/xml/%s.xml".formatted(name)).stream()
         );
         MatcherAssert.assertThat(
             "XML %s for project %s does not match with expected %s"
@@ -266,7 +266,7 @@ final class GhProjectTest {
     void returnsBacklog() throws Exception {
         final String expected = "JIRA";
         final Project project = new LocalGhProject(
-            "github/projects/backed.yml",
+            "yml/projects/backed.yml",
             new MkGithub().randomRepo()
         ).value();
         final String type = project.backlog().where();
@@ -311,6 +311,21 @@ final class GhProjectTest {
                 .formatted(suppressed, expected),
             suppressed,
             new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void returnsEmptyListIfNoSuppressed() throws Exception {
+        final Project project = new LocalGhProject(
+            "yml/projects/full.yml",
+            new MkGithub().randomRepo()
+        ).value();
+        final List<String> suppressed = project.suppressed();
+        MatcherAssert.assertThat(
+            "Suppressed values %s are not empty, but should be"
+                .formatted(suppressed),
+            suppressed.isEmpty(),
+            new IsEqual<>(true)
         );
     }
 }

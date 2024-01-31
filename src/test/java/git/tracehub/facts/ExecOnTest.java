@@ -43,7 +43,7 @@ final class ExecOnTest {
         final List<String> ids = new ListOf<>();
         new ExecOn(true, project -> ids.add(project.identity())).exec(
             new LocalGhProject(
-                "github/projects/backed.yml",
+                "yml/projects/backed.yml",
                 new MkGithub().randomRepo()
             ).value()
         );
@@ -59,7 +59,7 @@ final class ExecOnTest {
         final List<String> ids = new ListOf<>();
         new ExecOn(false, p -> ids.add(p.identity())).exec(
             new LocalGhProject(
-                "github/projects/backed.yml",
+                "yml/projects/backed.yml",
                 new MkGithub().randomRepo()
             ).value()
         );
