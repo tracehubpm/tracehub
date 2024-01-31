@@ -49,29 +49,29 @@ import org.takes.Take;
 /**
  * GitHub Take.
  *
- * @todo #25:45min Return the result of webhook.
- * Instead of thanks for webhook, I believe we should
- * return a result of sent webhook. A number of created issues,
- * closed, and other info. Don't forget to create an integration
- * test and remove this puzzle.
- * @todo #25:90min Implement branching after receiving commits.
- * As we discussed <a href="https://github.com/tracehubpm/tracehub/issues/32">here</a>
- * and <a href="https://github.com/tracehubpm/tracehub/issues/33">here</a>,
- * we should branch our TraceLogged commits into ThJobs,
- * ThJobs into created, updated and deleted. We should make it as much generic
- * as possible, since we aim to process all kinds of GitHub webhooks using Takes.
- * @todo #15:45min Create a comment on the head commit with errors.
- * Instead of sending errors as webhook result, we should create a comment
- * on a head commit from hook we got.
- * @todo #96:45min Resolve code complexity with appending responses to StringBuilder.
- * We should remove that complexity required to append strings to StringBuilder
- * we pass between objects. Lets make it more simple.
- * Don't forget to remove this puzzle.
- * @todo #96:60min Adopt a support for multiple webhook types in TkGitHub.
- * We should adopt TkGitHub to handle multiple webhook types.
- * For now lets start with push event (currently supported and processed),
- * issue_comment_created, issue_created.
  * @since 0.0.0
+ * @todo #25:45min Return the result of webhook.
+ *  Instead of thanks for webhook, I believe we should
+ *  return a result of sent webhook. A number of created issues,
+ *  closed, and other info. Don't forget to create an integration
+ *  test and remove this puzzle.
+ * @todo #25:90min Implement branching after receiving commits.
+ *  As we discussed <a href="https://github.com/tracehubpm/tracehub/issues/32">here</a>
+ *  and <a href="https://github.com/tracehubpm/tracehub/issues/33">here</a>,
+ *  we should branch our TraceLogged commits into ThJobs,
+ *  ThJobs into created, updated and deleted. We should make it as much generic
+ *  as possible, since we aim to process all kinds of GitHub webhooks using Takes.
+ * @todo #15:45min Create a comment on the head commit with errors.
+ *  Instead of sending errors as webhook result, we should create a comment
+ *  on a head commit from hook we got.
+ * @todo #96:45min Resolve code complexity with appending responses to StringBuilder.
+ *  We should remove that complexity required to append strings to StringBuilder
+ *  we pass between objects. Lets make it more simple.
+ *  Don't forget to remove this puzzle.
+ * @todo #96:60min Adopt a support for multiple webhook types in TkGitHub.
+ *  We should adopt TkGitHub to handle multiple webhook types.
+ *  For now lets start with push event (currently supported and processed),
+ *  issue_comment_created, issue_created.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
