@@ -34,6 +34,10 @@ import lombok.RequiredArgsConstructor;
  * Rules in YAML.
  *
  * @since 0.0.0
+ * @todo #111:45min Default rule values if they are not present.
+ *  We should handle the situation when some rules are not present
+ *  in project.yml:backlog:rules. We should decide the defaults
+ *  for this rules, or maybe even omit some of them.
  */
 @RequiredArgsConstructor
 public final class YmlRules implements Rules {
