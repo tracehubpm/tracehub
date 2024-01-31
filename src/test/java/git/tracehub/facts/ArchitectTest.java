@@ -45,7 +45,7 @@ final class ArchitectTest {
         final Performer architect = new Architect(
             new GhProject(
                 Yaml.createYamlInput(
-                    new ResourceOf("github/projects/backed.yml")
+                    new ResourceOf("yml/projects/backed.yml")
                         .stream()
                 ).readYamlMapping()
             ).performers()

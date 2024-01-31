@@ -59,7 +59,7 @@ final class PerformerTest {
         final List<String> expected = new ListOf<>("PO", "ARC");
         final List<String> roles = new Performer.Simple(
             Yaml.createYamlInput(
-                new ResourceOf("github/projects/one-performer.yml").stream()
+                new ResourceOf("yml/projects/one-performer.yml").stream()
             ).readYamlMapping()
         ).roles();
         MatcherAssert.assertThat(
@@ -75,7 +75,7 @@ final class PerformerTest {
         final List<String> expected = new ListOf<>("DEV");
         final List<String> roles = new Performer.Simple(
             Yaml.createYamlInput(
-                new ResourceOf("github/projects/single-role.yml").stream()
+                new ResourceOf("yml/projects/single-role.yml").stream()
             ).readYamlMapping()
         ).roles();
         MatcherAssert.assertThat(

@@ -49,7 +49,7 @@ final class GhJobTest {
     void returnsFormattedJob() throws Exception {
         final String fmt = new GhJob(
             Yaml.createYamlInput(
-                new ResourceOf("github/jobs/fix-me.yml").stream()
+                new ResourceOf("yml/jobs/fix-me.yml").stream()
             ).readYamlMapping(),
             new TextOf(
                 new ResourceOf(
@@ -73,7 +73,7 @@ final class GhJobTest {
     void returnsFormattedJobOnelineDescription() throws Exception {
         final String fmt = new GhJob(
             Yaml.createYamlInput(
-                new ResourceOf("github/jobs/oneline-description.yml").stream()
+                new ResourceOf("yml/jobs/oneline-description.yml").stream()
             ).readYamlMapping(),
             new TextOf(
                 new ResourceOf(
@@ -107,7 +107,7 @@ final class GhJobTest {
             "Exception is not thrown or invalid",
             () -> new GhJob(
                 Yaml.createYamlInput(
-                    new ResourceOf("github/jobs/--invalid.yml").stream()
+                    new ResourceOf("yml/jobs/--invalid.yml").stream()
                 ).readYamlMapping(),
                 new TextOf(
                     new ResourceOf(
@@ -123,7 +123,7 @@ final class GhJobTest {
     void returnsFormattedJobAndItsLabel() throws Exception {
         final Job job = new GhJob(
             Yaml.createYamlInput(
-                new ResourceOf("github/jobs/fix-me.yml").stream()
+                new ResourceOf("yml/jobs/fix-me.yml").stream()
             ).readYamlMapping(),
             new TextOf(
                 new ResourceOf(
@@ -164,7 +164,7 @@ final class GhJobTest {
         final Job job = new GhJob(
             Yaml.createYamlInput(
                 new ResourceOf(
-                    "github/jobs/%s.yml".formatted(name)
+                    "yml/jobs/%s.yml".formatted(name)
                 ).stream()
             ).readYamlMapping(),
             new TextOf(
@@ -175,7 +175,7 @@ final class GhJobTest {
         );
         final XML xml = job.asXml();
         final XML expected = new XMLDocument(
-            new ResourceOf("github/jobs/xml/%s.xml".formatted(name)).stream()
+            new ResourceOf("yml/jobs/xml/%s.xml".formatted(name)).stream()
         );
         MatcherAssert.assertThat(
             "XML %s for job %s does not match with expected %s"

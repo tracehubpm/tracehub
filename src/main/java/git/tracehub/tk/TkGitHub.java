@@ -35,6 +35,7 @@ import git.tracehub.agents.github.GhProject;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.facts.ExecOn;
+import git.tracehub.validation.Excluded;
 import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
 import java.util.function.Consumer;
@@ -99,11 +100,14 @@ public final class TkGitHub implements Take {
                 project,
                 new Remote(
                     this.tag,
-                    () -> new ListOf<>(
-                        "struct",
-                        "errors",
-                        "project/arc",
-                        "project/dev"
+                    new Excluded(
+                        new ListOf<>(
+                            "struct",
+                            "errors",
+                            "project/arc",
+                            "project/dev"
+                        ),
+                        project.suppressed()
                     )
                 )
             ),

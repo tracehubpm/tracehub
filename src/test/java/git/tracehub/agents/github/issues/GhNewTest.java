@@ -94,7 +94,7 @@ final class GhNewTest {
                 )
             );
         final Project project = new LocalGhProject(
-            "github/projects/many-performers.yml", repo
+            "yml/projects/many-performers.yml", repo
         ).value();
         final List<Issue> created = new GhNew(
             project,

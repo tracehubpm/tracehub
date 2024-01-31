@@ -89,7 +89,7 @@ final class GhOrderTest {
             () -> out
         ).exec(
             new LocalGhProject(
-                "github/projects/backed.yml",
+                "yml/projects/backed.yml",
                 repo
             ).value()
         );

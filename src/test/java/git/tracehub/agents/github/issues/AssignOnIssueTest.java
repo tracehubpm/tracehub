@@ -54,10 +54,10 @@ final class AssignOnIssueTest {
         final String expected = "h1alexbel";
         final Issue.Smart issue = new Issue.Smart(
             new AssignOnIssue(
-                new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
+                new LocalGhProject("yml/projects/single-dev-arc.yml", repo).value(),
                 new GhJob(
                     Yaml.createYamlInput(
-                        new ResourceOf("github/jobs/for-arc.yml").stream()
+                        new ResourceOf("yml/jobs/for-arc.yml").stream()
                     ).readYamlMapping(),
                     new TextOf(
                         new ResourceOf(
@@ -90,10 +90,10 @@ final class AssignOnIssueTest {
         final String expected = "h1alexbel";
         final Issue.Smart issue = new Issue.Smart(
             new AssignOnIssue(
-                new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
+                new LocalGhProject("yml/projects/single-dev-arc.yml", repo).value(),
                 new GhJob(
                     Yaml.createYamlInput(
-                        new ResourceOf("github/jobs/no-role.yml").stream()
+                        new ResourceOf("yml/jobs/no-role.yml").stream()
                     ).readYamlMapping(),
                     new TextOf(
                         new ResourceOf(
@@ -127,10 +127,10 @@ final class AssignOnIssueTest {
             "Issue was not assigned, but it should be",
             new Issue.Smart(
                 new AssignOnIssue(
-                    new LocalGhProject("github/projects/many-performers.yml", repo).value(),
+                    new LocalGhProject("yml/projects/many-performers.yml", repo).value(),
                     new GhJob(
                         Yaml.createYamlInput(
-                            new ResourceOf("github/jobs/no-role.yml").stream()
+                            new ResourceOf("yml/jobs/no-role.yml").stream()
                         ).readYamlMapping(),
                         new TextOf(
                             new ResourceOf(
@@ -154,10 +154,10 @@ final class AssignOnIssueTest {
         final String text = new Comment.Smart(
             new Issue.Smart(
                 new AssignOnIssue(
-                    new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
+                    new LocalGhProject("yml/projects/single-dev-arc.yml", repo).value(),
                     new GhJob(
                         Yaml.createYamlInput(
-                            new ResourceOf("github/jobs/for-arc.yml").stream()
+                            new ResourceOf("yml/jobs/for-arc.yml").stream()
                         ).readYamlMapping(),
                         new TextOf(
                             new ResourceOf(
@@ -186,10 +186,10 @@ final class AssignOnIssueTest {
         final String text = new Comment.Smart(
             new Issue.Smart(
                 new AssignOnIssue(
-                    new LocalGhProject("github/projects/single-dev-arc.yml", repo).value(),
+                    new LocalGhProject("yml/projects/single-dev-arc.yml", repo).value(),
                     new GhJob(
                         Yaml.createYamlInput(
-                            new ResourceOf("github/jobs/testing.yml").stream()
+                            new ResourceOf("yml/jobs/testing.yml").stream()
                         ).readYamlMapping(),
                         new TextOf(
                             new ResourceOf(
