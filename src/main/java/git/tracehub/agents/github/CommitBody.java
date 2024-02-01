@@ -41,7 +41,7 @@ public final class CommitBody implements Scalar<JsonObject> {
     /**
      * Tree.
      */
-    private final Tree tree;
+    private final Scalar<Tree> tree;
 
     /**
      * Head.
@@ -57,7 +57,7 @@ public final class CommitBody implements Scalar<JsonObject> {
     public JsonObject value() throws Exception {
         return Json.createObjectBuilder()
             .add("message", "sync(#%s)".formatted(this.from.number()))
-            .add("tree", this.tree.sha())
+            .add("tree", this.tree.value().sha())
             .add(
                 "parents",
                 Json.createArrayBuilder().add(this.head.getString("sha")).build()

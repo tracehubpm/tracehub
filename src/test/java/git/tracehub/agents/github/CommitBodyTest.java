@@ -53,7 +53,7 @@ final class CommitBodyTest {
         final String json = new Jocument(
             new JsonOf(
                 new CommitBody(
-                    mock,
+                    () -> mock,
                     Json.createObjectBuilder()
                         .add("sha", "123")
                         .build(),
