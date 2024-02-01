@@ -32,12 +32,12 @@ import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 
 /**
- * GitHub Tree request.
+ * GitHub Tree request body.
  *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
-public final class TreeRequest implements Scalar<JsonObject> {
+public final class TreeBody implements Scalar<JsonObject> {
 
     /**
      * Head.

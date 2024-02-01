@@ -36,11 +36,11 @@ import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link TreeRequest}.
+ * Test case for {@link TreeBody}.
  *
  * @since 0.0.0
  */
-final class TreeRequestTest {
+final class TreeBodyTest {
 
     @Test
     void readsJson() throws Exception {
@@ -48,7 +48,7 @@ final class TreeRequestTest {
         final Issue created = repo.issues().create(
             "Tree request test", "TreeRequest.java needs to be tested"
         );
-        final JsonObject json = new TreeRequest(
+        final JsonObject json = new TreeBody(
             Json.createObjectBuilder()
                 .add("tree", Json.createObjectBuilder().add("sha", "123"))
                 .build(),
