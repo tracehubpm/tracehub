@@ -57,6 +57,7 @@ final class CreateCommitTest {
      */
     @Test
     @Disabled
+    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
     void createsCommit() throws Exception {
         final Repo repo = new MkGithub().randomRepo();
         final JsonObject head = Json.createObjectBuilder()

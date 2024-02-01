@@ -48,7 +48,7 @@ public final class CreateCommit implements Scalar<Commit> {
     private final Scalar<JsonObject> commit;
 
     @Override
-    public com.jcabi.github.Commit value() throws Exception {
+    public Commit value() throws Exception {
         return this.repo.git().commits().create(
             this.commit.value()
         );
