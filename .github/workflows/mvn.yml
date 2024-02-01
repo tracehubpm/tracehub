@@ -32,7 +32,7 @@ jobs:
           key: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-jdk-${{ matrix.java }}-maven-
       - run: |
-         echo ${{ github.actor }}"
+         echo "User: ${{ github.actor }}"
          echo "Email: ${{ github.event.pusher.email }}"
          mvn clean install -Pjacoco --errors --batch-mode
   simulation:
