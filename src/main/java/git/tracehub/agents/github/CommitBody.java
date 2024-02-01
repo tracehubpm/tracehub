@@ -21,21 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub.agents.github;
 
-import java.io.IOException;
+import com.jcabi.github.Issue;
+import com.jcabi.github.Tree;
+import javax.json.Json;
+import javax.json.JsonObject;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Agent's Action.
+ * GitHub commit request body.
  *
  * @since 0.0.0
  */
-public interface Act {
+@RequiredArgsConstructor
+public final class CommitBody implements Scalar<JsonObject> {
 
     /**
-     * Execute.
-     *
-     * @throws IOException if I/O fails
+     * Tree.
      */
-    void exec() throws IOException;
+    private final Scalar<Tree> tree;
+
+    /**
+     * Head.
+     */
+    private final JsonObject head;
+
+    /**
+     * Issue.
+     */
+    private final Issue.Smart from;
+
+    @Override
+    public JsonObject value() throws Exception {
+        return Json.createObjectBuilder()
+            .add("message", "sync(#%s)".formatted(this.from.number()))
+            .add("tree", this.tree.value().sha())
+            .add(
+                "parents",
+                Json.createArrayBuilder().add(this.head.getString("sha")).build()
+            ).build();
+    }
 }

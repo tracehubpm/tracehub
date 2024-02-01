@@ -1,0 +1,11 @@
+{
+  "base_tree": "123",
+  "tree": [
+    {
+      "path": ".trace/jobs/tree-request-test.yml",
+      "mode": "100644",
+      "type": "blob",
+      "content": "label: Tree request test"
+    }
+  ]
+}
