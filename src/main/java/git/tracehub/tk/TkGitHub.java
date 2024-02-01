@@ -72,6 +72,22 @@ import org.takes.Take;
  *  We should adopt TkGitHub to handle multiple webhook types.
  *  For now lets start with push event (currently supported and processed),
  *  issue_comment_created, issue_created.
+ * @todo #118:90min Implement OnNew.java.
+ *  We should parse on opened issue event that comes from GitHub as webhook,
+ *  check if the author of opened issue is not tracehubgit and add
+ *  label `new` to opened issue.
+ * @todo #122:90min Implement OnAttachedLabel.java.
+ *  We should parse on attached label event that comes to us
+ *  from GitHub webhook. If label was `bug` that we should
+ *  launch {@link git.tracehub.agents.github.CreatePull} or other related integration.
+ * @todo #122:30min Extract commits only on push event.
+ *  We should implement OnPush.java that will handle that.
+ *  Depends on <a href="https://github.com/tracehubpm/tracehub/issues/56">this</a> issue.
+ *  Don't forget this remove this puzzle.
+ * @todo #51:90min Parse and send incoming requests into distributed queue.
+ *  We should parse incoming requests, transform them and send into queue
+ *  for further processing. On queue consumer side, it will be handled after
+ *  in a FIFO way.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
