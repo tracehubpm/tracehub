@@ -21,21 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents;
+package git.tracehub.agents.github;
 
-import java.io.IOException;
+import com.jcabi.github.Commit;
+import com.jcabi.github.Repo;
+import javax.json.JsonObject;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Agent's Action.
+ * Create GitHub commit.
  *
  * @since 0.0.0
  */
-public interface Act {
+@RequiredArgsConstructor
+public final class CreateCommit implements Scalar<Commit> {
 
     /**
-     * Execute.
-     *
-     * @throws IOException if I/O fails
+     * Repo.
      */
-    void exec() throws IOException;
+    private final Repo repo;
+
+    /**
+     * Commit body.
+     */
+    private final Scalar<JsonObject> commit;
+
+    @Override
+    public com.jcabi.github.Commit value() throws Exception {
+        return this.repo.git().commits().create(
+            this.commit.value()
+        );
+    }
 }
