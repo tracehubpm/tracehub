@@ -1,19 +1,37 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023-2024 Tracehub.git
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package git.tracehub.agents.github;
 
-import com.jcabi.github.Branch;
-import com.jcabi.github.Commit;
-import com.jcabi.github.Coordinates;
-import com.jcabi.github.Issue;
-import com.jcabi.github.Reference;
-import com.jcabi.github.Repo;
-import com.jcabi.github.RtGithub;
-import com.jcabi.github.Tree;
-import git.tracehub.KebabCase;
-import java.time.Instant;
-import javax.json.Json;
-import javax.json.JsonObject;
-import org.junit.jupiter.api.Tag;
+import com.jcabi.github.mock.MkGithub;
+import io.github.eocqrs.eokson.Jocument;
+import io.github.eocqrs.eokson.JsonOf;
+import org.cactoos.io.ResourceOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link CreatePull}.
@@ -22,69 +40,46 @@ import org.junit.jupiter.api.Test;
  */
 final class CreatePullTest {
 
+    /**
+     * Test case for creating pull request in MkGithub.
+     *
+     * @throws Exception if something went wrong
+     * @todo #122:90min Enable this test when {@link com.jcabi.github.mock.MkBranches}
+     *  will implement #find(name) method. For now it can't be tested, since
+     *  mock branch implementation does not work as expected, actually
+     *  for now it throws the following exception:
+     *  java.lang.UnsupportedOperationException: find(name) not implemented.
+     */
     @Test
-    @Tag("simulation")
+    @Disabled
     void createsPull() throws Exception {
-        final Repo repo = new RtGithub(
-            "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"
-        ).repos().get(new Coordinates.Simple("h1alexbel/test"));
-        final Issue.Smart submitted = new Issue.Smart(repo.issues().get(84));
-
-        final Branch master = repo.branches().find("master");
-        final JsonObject json = master.commit().json();
-        final String sha = json.getString("sha");
-        final String tsha = json.getJsonObject("tree").getString("sha");
-
-        final String formatted = ".trace/jobs/%s.yml".formatted(
-            new KebabCase(submitted.title()).asString()
-        );
-        System.out.println(formatted);
-        final Tree tree = repo.git().trees().create(
-            Json.createObjectBuilder()
-                .add("base_tree", tsha)
-                .add(
-                    "tree",
-                    Json.createArrayBuilder()
-                        .add(
-                            Json.createObjectBuilder()
-                                .add("path", formatted)
-                                .add("mode", "100644")
-                                .add("type", "blob")
-                                .add("content", "")
-                                .build()
-                        ).build()
-                )
-                .build()
-        );
-        final String csha = tree.sha();
-        final Commit commit = repo.git().commits().create(
-            Json.createObjectBuilder()
-                .add("message", "sync(#%s)".formatted(submitted.number()))
-                .add("tree", csha)
-                .add(
-                    "parents", Json.createArrayBuilder()
-                        .add(sha)
-                        .build()
-                )
-                .build()
-        );
-        System.out.println(commit.json());
-        final String cmsha = commit.sha();
-        Reference reference;
-        final long millis = Instant.now().toEpochMilli();
-        try {
-            repo.git().references().get("refs/heads/sync-%s".formatted(millis)).json();
-            reference = repo.git().references().get("refs/heads/sync-%s".formatted(millis));
-        } catch (final AssertionError er) {
-            reference = repo.git().references().create(
-                "refs/heads/sync-%s".formatted(millis),
-                cmsha
-            );
-        }
-        repo.pulls().create(
-            "sync(#%s)".formatted(submitted.number()),
-            reference.ref(),
-            "master"
+        final String json = new Jocument(
+            new JsonOf(
+                new CreatePull(
+                    new RqFake(
+                        "POST",
+                        "",
+                        new Jocument(
+                            new JsonOf(
+                                new ResourceOf(
+                                    "github/hooks/opened/new-issue.json"
+                                ).stream()
+                            )
+                        ).pretty()
+                    ),
+                    new MkGithub().randomRepo(),
+                    "master"
+                ).value().json().toString()
+            )
+        ).pretty();
+        final String expected = new Jocument(
+            new JsonOf(new ResourceOf("github/pulls/test-pull.json").stream())
+        ).pretty();
+        MatcherAssert.assertThat(
+            "Pull JSON %s does not match with expected %s"
+                .formatted(json, expected),
+            json,
+            new IsEqual<>(expected)
         );
     }
 }
