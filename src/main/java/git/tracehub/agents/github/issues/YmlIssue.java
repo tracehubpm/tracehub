@@ -33,6 +33,13 @@ import org.cactoos.Scalar;
  * GitHub issue in YAML.
  *
  * @since 0.0.0
+ * @todo #122:30min Form other YAML fields from issue body.
+ *  We should add other fields in our YAML: `description`,
+ *  `cost`, `role`. We should process body in pattern way,
+ *  so we can find what kind of role and cost were specified.
+ *  Moreover, we need to cut off this parsed from description,
+ *  we should keep it without information about cost and role,
+ *  since it already passed in related YAML fields.
  */
 @RequiredArgsConstructor
 public final class YmlIssue implements Scalar<YamlMapping> {
