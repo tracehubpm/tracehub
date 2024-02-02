@@ -84,6 +84,11 @@ import org.takes.Take;
  *  We should parse incoming requests, transform them and send into queue
  *  for further processing. On queue consumer side, it will be handled after
  *  in a FIFO way.
+ * @todo #126:45min Implement OnComment.java.
+ *  We should implement logic that parses incoming comments
+ *  and tries to pattern match them into one of the available categories.
+ *  Can be postponed, its not an urgent one. Don't forget to remove
+ *  this puzzle.
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
