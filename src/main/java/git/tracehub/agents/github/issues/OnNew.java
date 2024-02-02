@@ -36,6 +36,11 @@ import org.takes.Request;
  * On new opened issue.
  *
  * @since 0.0.0
+ * @todo #125:45min Create an integration test for OnNew.java.
+ *  We should create a few integration tests that will check
+ *  both cases: labeled issue, and issue ignored. It can be done
+ *  right after we will implement <a href="https://github.com/tracehubpm/tracehub/issues/105">this</a>,
+ *  include it in {@link git.tracehub.tk.TkGitHub}, so it will be testable.
  */
 @RequiredArgsConstructor
 public final class OnNew implements Scalar<Issue> {
