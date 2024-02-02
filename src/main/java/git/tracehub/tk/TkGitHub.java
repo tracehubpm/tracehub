@@ -32,6 +32,7 @@ import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
 import git.tracehub.agents.github.GhOrder;
 import git.tracehub.agents.github.GhProject;
+import git.tracehub.agents.github.OnPush;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.facts.ExecOn;
@@ -100,11 +101,8 @@ public final class TkGitHub implements Take {
 
     @Override
     public Response act(final Request req) throws Exception {
-        final Commit commit = new TraceLogged(
-            new TraceOnly(new Composed(new GhCommits(req)))
-        );
         final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(commit.repo())
+            new RqRepo(req).value().coordinates()
         );
         final Project project = new GhProject(repo);
         return new ErrorsCase(
@@ -128,10 +126,8 @@ public final class TkGitHub implements Take {
                 @SneakyThrows
                 @Override
                 public void accept(final StringBuilder out) {
-                    new ExecOn(
-                        "GitHub".equals(project.backlog().where()),
-                        new GhOrder(commit, repo, () -> out)
-                    ).exec(project);
+                    // on act match
+                    out.append(new OnPush(repo, project, req).value());
                 }
             }
         ).value();
