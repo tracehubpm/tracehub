@@ -41,6 +41,10 @@ public final class Architect implements Performer {
      */
     private final Scalar<Performer> him;
 
+    /**
+     * Ctor.
+     * @param project Project
+     */
     public Architect(final Project project) {
         this(project.performers());
     }
