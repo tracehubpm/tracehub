@@ -25,17 +25,17 @@ package it;
 
 import com.jcabi.github.Coordinates;
 import com.jcabi.github.Pull;
+import com.jcabi.github.Repo;
 import git.tracehub.agents.github.CreatePull;
+import git.tracehub.agents.github.issues.RqIssue;
 import git.tracehub.identity.GhIdentity;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Integration test case for {@link CreatePull}.
@@ -47,19 +47,18 @@ final class CreatePullITCase {
     @Test
     @Tag("simulation")
     void createsPull() throws Exception {
+        final Repo repo = new GhIdentity().value().repos()
+            .get(new Coordinates.Simple("h1alexbel/test"));
         final Pull.Smart created = new Pull.Smart(
             new CreatePull(
-                new RqFake(
-                    "POST",
-                    "",
-                    new Jocument(
-                        new JsonOf(
-                            new ResourceOf("it/github/new-issue.json").stream()
-                        )
-                    ).pretty()
-                ),
-                new GhIdentity().value().repos()
-                    .get(new Coordinates.Simple("h1alexbel/test")),
+                new RqIssue(
+                    Json.createReader(
+                        new ResourceOf("it/github/new-issue.json")
+                            .stream()
+                    ).readObject(),
+                    repo
+                ).value(),
+                repo,
                 "master"
             ).value()
         );

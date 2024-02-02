@@ -54,7 +54,7 @@ final class ThJobsTest {
                                     new Jocument(
                                         new JsonOf(
                                             new ResourceOf(
-                                                "github/hooks/more-duplicates.json"
+                                                "github/hooks/push/more-duplicates.json"
                                             ).stream()
                                         )
                                     ).pretty()
@@ -105,7 +105,7 @@ final class ThJobsTest {
                                     new Jocument(
                                         new JsonOf(
                                             new ResourceOf(
-                                                "github/hooks/more-duplicates.json"
+                                                "github/hooks/push/more-duplicates.json"
                                             ).stream()
                                         )
                                     ).pretty()

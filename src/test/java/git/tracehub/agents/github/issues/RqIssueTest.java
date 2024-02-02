@@ -21,55 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents.github;
+package git.tracehub.agents.github.issues;
 
+import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link CreatePull}.
+ * Test case for {@link RqIssue}.
  *
  * @since 0.0.0
  */
-final class CreatePullTest {
+final class RqIssueTest {
 
-    /**
-     * Test case for creating pull request in MkGithub.
-     *
-     * @throws Exception if something went wrong
-     * @todo #122:90min Enable this test when {@link com.jcabi.github.mock.MkBranches}
-     *  will implement #find(name) method. For now it can't be tested, since
-     *  mock branch implementation does not work as expected, actually
-     *  for now it throws the following exception:
-     *  java.lang.UnsupportedOperationException: find(name) not implemented.
-     */
     @Test
-    @Disabled
-    void createsPull() throws Exception {
+    void returnsIssue() throws Exception {
         final Repo repo = new MkGithub().randomRepo();
-        final String json = new Jocument(
-            new JsonOf(
-                new CreatePull(
-                    repo.issues().create("This one needs sync", ""),
-                    repo,
-                    "master"
-                ).value().json().toString()
-            )
-        ).pretty();
-        final String expected = new Jocument(
-            new JsonOf(new ResourceOf("github/pulls/test-pull.json").stream())
-        ).pretty();
+        final String expected = "Some new issue";
+        final Issue created = repo.issues().create(expected, "");
+        final Issue found = new RqIssue(
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/opened/mock-new-issue.json"
+                ).stream()
+            ).readObject(),
+            repo
+        ).value();
         MatcherAssert.assertThat(
-            "Pull JSON %s does not match with expected %s"
-                .formatted(json, expected),
-            json,
+            "Issue %s is not found, but should be"
+                .formatted(new Issue.Smart(created)),
+            found.exists(),
+            new IsEqual<>(true)
+        );
+        MatcherAssert.assertThat(
+            "Issue title '%s' does not match with expected",
+            new Issue.Smart(found).title(),
             new IsEqual<>(expected)
         );
     }

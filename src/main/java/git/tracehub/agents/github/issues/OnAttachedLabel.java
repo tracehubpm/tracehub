@@ -21,74 +21,60 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.agents.github;
+package git.tracehub.agents.github.issues;
 
-import com.jcabi.github.Commit;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Pull;
-import com.jcabi.github.Reference;
 import com.jcabi.github.Repo;
-import java.time.Instant;
+import git.tracehub.agents.github.CreatePull;
+import git.tracehub.agents.github.GhProject;
+import git.tracehub.facts.Architect;
+import javax.json.Json;
 import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.takes.Request;
 
 /**
- * Create GitHub pull request.
- *
+ * On attached label to an issue in GitHub.
+ * Webhook payload is issues:labeled, read
+ * <a href="https://docs.github.com/en/webhooks/webhook-events-and-payloads?actionType=labeled#issues">this</a>
+ * for more info.
  * @since 0.0.0
+ * @todo #126:45min Introduce unit tests for OnAttachedLabel.java
+ *  We should introduce unit tests for this class. It one depends on
+ *  <a href="https://github.com/tracehubpm/tracehub/issues/130">this</a> issue.
  */
 @RequiredArgsConstructor
-public final class CreatePull implements Scalar<Pull> {
+public final class OnAttachedLabel implements Scalar<Issue> {
 
     /**
-     * Issue.
+     * Request.
      */
-    private final Issue issue;
+    private final Request request;
 
     /**
      * Repo.
      */
     private final Repo repo;
 
-    /**
-     * Target branch.
-     */
-    private final String target;
-
     @Override
-    public Pull value() throws Exception {
-        final Issue.Smart submitted = new Issue.Smart(this.issue);
-        final JsonObject head = this.repo.branches()
-            .find(this.target)
-            .commit().json();
-        final Commit commit = new CreateCommit(
-            this.repo,
-            new CommitBody(
-                new CreateTree(
-                    this.repo,
-                    new TreeBody(head, submitted)
-                ),
-                head,
-                submitted
-            )
-        ).value();
-        Reference reference;
-        final long millis = Instant.now().toEpochMilli();
-        final String rfmt = "refs/heads/sync-%s".formatted(millis);
-        try {
-            this.repo.git().references().get(rfmt).json();
-            reference = this.repo.git().references().get(rfmt);
-        } catch (final AssertionError err) {
-            reference = this.repo.git().references().create(
-                rfmt,
-                commit.sha()
+    public Issue value() throws Exception {
+        final JsonObject json = Json.createReader(this.request.body())
+            .readObject();
+        final String label = json.getJsonObject("label").getString("name");
+        final Issue issue = new RqIssue(json, this.repo).value();
+        if ("bug".equals(label)) {
+            final Pull created = new CreatePull(issue, this.repo, "master")
+                .value();
+            issue.comments().post(
+                "@%s, I've created #%s for adding this issue into work queue."
+                    .formatted(
+                        new Architect(new GhProject(this.repo).performers()).name(),
+                        created.number()
+                    )
             );
         }
-        return this.repo.pulls().create(
-            "sync(#%s)".formatted(submitted.number()),
-            reference.ref(),
-            this.target
-        );
+        return issue;
     }
 }
