@@ -24,8 +24,10 @@
 package git.tracehub.facts;
 
 import com.amihaiemil.eoyaml.Yaml;
+import com.jcabi.github.mock.MkGithub;
 import git.tracehub.Performer;
 import git.tracehub.agents.github.GhProject;
+import git.tracehub.extensions.LocalGhProject;
 import java.util.List;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
@@ -68,6 +70,30 @@ final class ArchitectTest {
                 .formatted(roles, rexpected),
             roles,
             new IsEqual<>(rexpected)
+        );
+    }
+
+    @Test
+    void findsArchitectInProject() throws Exception {
+        final Performer architect = new Architect(
+            new LocalGhProject(
+                "yml/projects/single-dev-arc.yml",
+                new MkGithub().randomRepo()
+            ).value()
+        );
+        final String name = architect.name();
+        final String expected = "h1alexbel";
+        MatcherAssert.assertThat(
+            "Architects name %s does not match with expected %s"
+                .formatted(name, expected),
+            name,
+            new IsEqual<>(expected)
+        );
+        MatcherAssert.assertThat(
+            "Performer %s does not have ARC role, but should be"
+                .formatted(name),
+            architect.roles().contains("ARC"),
+            new IsEqual<>(true)
         );
     }
 }

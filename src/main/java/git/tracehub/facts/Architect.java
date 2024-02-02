@@ -24,6 +24,7 @@
 package git.tracehub.facts;
 
 import git.tracehub.Performer;
+import git.tracehub.Project;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
@@ -42,6 +43,14 @@ public final class Architect implements Performer {
 
     /**
      * Ctor.
+     * @param project Project
+     */
+    public Architect(final Project project) {
+        this(project.performers());
+    }
+
+    /**
+     * Ctor.
      *
      * @param crew Crew
      */
@@ -54,7 +63,7 @@ public final class Architect implements Performer {
      *
      * @param performer Performer
      */
-    public Architect(final Scalar<Performer> performer) {
+    Architect(final Scalar<Performer> performer) {
         this.him = performer;
     }
 

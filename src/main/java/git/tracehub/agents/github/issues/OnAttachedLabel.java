@@ -70,7 +70,7 @@ public final class OnAttachedLabel implements Scalar<Issue> {
             issue.comments().post(
                 "@%s, I've created #%s for adding this issue into work queue."
                     .formatted(
-                        new Architect(new GhProject(this.repo).performers()).name(),
+                        new Architect(new GhProject(this.repo)).name(),
                         created.number()
                     )
             );
