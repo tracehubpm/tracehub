@@ -72,10 +72,6 @@ import org.takes.Take;
  *  We should adopt TkGitHub to handle multiple webhook types.
  *  For now lets start with push event (currently supported and processed),
  *  issue_comment_created, issue_created.
- * @todo #122:90min Implement OnAttachedLabel.java.
- *  We should parse on attached label event that comes to us
- *  from GitHub webhook. If label was `bug` that we should
- *  launch {@link git.tracehub.agents.github.CreatePull} or other related integration.
  * @todo #122:30min Extract commits only on push event.
  *  We should implement OnPush.java that will handle that.
  *  Depends on <a href="https://github.com/tracehubpm/tracehub/issues/56">this</a> issue.

@@ -73,7 +73,7 @@ final class TkGitHubTest {
                     new Jocument(
                         new JsonOf(
                             new ResourceOf(
-                                "github/hooks/mock.json"
+                                "github/hooks/push/mock.json"
                             ).stream()
                         )
                     ).pretty()
@@ -125,7 +125,7 @@ final class TkGitHubTest {
                     new Jocument(
                         new JsonOf(
                             new ResourceOf(
-                                "github/hooks/mock.json"
+                                "github/hooks/push/mock.json"
                             ).stream()
                         )
                     ).pretty()
@@ -165,7 +165,7 @@ final class TkGitHubTest {
                     new Jocument(
                         new JsonOf(
                             new ResourceOf(
-                                "github/hooks/mock.json"
+                                "github/hooks/push/mock.json"
                             ).stream()
                         )
                     ).pretty()
@@ -217,7 +217,7 @@ final class TkGitHubTest {
                     new Jocument(
                         new JsonOf(
                             new ResourceOf(
-                                "github/hooks/mock.json"
+                                "github/hooks/push/mock.json"
                             ).stream()
                         )
                     ).pretty()
