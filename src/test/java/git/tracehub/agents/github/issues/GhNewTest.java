@@ -83,7 +83,7 @@ final class GhNewTest {
                                     new Jocument(
                                         new JsonOf(
                                             new ResourceOf(
-                                                "github/hooks/created-jobs.json"
+                                                "github/hooks/push/created-jobs.json"
                                             ).stream()
                                         )
                                     ).pretty()

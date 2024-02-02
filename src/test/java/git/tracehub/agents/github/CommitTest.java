@@ -48,7 +48,7 @@ final class CommitTest {
                 "",
                 new Jocument(
                     new JsonOf(
-                        new ResourceOf("github/hooks/single-commit.json").stream()
+                        new ResourceOf("github/hooks/push/single-commit.json").stream()
                     )
                 ).pretty()
             )
@@ -101,7 +101,7 @@ final class CommitTest {
                 "",
                 new Jocument(
                     new JsonOf(
-                        new ResourceOf("github/hooks/many-commits.json").stream()
+                        new ResourceOf("github/hooks/push/many-commits.json").stream()
                     )
                 ).pretty()
             )
@@ -150,7 +150,7 @@ final class CommitTest {
                 "",
                 new Jocument(
                     new JsonOf(
-                        new ResourceOf("github/hooks/many-commits.json").stream()
+                        new ResourceOf("github/hooks/push/many-commits.json").stream()
                     )
                 ).pretty()
             )
@@ -174,7 +174,7 @@ final class CommitTest {
                 "",
                 new Jocument(
                     new JsonOf(
-                        new ResourceOf("github/hooks/many-commits.json").stream()
+                        new ResourceOf("github/hooks/push/many-commits.json").stream()
                     )
                 ).pretty()
             )
