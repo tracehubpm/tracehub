@@ -72,10 +72,6 @@ import org.takes.Take;
  *  We should adopt TkGitHub to handle multiple webhook types.
  *  For now lets start with push event (currently supported and processed),
  *  issue_comment_created, issue_created.
- * @todo #118:90min Implement OnNew.java.
- *  We should parse on opened issue event that comes from GitHub as webhook,
- *  check if the author of opened issue is not tracehubgit and add
- *  label `new` to opened issue.
  * @todo #122:90min Implement OnAttachedLabel.java.
  *  We should parse on attached label event that comes to us
  *  from GitHub webhook. If label was `bug` that we should
