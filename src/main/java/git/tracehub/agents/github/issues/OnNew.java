@@ -1,0 +1,73 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023-2024 Tracehub.git
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+package git.tracehub.agents.github.issues;
+
+import com.jcabi.github.Issue;
+import com.jcabi.github.Repo;
+import git.tracehub.facts.Mine;
+import java.util.List;
+import javax.json.Json;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
+import org.takes.Request;
+
+/**
+ * On new opened issue.
+ *
+ * @since 0.0.0
+ */
+@RequiredArgsConstructor
+public final class OnNew implements Scalar<Issue> {
+
+    /**
+     * Repo.
+     */
+    private final Repo repo;
+
+    /**
+     * Request.
+     */
+    private final Request request;
+
+    /**
+     * Labels.
+     */
+    private final List<String> labels;
+
+    @Override
+    public Issue value() throws Exception {
+        final Issue.Smart submitted = new Issue.Smart(
+            this.repo.issues().get(
+                Json.createReader(this.request.body())
+                    .readObject()
+                    .getJsonObject("issue")
+                    .getInt("number")
+            )
+        );
+        if (!new Mine(submitted).value()) {
+            submitted.labels().add(this.labels);
+        }
+        return submitted;
+    }
+}
