@@ -49,8 +49,9 @@ import org.takes.rs.RsPrint;
  *  We should resolve code duplication inside blocks where we setup
  *  MkGithub, each time and the same. We should consider creating JUnit
  *  extension for this configuration and similar.
- * @checkstyle StringLiteralsConcatenationCheck (200 lines)
+ * @checkstyle StringLiteralsConcatenationCheck (300 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class TkGitHubTest {
 
     @Test

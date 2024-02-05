@@ -25,14 +25,11 @@ package git.tracehub.agents.github;
 
 import com.jcabi.log.Logger;
 import java.util.List;
-import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
-import org.takes.Request;
 
 /**
  * GitHub commits.

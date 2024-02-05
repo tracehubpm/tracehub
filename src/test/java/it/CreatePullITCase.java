@@ -63,7 +63,7 @@ final class CreatePullITCase {
             ).value()
         );
         final String title = created.title();
-        final String texpected = "sync(#48)";
+        final String texpected = "sync(#142)";
         MatcherAssert.assertThat(
             "Pull Request title %s does not match with expected %s"
                 .formatted(title, texpected),

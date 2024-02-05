@@ -36,6 +36,7 @@ public interface Order {
      * Exec on project.
      *
      * @param project Project
+     * @throws Exception if something went wrong
      */
     void exec(Project project) throws Exception;
 }

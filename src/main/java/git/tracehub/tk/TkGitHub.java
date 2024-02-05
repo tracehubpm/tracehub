@@ -23,17 +23,14 @@
  */
 package git.tracehub.tk;
 
-import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import git.tracehub.Project;
-import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
 import git.tracehub.agents.github.GhOrder;
 import git.tracehub.agents.github.GhProject;
 import git.tracehub.agents.github.HookAction;
-import git.tracehub.agents.github.OnPush;
 import git.tracehub.agents.github.RqRepo;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
@@ -43,25 +40,21 @@ import git.tracehub.facts.ExecOn;
 import git.tracehub.validation.Excluded;
 import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 import javax.json.Json;
 import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
-import org.takes.rs.RsJson;
-import org.takes.rs.RsText;
 
 /**
  * GitHub Take.
  *
  * @since 0.0.0
+ * @checkstyle AnonInnerLengthCheck (110 lines)
  * @todo #25:45min Return the result of webhook.
  *  Instead of thanks for webhook, I believe we should
  *  return a result of sent webhook. A number of created issues,
@@ -80,10 +73,6 @@ import org.takes.rs.RsText;
  *  We should remove that complexity required to append strings to StringBuilder
  *  we pass between objects. Lets make it more simple.
  *  Don't forget to remove this puzzle.
- * @todo #96:60min Adopt a support for multiple webhook types in TkGitHub.
- *  We should adopt TkGitHub to handle multiple webhook types.
- *  For now lets start with push event (currently supported and processed),
- *  issue_comment_created, issue_created.
  * @todo #122:30min Extract commits only on push event.
  *  We should implement OnPush.java that will handle that.
  *  Depends on <a href="https://github.com/tracehubpm/tracehub/issues/56">this</a> issue.
@@ -97,6 +86,10 @@ import org.takes.rs.RsText;
  *  and tries to pattern match them into one of the available categories.
  *  Can be postponed, its not an urgent one. Don't forget to remove
  *  this puzzle.
+ * @todo #105:30min Map event codes and objects to execute.
+ *  We should map all event codes: `push`, `opened`, `labeled`, and
+ *  etc. with objects that will execute that events (OnPush, OnNew,
+ *  OnAttachedLabel, and so on).
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -140,21 +133,19 @@ public final class TkGitHub implements Take {
                 @Override
                 public void accept(final StringBuilder out) {
                     if ("push".equals(action)) {
-                        new OnPush(
-                            new ExecOn(
-                                "GitHub".equals(project.backlog().where()),
-                                new GhOrder(
-                                    new TraceLogged(
-                                        new TraceOnly(
-                                            new Composed(
-                                                new GhCommits(
-                                                    json
-                                                )
+                        new ExecOn(
+                            "GitHub".equals(project.backlog().where()),
+                            new GhOrder(
+                                new TraceLogged(
+                                    new TraceOnly(
+                                        new Composed(
+                                            new GhCommits(
+                                                json
                                             )
                                         )
-                                    ),
-                                    repo
-                                )
+                                    )
+                                ),
+                                repo
                             )
                         ).exec(project);
                     }

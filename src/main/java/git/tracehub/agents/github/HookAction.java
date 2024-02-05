@@ -42,7 +42,7 @@ public final class HookAction implements Text {
 
     @Override
     public String asString() throws Exception {
-        String action;
+        final String action;
         if (this.json.containsKey("action")) {
             action = this.json.getString("action");
         } else {

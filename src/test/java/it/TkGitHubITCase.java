@@ -138,7 +138,7 @@ final class TkGitHubITCase {
     @Tag("simulation")
     @ExtendWith({WeAreOnline.class, Quota.class})
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
-        // @checkstyle StringLiteralsConcatenationCheck (25 lines)
+    // @checkstyle StringLiteralsConcatenationCheck (25 lines)
     void foundsErrors() throws Exception {
         final Github github = new GhIdentity().value();
         new FtRemote(new TkGitHub(github, "master")).exec(
@@ -157,7 +157,7 @@ final class TkGitHubITCase {
                 .assertStatus(400)
                 .assertBody(
                     Matchers.equalTo(
-                        "`project.yml` document contains errors:\n"
+                        "`project.yml` contains errors:\n"
                         + "Project must have exactly one Architect.\n"
                         + "At least one performer must have the DEV role."
                     )

@@ -29,7 +29,6 @@ import git.tracehub.agents.github.issues.GhNew;
 import git.tracehub.facts.Order;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.cactoos.Scalar;
 
 /**
  * GitHub order execution.
