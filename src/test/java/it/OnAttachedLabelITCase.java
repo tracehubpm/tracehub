@@ -28,18 +28,16 @@ import com.jcabi.github.Coordinates;
 import com.jcabi.github.Issue;
 import git.tracehub.agents.github.issues.OnAttachedLabel;
 import git.tracehub.identity.GhIdentity;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
 import java.time.Instant;
 import java.util.Date;
 import java.util.regex.Pattern;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Integration test case for {@link OnAttachedLabel}.
@@ -52,16 +50,10 @@ final class OnAttachedLabelITCase {
     @Tag("simulation")
     void respondsWithNewPull() throws Exception {
         final Issue commented = new OnAttachedLabel(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("it/github/bug-123.json")
-                            .stream()
-                    )
-                ).pretty()
-            ),
+            Json.createReader(
+                new ResourceOf("it/github/bug-123.json")
+                    .stream()
+            ).readObject(),
             new GhIdentity().value()
                 .repos().get(new Coordinates.Simple("h1alexbel/test"))
         ).value();

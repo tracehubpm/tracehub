@@ -45,7 +45,7 @@ public final class ExecOn implements Order {
     private final Order origin;
 
     @Override
-    public void exec(final Project project) {
+    public void exec(final Project project) throws Exception {
         if (this.fact) {
             this.origin.exec(project);
         }

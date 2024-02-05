@@ -21,22 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.facts;
+package git.tracehub.agents.github;
 
-import git.tracehub.Project;
+import javax.json.JsonObject;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Text;
 
 /**
- * Order to execute.
+ * GitHub webhook action.
  *
  * @since 0.0.0
  */
-public interface Order {
+@RequiredArgsConstructor
+public final class HookAction implements Text {
 
     /**
-     * Exec on project.
-     *
-     * @param project Project
-     * @throws Exception if something went wrong
+     * JSON request.
      */
-    void exec(Project project) throws Exception;
+    private final JsonObject json;
+
+    @Override
+    public String asString() throws Exception {
+        final String action;
+        if (this.json.containsKey("action")) {
+            action = this.json.getString("action");
+        } else {
+            action = "push";
+        }
+        return action;
+    }
 }

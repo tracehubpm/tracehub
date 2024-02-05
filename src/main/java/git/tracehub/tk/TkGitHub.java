@@ -23,22 +23,26 @@
  */
 package git.tracehub.tk;
 
-import com.jcabi.github.Coordinates;
 import com.jcabi.github.Github;
 import com.jcabi.github.Repo;
 import git.tracehub.Project;
-import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
 import git.tracehub.agents.github.GhOrder;
 import git.tracehub.agents.github.GhProject;
+import git.tracehub.agents.github.HookAction;
+import git.tracehub.agents.github.RqRepo;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
+import git.tracehub.agents.github.issues.OnAttachedLabel;
+import git.tracehub.agents.github.issues.OnNew;
 import git.tracehub.facts.ExecOn;
 import git.tracehub.validation.Excluded;
 import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
 import java.util.function.Consumer;
+import javax.json.Json;
+import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.list.ListOf;
@@ -50,6 +54,7 @@ import org.takes.Take;
  * GitHub Take.
  *
  * @since 0.0.0
+ * @checkstyle AnonInnerLengthCheck (110 lines)
  * @todo #25:45min Return the result of webhook.
  *  Instead of thanks for webhook, I believe we should
  *  return a result of sent webhook. A number of created issues,
@@ -68,10 +73,6 @@ import org.takes.Take;
  *  We should remove that complexity required to append strings to StringBuilder
  *  we pass between objects. Lets make it more simple.
  *  Don't forget to remove this puzzle.
- * @todo #96:60min Adopt a support for multiple webhook types in TkGitHub.
- *  We should adopt TkGitHub to handle multiple webhook types.
- *  For now lets start with push event (currently supported and processed),
- *  issue_comment_created, issue_created.
  * @todo #122:30min Extract commits only on push event.
  *  We should implement OnPush.java that will handle that.
  *  Depends on <a href="https://github.com/tracehubpm/tracehub/issues/56">this</a> issue.
@@ -85,6 +86,10 @@ import org.takes.Take;
  *  and tries to pattern match them into one of the available categories.
  *  Can be postponed, its not an urgent one. Don't forget to remove
  *  this puzzle.
+ * @todo #105:30min Map event codes and objects to execute.
+ *  We should map all event codes: `push`, `opened`, `labeled`, and
+ *  etc. with objects that will execute that events (OnPush, OnNew,
+ *  OnAttachedLabel, and so on).
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -101,12 +106,10 @@ public final class TkGitHub implements Take {
 
     @Override
     public Response act(final Request req) throws Exception {
-        final Commit commit = new TraceLogged(
-            new TraceOnly(new Composed(new GhCommits(req)))
-        );
-        final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(commit.repo())
-        );
+        final JsonObject json = Json.createReader(req.body())
+            .readObject();
+        final String action = new HookAction(json).asString();
+        final Repo repo = new RqRepo(this.github, json).value();
         final Project project = new GhProject(repo);
         return new ErrorsCase(
             new ProjectValidation(
@@ -124,15 +127,37 @@ public final class TkGitHub implements Take {
                     )
                 )
             ),
-            () -> "`project.yml` document contains errors:",
+            () -> "`project.yml` contains errors:",
             new Consumer<StringBuilder>() {
                 @SneakyThrows
                 @Override
                 public void accept(final StringBuilder out) {
-                    new ExecOn(
-                        "GitHub".equals(project.backlog().where()),
-                        new GhOrder(commit, repo, () -> out)
-                    ).exec(project);
+                    if ("push".equals(action)) {
+                        new ExecOn(
+                            "GitHub".equals(project.backlog().where()),
+                            new GhOrder(
+                                new TraceLogged(
+                                    new TraceOnly(
+                                        new Composed(
+                                            new GhCommits(
+                                                json
+                                            )
+                                        )
+                                    )
+                                ),
+                                repo
+                            )
+                        ).exec(project);
+                    }
+                    if ("opened".equals(action)) {
+                        new OnNew(repo, json, new ListOf<>("new")).value();
+                    }
+                    if ("labeled".equals(action)) {
+                        new OnAttachedLabel(json, repo).value();
+                    }
+                    out.append(
+                        "Thanks for webhook, %s".formatted(repo.coordinates())
+                    );
                 }
             }
         ).value();

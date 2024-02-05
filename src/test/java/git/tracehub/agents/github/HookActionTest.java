@@ -23,77 +23,52 @@
  */
 package git.tracehub.agents.github;
 
-import java.util.List;
 import javax.json.Json;
-import nl.altindag.log.LogCaptor;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link GhCommits}.
+ * Test case for {@link HookAction}.
  *
  * @since 0.0.0
  */
-final class GhCommitsTest {
+final class HookActionTest {
 
     @Test
-    void returnsSingleCommit() throws Exception {
-        final List<Commit> commits = new GhCommits(
+    void returnsPushOnDefault() throws Exception {
+        final String action = new HookAction(
             Json.createReader(
-                new ResourceOf("github/hooks/push/single-commit.json")
-                    .stream()
+                new ResourceOf(
+                    "github/hooks/push/mock.json"
+                ).stream()
             ).readObject()
-        ).value();
-        final int expected = 1;
+        ).asString();
+        final String expected = "push";
         MatcherAssert.assertThat(
-            "Commits %s size does not match with expected %s"
-                .formatted(commits, expected),
-            commits.size(),
+            "Action name %s does not match with expected %s"
+                .formatted(action, expected),
+            action,
             new IsEqual<>(expected)
         );
     }
 
     @Test
-    void returnsManyCommits() throws Exception {
-        final List<Commit> commits = new GhCommits(
+    void returnsActionOnExplicit() throws Exception {
+        final String action = new HookAction(
             Json.createReader(
                 new ResourceOf(
-                    "github/hooks/push/many-commits.json"
+                    "github/hooks/opened/mock-new-issue.json"
                 ).stream()
             ).readObject()
-        ).value();
-        final int expected = 3;
+        ).asString();
+        final String expected = "opened";
         MatcherAssert.assertThat(
-            "Commits %s size does not match with expected %s"
-                .formatted(commits, expected),
-            commits.size(),
+            "Action name %s does not match with expected %s"
+                .formatted(action, expected),
+            action,
             new IsEqual<>(expected)
-        );
-    }
-
-    @Test
-    void logsFoundCommits() throws Exception {
-        final LogCaptor capt = LogCaptor.forClass(GhCommits.class);
-        final List<Commit> commits = new GhCommits(
-            Json.createReader(
-                new ResourceOf(
-                    "github/hooks/push/many-commits.json"
-                ).stream()
-            ).readObject()
-        ).value();
-        final List<String> infos = capt.getInfoLogs();
-        MatcherAssert.assertThat(
-            "Logs %s for commits %s do not match with expected"
-                .formatted(infos, commits),
-            infos,
-            new IsEqual<>(
-                new ListOf<>(
-                    "found 3 commit(s) in tracehubpm/tracehub"
-                )
-            )
         );
     }
 }

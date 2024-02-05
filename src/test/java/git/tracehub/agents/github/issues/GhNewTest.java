@@ -36,14 +36,12 @@ import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.MkContribution;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link GhNew}.
@@ -77,17 +75,11 @@ final class GhNewTest {
                     new TraceOnly(
                         new Composed(
                             new GhCommits(
-                                new RqFake(
-                                    "POST",
-                                    "",
-                                    new Jocument(
-                                        new JsonOf(
-                                            new ResourceOf(
-                                                "github/hooks/push/created-jobs.json"
-                                            ).stream()
-                                        )
-                                    ).pretty()
-                                )
+                                Json.createReader(
+                                    new ResourceOf(
+                                        "github/hooks/push/created-jobs.json"
+                                    ).stream()
+                                ).readObject()
                             )
                         )
                     )

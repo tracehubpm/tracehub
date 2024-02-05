@@ -21,22 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.facts;
+package git.tracehub.agents.github;
 
-import git.tracehub.Project;
+import com.jcabi.github.Coordinates;
+import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
+import javax.json.JsonObject;
+import lombok.RequiredArgsConstructor;
+import org.cactoos.Scalar;
 
 /**
- * Order to execute.
+ * GitHub repo from JSON request.
  *
  * @since 0.0.0
  */
-public interface Order {
+@RequiredArgsConstructor
+public final class RqRepo implements Scalar<Repo> {
 
     /**
-     * Exec on project.
-     *
-     * @param project Project
-     * @throws Exception if something went wrong
+     * Github.
      */
-    void exec(Project project) throws Exception;
+    private final Github github;
+
+    /**
+     * JSON request.
+     */
+    private final JsonObject json;
+
+    @Override
+    public Repo value() throws Exception {
+        return this.github.repos().get(
+            new Coordinates.Simple(
+                this.json.getJsonObject("repository")
+                    .getString("full_name")
+            )
+        );
+    }
 }

@@ -27,10 +27,9 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import git.tracehub.facts.Mine;
 import java.util.List;
-import javax.json.Json;
+import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
-import org.takes.Request;
 
 /**
  * On new opened issue.
@@ -53,7 +52,7 @@ public final class OnNew implements Scalar<Issue> {
     /**
      * Request.
      */
-    private final Request request;
+    private final JsonObject request;
 
     /**
      * Labels.
@@ -64,10 +63,7 @@ public final class OnNew implements Scalar<Issue> {
     public Issue value() throws Exception {
         final Issue.Smart submitted = new Issue.Smart(
             this.repo.issues().get(
-                Json.createReader(this.request.body())
-                    .readObject()
-                    .getJsonObject("issue")
-                    .getInt("number")
+                this.request.getJsonObject("issue").getInt("number")
             )
         );
         if (!new Mine(submitted).value()) {

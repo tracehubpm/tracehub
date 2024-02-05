@@ -21,22 +21,46 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package git.tracehub.facts;
+package git.tracehub.agents.github;
 
-import git.tracehub.Project;
+import com.jcabi.github.Repo;
+import com.jcabi.github.Repos;
+import com.jcabi.github.mock.MkGithub;
+import javax.json.Json;
+import org.cactoos.io.ResourceOf;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.core.IsEqual;
+import org.junit.jupiter.api.Test;
 
 /**
- * Order to execute.
+ * Test case for {@link RqRepo}.
  *
  * @since 0.0.0
  */
-public interface Order {
+final class RqRepoTest {
 
-    /**
-     * Exec on project.
-     *
-     * @param project Project
-     * @throws Exception if something went wrong
-     */
-    void exec(Project project) throws Exception;
+    @Test
+    void returnsRepo() throws Exception {
+        final MkGithub github = new MkGithub();
+        final Repo expected = github.repos().create(
+            new Repos.RepoCreate("test", false)
+        );
+        final Repo repo = new RqRepo(
+            github,
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/mock.json"
+                ).stream()
+            ).readObject()
+        ).value();
+        MatcherAssert.assertThat(
+            "Repo coordinates %s does not match with expected %s"
+                .formatted(
+                    repo.coordinates(),
+                    expected.coordinates()
+                ),
+            repo.coordinates(),
+            new IsEqual<>(expected.coordinates())
+        );
+    }
 }

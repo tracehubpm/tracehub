@@ -54,7 +54,7 @@ final class TkGitHubITCase {
     @Tag("simulation")
     @ExtendWith({WeAreOnline.class, Quota.class})
     @SuppressWarnings("JTCOP.RuleAssertionMessage")
-    void returnsResponseOnHook() throws Exception {
+    void returnsResponseOnPush() throws Exception {
         final Github github = new GhIdentity().value();
         new FtRemote(new TkGitHub(github, "master")).exec(
             home -> new JdkRequest(home)
@@ -72,7 +72,63 @@ final class TkGitHubITCase {
                 .assertStatus(200)
                 .assertBody(
                     Matchers.equalTo(
-                        "Thanks h1alexbel/test for GitHub webhook"
+                        "Thanks for webhook, h1alexbel/test"
+                    )
+                )
+        );
+    }
+
+    @Test
+    @Tag("simulation")
+    @ExtendWith({WeAreOnline.class, Quota.class})
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void returnsResponseOnOpened() throws Exception {
+        final Github github = new GhIdentity().value();
+        new FtRemote(new TkGitHub(github, "master")).exec(
+            home -> new JdkRequest(home)
+                .method("POST")
+                .header("Accept", "application/json")
+                .body()
+                .set(
+                    new TextOf(
+                        new ResourceOf("it/github/new-issue.json")
+                    ).asString()
+                )
+                .back()
+                .fetch()
+                .as(RestResponse.class)
+                .assertStatus(200)
+                .assertBody(
+                    Matchers.equalTo(
+                        "Thanks for webhook, h1alexbel/test"
+                    )
+                )
+        );
+    }
+
+    @Test
+    @Tag("simulation")
+    @ExtendWith({WeAreOnline.class, Quota.class})
+    @SuppressWarnings("JTCOP.RuleAssertionMessage")
+    void returnsResponseOnLabeledBug() throws Exception {
+        final Github github = new GhIdentity().value();
+        new FtRemote(new TkGitHub(github, "master")).exec(
+            home -> new JdkRequest(home)
+                .method("POST")
+                .header("Accept", "application/json")
+                .body()
+                .set(
+                    new TextOf(
+                        new ResourceOf("it/github/bug-123.json")
+                    ).asString()
+                )
+                .back()
+                .fetch()
+                .as(RestResponse.class)
+                .assertStatus(200)
+                .assertBody(
+                    Matchers.equalTo(
+                        "Thanks for webhook, h1alexbel/test"
                     )
                 )
         );
@@ -101,7 +157,7 @@ final class TkGitHubITCase {
                 .assertStatus(400)
                 .assertBody(
                     Matchers.equalTo(
-                        "`project.yml` document contains errors:\n"
+                        "`project.yml` contains errors:\n"
                         + "Project must have exactly one Architect.\n"
                         + "At least one performer must have the DEV role."
                     )

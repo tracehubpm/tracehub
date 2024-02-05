@@ -23,6 +23,8 @@
  */
 package git.tracehub.tk;
 
+import com.jcabi.github.Issue;
+import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import com.jcabi.github.Repos;
 import com.jcabi.github.mock.MkGithub;
@@ -47,12 +49,13 @@ import org.takes.rs.RsPrint;
  *  We should resolve code duplication inside blocks where we setup
  *  MkGithub, each time and the same. We should consider creating JUnit
  *  extension for this configuration and similar.
- * @checkstyle StringLiteralsConcatenationCheck (200 lines)
+ * @checkstyle StringLiteralsConcatenationCheck (300 lines)
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class TkGitHubTest {
 
     @Test
-    void returnsOkOnRequest() throws Exception {
+    void returnsOkOnPushHook() throws Exception {
         final MkGithub github = new MkGithub();
         final Repo repo = github.users().add("h1alexbel")
             .github()
@@ -80,7 +83,8 @@ final class TkGitHubTest {
                 )
             )
         ).printBody();
-        final String expected = "Thanks h1alexbel/test for GitHub webhook";
+        final String expected = "Thanks for webhook, %s"
+            .formatted(repo.coordinates());
         MatcherAssert.assertThat(
             "Response %s does not match with expected format %s"
                 .formatted(response, expected),
@@ -144,6 +148,112 @@ final class TkGitHubTest {
     }
 
     @Test
+    void addsLabelNewOnOpenedIssue() throws Exception {
+        final MkGithub github = new MkGithub("h1alexbel");
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("cdit", false)
+        );
+        new LocalGhProject(
+            "yml/projects/single-dev-arc.yml",
+            repo
+        ).value();
+        final Issue submitted = repo.issues().create(
+            "This is a new issue", "Lets implement the following.."
+        );
+        final String response = new RsPrint(
+            new TkGitHub(
+                github.relogin("tracehubgit"),
+                "master"
+            ).act(
+                new RqFake(
+                    "POST",
+                    "/",
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf(
+                                "github/hooks/opened/mock-new-issue.json"
+                            ).stream()
+                        )
+                    ).pretty()
+                )
+            )
+        ).printBody();
+        final Issue refreshed = repo.issues().get(submitted.number());
+        final String label = "new";
+        MatcherAssert.assertThat(
+            "Issue '%s' does not have label '%s', but should be"
+                .formatted(
+                    new Issue.Smart(refreshed).title(),
+                    label
+                ),
+            new IssueLabels.Smart(refreshed.labels())
+                .contains(label),
+            new IsEqual<>(true)
+        );
+        final String expected = "Thanks for webhook, %s"
+            .formatted(repo.coordinates());
+        MatcherAssert.assertThat(
+            "Response %s does not match with expected %s"
+                .formatted(response, expected),
+            response,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    void doesNotAddLabelOnMineIssue() throws Exception {
+        final MkGithub github = new MkGithub("tracehubgit");
+        final Repo repo = github.repos().create(
+            new Repos.RepoCreate("test", false)
+        );
+        new LocalGhProject(
+            "yml/projects/single-dev-arc.yml",
+            repo
+        ).value();
+        final Issue submitted = repo.issues().create(
+            "This is a new issue", "Lets implement the following.."
+        );
+        final String response = new RsPrint(
+            new TkGitHub(
+                github,
+                "master"
+            ).act(
+                new RqFake(
+                    "POST",
+                    "/",
+                    new Jocument(
+                        new JsonOf(
+                            new ResourceOf(
+                                "github/hooks/opened/mock-mine.json"
+                            ).stream()
+                        )
+                    ).pretty()
+                )
+            )
+        ).printBody();
+        final Issue refreshed = repo.issues().get(submitted.number());
+        final String label = "new";
+        MatcherAssert.assertThat(
+            "Issue '%s' has label '%s', but should not be"
+                .formatted(
+                    new Issue.Smart(refreshed).title(),
+                    label
+                ),
+            new IssueLabels.Smart(refreshed.labels())
+                .contains(label),
+            new IsEqual<>(false)
+        );
+        final String expected = "Thanks for webhook, %s"
+            .formatted(repo.coordinates());
+        MatcherAssert.assertThat(
+            "Response %s does not match with expected %s"
+                .formatted(response, expected),
+            response,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
     void returnsBadRequest() throws Exception {
         final MkGithub github = new MkGithub();
         final Repo repo = github.users().add("h1alexbel")
@@ -173,7 +283,7 @@ final class TkGitHubTest {
             )
         ).printBody();
         final String expected =
-            "`project.yml` document contains errors:"
+            "`project.yml` contains errors:"
             + "\nProject must have exactly one Architect."
             + "\nAt least one performer must have the DEV role.";
         MatcherAssert.assertThat(

@@ -28,16 +28,14 @@ import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
 import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.MkContribution;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
 import java.util.HashMap;
 import java.util.List;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link GhOrder}.
@@ -62,31 +60,23 @@ final class GhOrderTest {
             "label: Update License year to 2024\ndescription:"
             + " test description\ncost: 20 minutes\nrole: ARC"
         ).value();
-        final StringBuilder out = new StringBuilder();
         new GhOrder(
             new ThJobs(
                 new TraceLogged(
                     new TraceOnly(
                         new Composed(
                             new GhCommits(
-                                new RqFake(
-                                    "POST",
-                                    "",
-                                    new Jocument(
-                                        new JsonOf(
-                                            new ResourceOf(
-                                                "github/hooks/push/created-jobs.json"
-                                            ).stream()
-                                        )
-                                    ).pretty()
-                                )
+                                Json.createReader(
+                                    new ResourceOf(
+                                        "github/hooks/push/created-jobs.json"
+                                    ).stream()
+                                ).readObject()
                             )
                         )
                     )
                 )
             ),
-            repo,
-            () -> out
+            repo
         ).exec(
             new LocalGhProject(
                 "yml/projects/backed.yml",
@@ -101,16 +91,6 @@ final class GhOrderTest {
                 .formatted(collected.size(), expected),
             collected.size(),
             new IsEqual<>(expected)
-        );
-        final String oexpected = "Thanks %s/%s for GitHub webhook".formatted(
-            repo.coordinates().user(),
-            repo.coordinates().repo()
-        );
-        MatcherAssert.assertThat(
-            "Output %s does not match with expected %s"
-                .formatted(out, oexpected),
-            out.toString(),
-            new IsEqual<>(oexpected)
         );
     }
 }

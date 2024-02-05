@@ -27,14 +27,12 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link OnNew}.
@@ -53,17 +51,11 @@ final class OnNewTest {
         final String label = "new";
         final Issue labeled = new OnNew(
             github.relogin("tracehubgit").repos().get(repo.coordinates()),
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf(
-                            "github/hooks/opened/mock-new-issue.json"
-                        ).stream()
-                    )
-                ).pretty()
-            ),
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/opened/mock-new-issue.json"
+                ).stream()
+            ).readObject(),
             new ListOf<>(label)
         ).value();
         MatcherAssert.assertThat(
@@ -85,17 +77,11 @@ final class OnNewTest {
         final String label = "new";
         final Issue labeled = new OnNew(
             repo,
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf(
-                            "github/hooks/opened/mock-new-issue.json"
-                        ).stream()
-                    )
-                ).pretty()
-            ),
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/opened/mock-new-issue.json"
+                ).stream()
+            ).readObject(),
             new ListOf<>(label)
         ).value();
         MatcherAssert.assertThat(

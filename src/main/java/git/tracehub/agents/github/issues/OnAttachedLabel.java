@@ -29,11 +29,9 @@ import com.jcabi.github.Repo;
 import git.tracehub.agents.github.CreatePull;
 import git.tracehub.agents.github.GhProject;
 import git.tracehub.facts.Architect;
-import javax.json.Json;
 import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
-import org.takes.Request;
 
 /**
  * On attached label to an issue in GitHub.
@@ -51,7 +49,7 @@ public final class OnAttachedLabel implements Scalar<Issue> {
     /**
      * Request.
      */
-    private final Request request;
+    private final JsonObject request;
 
     /**
      * Repo.
@@ -60,10 +58,8 @@ public final class OnAttachedLabel implements Scalar<Issue> {
 
     @Override
     public Issue value() throws Exception {
-        final JsonObject json = Json.createReader(this.request.body())
-            .readObject();
-        final String label = json.getJsonObject("label").getString("name");
-        final Issue issue = new RqIssue(json, this.repo).value();
+        final String label = this.request.getJsonObject("label").getString("name");
+        final Issue issue = new RqIssue(this.request, this.repo).value();
         if ("bug".equals(label)) {
             final Pull created = new CreatePull(issue, this.repo, "master")
                 .value();

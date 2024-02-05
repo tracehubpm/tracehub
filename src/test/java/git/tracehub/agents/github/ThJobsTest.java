@@ -23,15 +23,13 @@
  */
 package git.tracehub.agents.github;
 
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link ThJobs}.
@@ -48,17 +46,11 @@ final class ThJobsTest {
                     new TraceOnly(
                         new Composed(
                             new GhCommits(
-                                new RqFake(
-                                    "POST",
-                                    "",
-                                    new Jocument(
-                                        new JsonOf(
-                                            new ResourceOf(
-                                                "github/hooks/push/more-duplicates.json"
-                                            ).stream()
-                                        )
-                                    ).pretty()
-                                )
+                                Json.createReader(
+                                    new ResourceOf(
+                                        "github/hooks/push/more-duplicates.json"
+                                    ).stream()
+                                ).readObject()
                             )
                         )
                     )
@@ -99,17 +91,11 @@ final class ThJobsTest {
                     new TraceOnly(
                         new Composed(
                             new GhCommits(
-                                new RqFake(
-                                    "POST",
-                                    "",
-                                    new Jocument(
-                                        new JsonOf(
-                                            new ResourceOf(
-                                                "github/hooks/push/more-duplicates.json"
-                                            ).stream()
-                                        )
-                                    ).pretty()
-                                )
+                                Json.createReader(
+                                    new ResourceOf(
+                                        "github/hooks/push/more-duplicates.json"
+                                    ).stream()
+                                ).readObject()
                             )
                         )
                     )
