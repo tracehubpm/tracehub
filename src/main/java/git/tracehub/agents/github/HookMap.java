@@ -23,31 +23,49 @@
  */
 package git.tracehub.agents.github;
 
+import com.jcabi.github.Repo;
+import git.tracehub.agents.github.issues.OnAttachedLabel;
+import git.tracehub.agents.github.issues.OnNew;
+import java.util.HashMap;
+import java.util.Map;
 import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
-import org.cactoos.Text;
+import org.cactoos.Scalar;
+import org.cactoos.list.ListOf;
 
 /**
- * GitHub webhook action.
- *
+ * Hook map.
  * @since 0.0.0
+ * @todo #142:60min Implement dynamic object addition into a map.
+ *  We should implement dynamic object addition into map with
+ *  event codes and related objects. Probably we will need to read
+ *  mapping sheet in some data format (JSON, XML, YAML, etc.),
+ *  and dynamically fill the objects for each event.
  */
 @RequiredArgsConstructor
-public final class HookAction implements Text {
+public final class HookMap implements Scalar<Map<String, Scalar<?>>> {
 
     /**
-     * JSON request.
+     * Repo.
      */
-    private final JsonObject json;
+    private final Repo repo;
+
+    /**
+     * Request.
+     */
+    private final JsonObject request;
 
     @Override
-    public String asString() throws Exception {
-        final String action;
-        if (this.json.containsKey("action")) {
-            action = this.json.getString("action");
-        } else {
-            action = "push";
-        }
-        return action;
+    public Map<String, Scalar<?>> value() throws Exception {
+        final Map<String, Scalar<?>> mapped = new HashMap<>(4);
+        mapped.put(
+            "opened",
+            new OnNew(this.request, this.repo, new ListOf<>("new"))
+        );
+        mapped.put(
+            "labeled",
+            new OnAttachedLabel(this.request, this.repo)
+        );
+        return mapped;
     }
 }

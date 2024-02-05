@@ -45,14 +45,14 @@ import org.cactoos.Scalar;
 public final class OnNew implements Scalar<Issue> {
 
     /**
-     * Repo.
-     */
-    private final Repo repo;
-
-    /**
      * Request.
      */
     private final JsonObject request;
+
+    /**
+     * Repo.
+     */
+    private final Repo repo;
 
     /**
      * Labels.

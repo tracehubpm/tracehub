@@ -23,52 +23,46 @@
  */
 package git.tracehub.agents.github;
 
+import com.jcabi.github.Github;
+import com.jcabi.github.Repo;
+import com.jcabi.github.Repos;
+import com.jcabi.github.mock.MkGithub;
+import java.util.Map;
 import javax.json.Json;
+import org.cactoos.Scalar;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsEqual;
+import org.hamcrest.core.IsNot;
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test case for {@link HookAction}.
+ * Test case for {@link HookMap}.
  *
  * @since 0.0.0
  */
-final class HookActionTest {
+final class HookMapTest {
 
     @Test
-    void returnsPushOnDefault() throws Exception {
-        final String action = new HookAction(
+    void returnsScalars() throws Exception {
+        final Github github = new MkGithub("h1alexbel");
+        final Repo repo = github.repos().create(new Repos.RepoCreate("cdit", false));
+        final Map<String, Scalar<?>> hooks = new HookMap(
+            repo,
             Json.createReader(
-                new ResourceOf(
-                    "github/hooks/push/mock.json"
-                ).stream()
+                new ResourceOf("github/hooks/opened/mock-new-issue.json")
+                    .stream()
             ).readObject()
-        ).asString();
-        final String expected = "push";
+        ).value();
         MatcherAssert.assertThat(
-            "Action name %s does not match with expected %s"
-                .formatted(action, expected),
-            action,
-            new IsEqual<>(expected)
+            "Scalar for opened hook is NULL, but should not be",
+            hooks.get("opened"),
+            new IsNot<Scalar<?>>(new IsNull<>())
         );
-    }
-
-    @Test
-    void returnsActionOnExplicit() throws Exception {
-        final String action = new HookAction(
-            Json.createReader(
-                new ResourceOf(
-                    "github/hooks/opened/mock-new-issue.json"
-                ).stream()
-            ).readObject()
-        ).asString();
-        final String expected = "opened";
         MatcherAssert.assertThat(
-            "Action name %s does not match with expected %s"
-                .formatted(action, expected),
-            action,
-            new IsEqual<>(expected)
+            "Scalar for labeled hook is NULL, but should not be",
+            hooks.get("labeled"),
+            new IsNot<Scalar<?>>(new IsNull<>())
         );
     }
 }

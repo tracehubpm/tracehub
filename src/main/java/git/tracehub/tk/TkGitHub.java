@@ -30,12 +30,10 @@ import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
 import git.tracehub.agents.github.GhOrder;
 import git.tracehub.agents.github.GhProject;
-import git.tracehub.agents.github.HookAction;
+import git.tracehub.agents.github.HookMap;
 import git.tracehub.agents.github.RqRepo;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
-import git.tracehub.agents.github.issues.OnAttachedLabel;
-import git.tracehub.agents.github.issues.OnNew;
 import git.tracehub.facts.ExecOn;
 import git.tracehub.validation.Excluded;
 import git.tracehub.validation.ProjectValidation;
@@ -86,10 +84,6 @@ import org.takes.Take;
  *  and tries to pattern match them into one of the available categories.
  *  Can be postponed, its not an urgent one. Don't forget to remove
  *  this puzzle.
- * @todo #105:30min Map event codes and objects to execute.
- *  We should map all event codes: `push`, `opened`, `labeled`, and
- *  etc. with objects that will execute that events (OnPush, OnNew,
- *  OnAttachedLabel, and so on).
  */
 @RequiredArgsConstructor
 public final class TkGitHub implements Take {
@@ -108,7 +102,6 @@ public final class TkGitHub implements Take {
     public Response act(final Request req) throws Exception {
         final JsonObject json = Json.createReader(req.body())
             .readObject();
-        final String action = new HookAction(json).asString();
         final Repo repo = new RqRepo(this.github, json).value();
         final Project project = new GhProject(repo);
         return new ErrorsCase(
@@ -132,7 +125,11 @@ public final class TkGitHub implements Take {
                 @SneakyThrows
                 @Override
                 public void accept(final StringBuilder out) {
-                    if ("push".equals(action)) {
+                    if (json.containsKey("action")) {
+                        new HookMap(repo, json).value().get(
+                            json.getString("action")
+                        ).value();
+                    } else {
                         new ExecOn(
                             "GitHub".equals(project.backlog().where()),
                             new GhOrder(
@@ -148,12 +145,6 @@ public final class TkGitHub implements Take {
                                 repo
                             )
                         ).exec(project);
-                    }
-                    if ("opened".equals(action)) {
-                        new OnNew(repo, json, new ListOf<>("new")).value();
-                    }
-                    if ("labeled".equals(action)) {
-                        new OnAttachedLabel(json, repo).value();
                     }
                     out.append(
                         "Thanks for webhook, %s".formatted(repo.coordinates())
