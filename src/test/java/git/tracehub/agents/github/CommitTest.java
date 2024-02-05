@@ -23,15 +23,13 @@
  */
 package git.tracehub.agents.github;
 
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link Commit.Smart}.
@@ -43,15 +41,11 @@ final class CommitTest {
     @Test
     void returnsSingleCommitFiles() throws Exception {
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/single-commit.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/push/single-commit.json"
+                ).stream()
+            ).readObject()
         ).value();
         final Commit first = commits.get(0);
         MatcherAssert.assertThat(
@@ -96,15 +90,9 @@ final class CommitTest {
     @Test
     void returnsManyCommits() throws Exception {
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/many-commits.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf("github/hooks/push/many-commits.json").stream()
+            ).readObject()
         ).value();
         final List<String> first = commits.get(0).created();
         MatcherAssert.assertThat(
@@ -145,15 +133,9 @@ final class CommitTest {
     @Test
     void returnsUpdatedFromSecondCommit() throws Exception {
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/many-commits.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf("github/hooks/push/many-commits.json").stream()
+            ).readObject()
         ).value();
         final List<String> updated = commits.get(1).updated();
         MatcherAssert.assertThat(
@@ -169,15 +151,9 @@ final class CommitTest {
     @Test
     void returnsRepo() throws Exception {
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/many-commits.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf("github/hooks/push/many-commits.json").stream()
+            ).readObject()
         ).value();
         final String repo = commits.get(0).repo();
         final String expected = "tracehubpm/tracehub";

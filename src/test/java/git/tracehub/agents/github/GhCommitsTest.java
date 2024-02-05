@@ -23,16 +23,14 @@
  */
 package git.tracehub.agents.github;
 
-import io.github.eocqrs.eokson.Jocument;
-import io.github.eocqrs.eokson.JsonOf;
 import java.util.List;
+import javax.json.Json;
 import nl.altindag.log.LogCaptor;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
-import org.takes.rq.RqFake;
 
 /**
  * Test case for {@link GhCommits}.
@@ -44,15 +42,10 @@ final class GhCommitsTest {
     @Test
     void returnsSingleCommit() throws Exception {
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/single-commit.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf("github/hooks/push/single-commit.json")
+                    .stream()
+            ).readObject()
         ).value();
         final int expected = 1;
         MatcherAssert.assertThat(
@@ -66,15 +59,11 @@ final class GhCommitsTest {
     @Test
     void returnsManyCommits() throws Exception {
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/many-commits.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/push/many-commits.json"
+                ).stream()
+            ).readObject()
         ).value();
         final int expected = 3;
         MatcherAssert.assertThat(
@@ -89,15 +78,11 @@ final class GhCommitsTest {
     void logsFoundCommits() throws Exception {
         final LogCaptor capt = LogCaptor.forClass(GhCommits.class);
         final List<Commit> commits = new GhCommits(
-            new RqFake(
-                "POST",
-                "",
-                new Jocument(
-                    new JsonOf(
-                        new ResourceOf("github/hooks/push/many-commits.json").stream()
-                    )
-                ).pretty()
-            )
+            Json.createReader(
+                new ResourceOf(
+                    "github/hooks/push/many-commits.json"
+                ).stream()
+            ).readObject()
         ).value();
         final List<String> infos = capt.getInfoLogs();
         MatcherAssert.assertThat(

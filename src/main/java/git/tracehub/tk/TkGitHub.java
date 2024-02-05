@@ -32,19 +32,31 @@ import git.tracehub.agents.github.Composed;
 import git.tracehub.agents.github.GhCommits;
 import git.tracehub.agents.github.GhOrder;
 import git.tracehub.agents.github.GhProject;
+import git.tracehub.agents.github.HookAction;
+import git.tracehub.agents.github.OnPush;
+import git.tracehub.agents.github.RqRepo;
 import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
+import git.tracehub.agents.github.issues.OnAttachedLabel;
+import git.tracehub.agents.github.issues.OnNew;
 import git.tracehub.facts.ExecOn;
 import git.tracehub.validation.Excluded;
 import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
+import javax.json.Json;
+import javax.json.JsonObject;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 import org.cactoos.list.ListOf;
 import org.takes.Request;
 import org.takes.Response;
 import org.takes.Take;
+import org.takes.rs.RsJson;
+import org.takes.rs.RsText;
 
 /**
  * GitHub Take.
@@ -101,12 +113,10 @@ public final class TkGitHub implements Take {
 
     @Override
     public Response act(final Request req) throws Exception {
-        final Commit commit = new TraceLogged(
-            new TraceOnly(new Composed(new GhCommits(req)))
-        );
-        final Repo repo = this.github.repos().get(
-            new Coordinates.Simple(commit.repo())
-        );
+        final JsonObject json = Json.createReader(req.body())
+            .readObject();
+        final String action = new HookAction(json).asString();
+        final Repo repo = new RqRepo(this.github, json).value();
         final Project project = new GhProject(repo);
         return new ErrorsCase(
             new ProjectValidation(
@@ -124,15 +134,39 @@ public final class TkGitHub implements Take {
                     )
                 )
             ),
-            () -> "`project.yml` document contains errors:",
+            () -> "`project.yml` contains errors:",
             new Consumer<StringBuilder>() {
                 @SneakyThrows
                 @Override
                 public void accept(final StringBuilder out) {
-                    new ExecOn(
-                        "GitHub".equals(project.backlog().where()),
-                        new GhOrder(commit, repo, () -> out)
-                    ).exec(project);
+                    if ("push".equals(action)) {
+                        new OnPush(
+                            new ExecOn(
+                                "GitHub".equals(project.backlog().where()),
+                                new GhOrder(
+                                    new TraceLogged(
+                                        new TraceOnly(
+                                            new Composed(
+                                                new GhCommits(
+                                                    json
+                                                )
+                                            )
+                                        )
+                                    ),
+                                    repo
+                                )
+                            )
+                        ).exec(project);
+                    }
+                    if ("opened".equals(action)) {
+                        new OnNew(repo, json, new ListOf<>("new")).value();
+                    }
+                    if ("labeled".equals(action)) {
+                        new OnAttachedLabel(json, repo).value();
+                    }
+                    out.append(
+                        "Thanks for webhook, %s".formatted(repo.coordinates())
+                    );
                 }
             }
         ).value();

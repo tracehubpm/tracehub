@@ -45,16 +45,14 @@ public final class GhCommits implements Scalar<List<Commit>> {
     /**
      * Request.
      */
-    private final Request request;
+    private final JsonObject request;
 
     @Override
     public List<Commit> value() throws Exception {
-        final JsonReader reader = Json.createReader(this.request.body());
-        final JsonObject obj = reader.readObject();
-        final String coordinates = obj.getJsonObject("repository")
+        final String coordinates = this.request.getJsonObject("repository")
             .getString("full_name");
         final List<Commit> collected = new ListOf<>();
-        final JsonArray commits = obj.getJsonArray("commits");
+        final JsonArray commits = this.request.getJsonArray("commits");
         commits.forEach(c -> collected.add(new Commit.Smart(c)));
         Logger.info(
             this,

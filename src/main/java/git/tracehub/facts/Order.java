@@ -37,5 +37,5 @@ public interface Order {
      *
      * @param project Project
      */
-    void exec(Project project);
+    void exec(Project project) throws Exception;
 }

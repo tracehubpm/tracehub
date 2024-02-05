@@ -49,11 +49,6 @@ public final class GhOrder implements Order {
      */
     private final Repo repo;
 
-    /**
-     * Output.
-     */
-    private final Scalar<StringBuilder> out;
-
     @SneakyThrows
     @Override
     public void exec(final Project project) {
@@ -62,10 +57,5 @@ public final class GhOrder implements Order {
             new ThJobs(this.commit),
             this.repo
         ).value();
-        this.out.value().append(
-            "Thanks %s for GitHub webhook".formatted(
-                new Repo.Smart(this.repo).coordinates()
-            )
-        );
     }
 }

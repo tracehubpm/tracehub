@@ -32,6 +32,7 @@ import io.github.eocqrs.eokson.Jocument;
 import io.github.eocqrs.eokson.JsonOf;
 import java.util.HashMap;
 import java.util.List;
+import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
@@ -42,8 +43,8 @@ import org.takes.rq.RqFake;
 /**
  * Test case for {@link GhOrder}.
  *
- * @since 0.0.0
  * @checkstyle StringLiteralsConcatenationCheck (20 lines)
+ * @since 0.0.0
  */
 final class GhOrderTest {
 
@@ -69,24 +70,18 @@ final class GhOrderTest {
                     new TraceOnly(
                         new Composed(
                             new GhCommits(
-                                new RqFake(
-                                    "POST",
-                                    "",
-                                    new Jocument(
-                                        new JsonOf(
-                                            new ResourceOf(
-                                                "github/hooks/push/created-jobs.json"
-                                            ).stream()
-                                        )
-                                    ).pretty()
-                                )
+                                Json.createReader(
+                                    new ResourceOf(
+                                        "github/hooks/push/created-jobs.json"
+                                    ).stream()
+                                ).readObject()
                             )
                         )
                     )
                 )
             ),
-            repo,
-            () -> out
+            repo
+            //() -> out
         ).exec(
             new LocalGhProject(
                 "yml/projects/backed.yml",
