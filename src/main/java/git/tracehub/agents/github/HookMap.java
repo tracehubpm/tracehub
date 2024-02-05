@@ -38,8 +38,8 @@ import org.cactoos.list.ListOf;
  * @since 0.0.0
  * @todo #142:60min Implement dynamic object addition into a map.
  *  We should implement dynamic object addition into map with
- *  event codes and related objects. Probably we will need
- *  some mapping sheet in some data format (JSON, XML, YAML, etc.),
+ *  event codes and related objects. Probably we will need to read
+ *  mapping sheet in some data format (JSON, XML, YAML, etc.),
  *  and dynamically fill the objects for each event.
  */
 @RequiredArgsConstructor
