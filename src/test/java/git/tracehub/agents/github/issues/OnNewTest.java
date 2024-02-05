@@ -50,12 +50,12 @@ final class OnNewTest {
         );
         final String label = "new";
         final Issue labeled = new OnNew(
-            github.relogin("tracehubgit").repos().get(repo.coordinates()),
             Json.createReader(
                 new ResourceOf(
                     "github/hooks/opened/mock-new-issue.json"
                 ).stream()
             ).readObject(),
+            github.relogin("tracehubgit").repos().get(repo.coordinates()),
             new ListOf<>(label)
         ).value();
         MatcherAssert.assertThat(
@@ -76,12 +76,12 @@ final class OnNewTest {
         repo.issues().create("Some mock issue", "Lets to this: ..");
         final String label = "new";
         final Issue labeled = new OnNew(
-            repo,
             Json.createReader(
                 new ResourceOf(
                     "github/hooks/opened/mock-new-issue.json"
                 ).stream()
             ).readObject(),
+            repo,
             new ListOf<>(label)
         ).value();
         MatcherAssert.assertThat(
