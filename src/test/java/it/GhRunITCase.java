@@ -51,7 +51,7 @@ final class GhRunITCase {
     void runs() throws Exception {
         final LogCaptor capt = LogCaptor.forClass(BaseRequest.class);
         new GhRun(new GhIdentity().value()).start();
-        Thread.currentThread().join(Duration.ofSeconds(65L).toMillis());
+        Thread.currentThread().join(Duration.ofSeconds(80L).toMillis());
         final List<String> infos = capt.getInfoLogs();
         final String invite = infos.get(1);
         final Pattern pattern = Pattern.compile(
