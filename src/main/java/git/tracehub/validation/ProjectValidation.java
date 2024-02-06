@@ -57,14 +57,13 @@ public final class ProjectValidation implements Text {
             "Starting validation of project.yml in %s",
             this.project.identity()
         );
-        return new Joined(
-            "\n",
+        return new JoinedErrors(
             new XsErrors(
                 new XsApplied(
                     this.project.asXml(),
                     this.sheets
                 )
-            ).value()
+            )
         ).asString();
     }
 }
