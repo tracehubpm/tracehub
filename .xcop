@@ -1,4 +1,5 @@
 --exclude=paper/**.xml
 --exclude=src/test/resources/yml/projects/xml/**.xml
 --exclude=src/test/resources/git/tracehub/validation/**.xml
+--exclude=src/test/resources/git/tracehub/validation/out/**.xml
 --exclude=src/test/resources/yml/jobs/xml/**.xml
