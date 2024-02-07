@@ -25,6 +25,7 @@ package git.tracehub.validation;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSL;
 import git.tracehub.Job;
 import git.tracehub.Project;
 import java.util.Map;
@@ -54,13 +55,22 @@ public final class RulesBound implements Scalar<XML> {
      */
     private final Project project;
 
+    /**
+     * Structure.
+     */
+    private final XSL structure;
+
     @Override
     public XML value() throws Exception {
-        final XML xml = this.job.asXml();
         final Map<String, String> rules = this.project.backlog().rules()
             .value();
+        final XML xml = new XMLDocument(
+            this.structure.applyTo(
+                this.job.asXml()
+            )
+        );
         final Directives dirs = new Directives()
-            .xpath("//LinkedHashMap")
+            .xpath("//src")
             .add("rules");
         rules.forEach((rule, value) -> dirs.add(rule).set(value).up());
         return new XMLDocument(new Xembler(dirs).apply(xml.node()));

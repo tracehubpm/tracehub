@@ -10,6 +10,8 @@ import org.cactoos.Scalar;
 import org.cactoos.Text;
 
 /**
+ * Job validation.
+ *
  * @since 0.0.0
  */
 @RequiredArgsConstructor
@@ -26,14 +28,16 @@ public final class JobValidation implements Text {
             "Starting validation of job labeled '%s'",
             this.job.label()
         );
+        final Map<String, XSL> xsls = this.sheets.value();
         return new JoinedErrors(
             new XsErrors(
                 new XsApplied(
                     new RulesBound(
                         this.job,
-                        this.project
+                        this.project,
+                        xsls.get("struct.xsl")
                     ),
-                    this.sheets
+                    () -> xsls
                 )
             )
         ).asString();

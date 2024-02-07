@@ -26,6 +26,7 @@ package git.tracehub.validation;
 import com.amihaiemil.eoyaml.Yaml;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
+import com.jcabi.xml.XSLDocument;
 import git.tracehub.agents.github.GhJob;
 import git.tracehub.agents.github.GhProject;
 import org.cactoos.io.ResourceOf;
@@ -68,6 +69,10 @@ final class RulesBoundTest {
                 Yaml.createYamlInput(
                     new ResourceOf("yml/projects/with-suppressions.yml").stream()
                 ).readYamlMapping()
+            ),
+            new XSLDocument(
+                new ResourceOf("git/tracehub/validation/struct.xsl")
+                    .stream()
             )
         ).value();
         final XML expected = new XMLDocument(
@@ -85,6 +90,7 @@ final class RulesBoundTest {
 
     /**
      * Test case for default rule binding into XML.
+     *
      * @param name Input file name
      * @throws Exception if something went wrong
      * @todo #113:25min Check the default values for applied rules.
@@ -118,6 +124,10 @@ final class RulesBoundTest {
                 Yaml.createYamlInput(
                     new ResourceOf("yml/projects/good.yml").stream()
                 ).readYamlMapping()
+            ),
+            new XSLDocument(
+                new ResourceOf("git/tracehub/validation/struct.xsl")
+                    .stream()
             )
         ).value();
         final XML expected = new XMLDocument(
