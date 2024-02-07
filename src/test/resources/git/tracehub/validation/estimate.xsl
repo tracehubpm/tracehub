@@ -25,6 +25,8 @@ SOFTWARE.
 <!--
 @todo #113:45min Migrate estimate.xsl to vsheets.
  We should migrate estimate.xsl sheet into vsheets repo.
+ Also, we should create a spec, like
+ <a href="https://github.com/tracehubpm/vsheets/blob/master/spec/struct_spec.rb">this</a>.
  Don't forget to remove this puzzle.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
