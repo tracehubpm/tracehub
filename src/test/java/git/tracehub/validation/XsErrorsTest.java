@@ -25,7 +25,7 @@ package git.tracehub.validation;
 
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
-import git.tracehub.extensions.ProjectPipeline;
+import git.tracehub.extensions.ValidationPipeline;
 import git.tracehub.extensions.SheetsIn;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +50,7 @@ final class XsErrorsTest {
         "arc",
         "dev"
     })
-    @ExtendWith(ProjectPipeline.class)
+    @ExtendWith(ValidationPipeline.class)
     void returnsErrors(final Map<String, XSL> pipeline) throws Exception {
         final List<String> errors = new XsErrors(
             new XsApplied(
@@ -81,7 +81,7 @@ final class XsErrorsTest {
         "arc",
         "dev"
     })
-    @ExtendWith(ProjectPipeline.class)
+    @ExtendWith(ValidationPipeline.class)
     void returnsNoErrors(final Map<String, XSL> pipeline) throws Exception {
         final List<String> errors = new XsErrors(
             new XsApplied(

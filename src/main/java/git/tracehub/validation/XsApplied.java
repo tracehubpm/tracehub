@@ -66,6 +66,10 @@ public final class XsApplied implements Scalar<XML> {
             "Applying validation, sheets activated: %s",
             pipeline.keySet()
         );
-        return new XSLChain(pipeline.values()).transform(this.origin.value());
+        final XML input = this.origin.value();
+        System.out.println(input);
+        final XML transform = new XSLChain(pipeline.values()).transform(input);
+        System.out.println(transform);
+        return transform;
     }
 }

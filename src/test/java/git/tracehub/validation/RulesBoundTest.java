@@ -70,17 +70,17 @@ final class RulesBoundTest {
                 Yaml.createYamlInput(
                     new ResourceOf("yml/projects/with-suppressions.yml").stream()
                 ).readYamlMapping()
-            ),
-            new ListOf<>(
-                new XSLDocument(
-                    new ResourceOf("git/tracehub/validation/struct.xsl")
-                        .stream()
-                ),
-                new XSLDocument(
-                    new ResourceOf("git/tracehub/validation/errors.xsl")
-                        .stream()
-                )
             )
+//            new ListOf<>(
+//                new XSLDocument(
+//                    new ResourceOf("git/tracehub/validation/struct.xsl")
+//                        .stream()
+//                ),
+//                new XSLDocument(
+//                    new ResourceOf("git/tracehub/validation/errors.xsl")
+//                        .stream()
+//                )
+//            )
         ).value();
         final XML expected = new XMLDocument(
             new ResourceOf(
@@ -131,17 +131,17 @@ final class RulesBoundTest {
                 Yaml.createYamlInput(
                     new ResourceOf("yml/projects/good.yml").stream()
                 ).readYamlMapping()
-            ),
-            new ListOf<>(
-                new XSLDocument(
-                    new ResourceOf("git/tracehub/validation/struct.xsl")
-                        .stream()
-                ),
-                new XSLDocument(
-                    new ResourceOf("git/tracehub/validation/errors.xsl")
-                        .stream()
-                )
             )
+//            new ListOf<>(
+//                new XSLDocument(
+//                    new ResourceOf("git/tracehub/validation/struct.xsl")
+//                        .stream()
+//                ),
+//                new XSLDocument(
+//                    new ResourceOf("git/tracehub/validation/errors.xsl")
+//                        .stream()
+//                )
+//            )
         ).value();
         final XML expected = new XMLDocument(
             new ResourceOf(

@@ -57,20 +57,14 @@ public final class RulesBound implements Scalar<XML> {
      */
     private final Project project;
 
-    /**
-     * Structure.
-     */
-    private final List<XSL> prep;
-
     @Override
     public XML value() throws Exception {
         final Map<String, String> rules = this.project.backlog().rules()
             .value();
-        final XML xml = new XSLChain(this.prep).transform(this.job.asXml());
+//        final XML xml = new XSLChain(this.prep).transform(this.job.asXml());
         final Directives dirs = new Directives()
-            .xpath("//src")
-            .add("rules");
+            .xpath("//LinkedHashMap");
         rules.forEach((rule, value) -> dirs.add(rule).set(value).up());
-        return new XMLDocument(new Xembler(dirs).apply(xml.node()));
+        return new XMLDocument(new Xembler(dirs).apply(this.job.asXml().node()));
     }
 }

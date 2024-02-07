@@ -36,11 +36,11 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
 /**
- * Default Project validation pipeline.
+ * Default validation pipeline.
  *
  * @since 0.0.0
  */
-public final class ProjectPipeline implements ParameterResolver {
+public final class ValidationPipeline implements ParameterResolver {
     @Override
     public boolean supportsParameter(
         final ParameterContext pct,
