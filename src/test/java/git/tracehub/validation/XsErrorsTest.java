@@ -25,8 +25,8 @@ package git.tracehub.validation;
 
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
-import git.tracehub.extensions.ValidationPipeline;
 import git.tracehub.extensions.SheetsIn;
+import git.tracehub.extensions.ValidationPipeline;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
