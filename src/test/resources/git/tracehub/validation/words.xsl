@@ -37,6 +37,12 @@ SOFTWARE.
   <xsl:template match="data/errors">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
+      <!--
+      @todo #113:25min Count only words, not a symbols, and exclude spaces.
+       We should count only words, not a symbol length, like now.
+       Also, we should not count spaces as words. Don't forget to remove this
+       puzzle before migrating sheet to vsheets repo.
+      -->
       <xsl:if test="//description/string-length() &lt; //min-words">
         <error>Specified task description (<xsl:value-of select="//description/string-length()"/>) is too small, minimal amount of words is <xsl:value-of select="//min-words"/> (`backlog:rules:min-words`).</error>
       </xsl:if>
