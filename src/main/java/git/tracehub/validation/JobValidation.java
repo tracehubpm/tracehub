@@ -24,30 +24,39 @@
 package git.tracehub.validation;
 
 import com.jcabi.xml.XSL;
+import git.tracehub.Job;
 import git.tracehub.Project;
+import java.io.IOException;
 import java.util.Map;
 import org.cactoos.Scalar;
 
 /**
- * Project (project.yml) validation.
+ * Job validation.
  *
  * @since 0.0.0
  */
-public final class ProjectValidation extends ValidationEnvelope {
+public final class JobValidation extends ValidationEnvelope {
 
     /**
      * Ctor.
+     *
+     * @param validate Job to validate
      * @param project Project
-     * @param sheets XSL sheets
+     * @param shts XSL sheets
+     * @throws IOException if I/O fails
      */
-    public ProjectValidation(
+    public JobValidation(
+        final Job validate,
         final Project project,
-        final Scalar<Map<String, XSL>> sheets
-    ) {
+        final Scalar<Map<String, XSL>> shts
+    ) throws IOException {
         super(
-            project.identity(),
-            project::asXml,
-            sheets
+            validate.label(),
+            new RulesBound(
+                validate,
+                project
+            ),
+            shts
         );
     }
 }

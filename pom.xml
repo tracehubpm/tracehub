@@ -103,6 +103,7 @@ SOFTWARE.
     <Saxon-HE.version>12.4</Saxon-HE.version>
     <velocity-engine-core.version>2.3</velocity-engine-core.version>
     <plantuml-generator-maven-plugin.version>1.1.2</plantuml-generator-maven-plugin.version>
+    <xembly.version>0.28.1</xembly.version>
   </properties>
   <dependencies>
     <dependency>
@@ -179,6 +180,11 @@ SOFTWARE.
       <groupId>com.jcabi</groupId>
       <artifactId>jcabi-xml</artifactId>
       <!-- version from parent POM -->
+    </dependency>
+    <dependency>
+      <groupId>com.jcabi.incubator</groupId>
+      <artifactId>xembly</artifactId>
+      <version>${xembly.version}</version>
     </dependency>
     <dependency>
       <groupId>net.sf.saxon</groupId>

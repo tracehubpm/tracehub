@@ -26,8 +26,8 @@ package git.tracehub.validation;
 import com.jcabi.github.mock.MkGithub;
 import com.jcabi.xml.XSL;
 import git.tracehub.extensions.LocalGhProject;
-import git.tracehub.extensions.ProjectPipeline;
 import git.tracehub.extensions.SheetsIn;
+import git.tracehub.extensions.ValidationPipeline;
 import java.util.Map;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -48,7 +48,7 @@ final class ProjectValidationTest {
         "arc",
         "dev"
     })
-    @ExtendWith(ProjectPipeline.class)
+    @ExtendWith(ValidationPipeline.class)
     void validatesCleanProject(final Map<String, XSL> sheets) throws Exception {
         final String message = new ProjectValidation(
             new LocalGhProject(
@@ -72,7 +72,7 @@ final class ProjectValidationTest {
         "arc",
         "dev"
     })
-    @ExtendWith(ProjectPipeline.class)
+    @ExtendWith(ValidationPipeline.class)
     void foundsErrors(final Map<String, XSL> sheets) throws Exception {
         final String message = new ProjectValidation(
             new LocalGhProject(

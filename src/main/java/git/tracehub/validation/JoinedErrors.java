@@ -23,31 +23,27 @@
  */
 package git.tracehub.validation;
 
-import com.jcabi.xml.XSL;
-import git.tracehub.Project;
-import java.util.Map;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.cactoos.Text;
+import org.cactoos.text.Joined;
 
 /**
- * Project (project.yml) validation.
+ * Joined errors.
  *
  * @since 0.0.0
  */
-public final class ProjectValidation extends ValidationEnvelope {
+@RequiredArgsConstructor
+public final class JoinedErrors implements Text {
 
     /**
-     * Ctor.
-     * @param project Project
-     * @param sheets XSL sheets
+     * Errors.
      */
-    public ProjectValidation(
-        final Project project,
-        final Scalar<Map<String, XSL>> sheets
-    ) {
-        super(
-            project.identity(),
-            project::asXml,
-            sheets
-        );
+    private final Scalar<List<String>> errors;
+
+    @Override
+    public String asString() throws Exception {
+        return new Joined("\n", this.errors.value()).asString();
     }
 }

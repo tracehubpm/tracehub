@@ -23,31 +23,41 @@
  */
 package git.tracehub.validation;
 
-import com.jcabi.xml.XSL;
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+import git.tracehub.Job;
 import git.tracehub.Project;
 import java.util.Map;
+import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
+import org.xembly.Directives;
+import org.xembly.Xembler;
 
 /**
- * Project (project.yml) validation.
+ * Job that contains {@code <rules>} XML node.
  *
  * @since 0.0.0
  */
-public final class ProjectValidation extends ValidationEnvelope {
+@RequiredArgsConstructor
+public final class RulesBound implements Scalar<XML> {
 
     /**
-     * Ctor.
-     * @param project Project
-     * @param sheets XSL sheets
+     * Job.
      */
-    public ProjectValidation(
-        final Project project,
-        final Scalar<Map<String, XSL>> sheets
-    ) {
-        super(
-            project.identity(),
-            project::asXml,
-            sheets
-        );
+    private final Job job;
+
+    /**
+     * Project.
+     */
+    private final Project project;
+
+    @Override
+    public XML value() throws Exception {
+        final Map<String, String> rules = this.project.backlog().rules()
+            .value();
+        final Directives dirs = new Directives()
+            .xpath("//LinkedHashMap");
+        rules.forEach((rule, value) -> dirs.add(rule).set(value).up());
+        return new XMLDocument(new Xembler(dirs).apply(this.job.asXml().node()));
     }
 }

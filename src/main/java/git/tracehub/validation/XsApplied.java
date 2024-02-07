@@ -47,12 +47,22 @@ public final class XsApplied implements Scalar<XML> {
     /**
      * XML to validate.
      */
-    private final XML origin;
+    private final Scalar<XML> origin;
 
     /**
      * Sheets.
      */
     private final Scalar<Map<String, XSL>> sheets;
+
+    /**
+     * Ctor.
+     *
+     * @param xml XML
+     * @param shts Sheets
+     */
+    public XsApplied(final XML xml, final Scalar<Map<String, XSL>> shts) {
+        this(() -> xml, shts);
+    }
 
     @Override
     public XML value() throws Exception {
@@ -62,6 +72,6 @@ public final class XsApplied implements Scalar<XML> {
             "Applying validation, sheets activated: %s",
             pipeline.keySet()
         );
-        return new XSLChain(pipeline.values()).transform(this.origin);
+        return new XSLChain(pipeline.values()).transform(this.origin.value());
     }
 }
