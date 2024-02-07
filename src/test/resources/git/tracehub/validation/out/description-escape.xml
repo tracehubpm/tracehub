@@ -4,12 +4,13 @@
     <description>Lets update a copyright year in our License to 2024.
 This task is very important.
 </description>
-    <cost>20 minutes</cost>
+    <cost>20</cost>
     <role>ARC</role>
     <rules>
-      <min-estimate>25m</min-estimate>
+      <min-estimate>25</min-estimate>
       <min-words>20</min-words>
-      <max-estimate>90m</max-estimate>
+      <max-estimate>90</max-estimate>
     </rules>
   </src>
+  <errors/>
 </data>

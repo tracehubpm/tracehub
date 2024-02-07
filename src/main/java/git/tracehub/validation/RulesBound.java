@@ -26,8 +26,10 @@ package git.tracehub.validation;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.jcabi.xml.XSL;
+import com.jcabi.xml.XSLChain;
 import git.tracehub.Job;
 import git.tracehub.Project;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
@@ -58,17 +60,13 @@ public final class RulesBound implements Scalar<XML> {
     /**
      * Structure.
      */
-    private final XSL structure;
+    private final List<XSL> prep;
 
     @Override
     public XML value() throws Exception {
         final Map<String, String> rules = this.project.backlog().rules()
             .value();
-        final XML xml = new XMLDocument(
-            this.structure.applyTo(
-                this.job.asXml()
-            )
-        );
+        final XML xml = new XSLChain(this.prep).transform(this.job.asXml());
         final Directives dirs = new Directives()
             .xpath("//src")
             .add("rules");

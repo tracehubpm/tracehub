@@ -8,6 +8,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
 import org.cactoos.Text;
+import org.cactoos.list.ListOf;
 
 /**
  * Job validation.
@@ -35,7 +36,10 @@ public final class JobValidation implements Text {
                     new RulesBound(
                         this.job,
                         this.project,
-                        xsls.get("struct.xsl")
+                        new ListOf<>(
+                            xsls.get("struct.xsl"),
+                            xsls.get("errors.xsl")
+                        )
                     ),
                     () -> xsls
                 )
