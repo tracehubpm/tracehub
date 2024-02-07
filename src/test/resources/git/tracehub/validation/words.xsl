@@ -23,8 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 -->
 <!--
-@todo #113:45min Migrate estimate.xsl to vsheets.
- We should migrate estimate.xsl sheet into vsheets repo.
+@todo #113:45min Migrate words.xsl to vsheets.
+ We should migrate words.xsl sheet into vsheets repo.
  Don't forget to remove this puzzle.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
@@ -37,8 +37,8 @@ SOFTWARE.
   <xsl:template match="data/errors">
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
-      <xsl:if test="number(//cost) &lt; number(//min-estimate) or number(//cost) &gt; number(//max-estimate)">
-        <error>Specified estimate (<xsl:value-of select="//cost"/>) is not in allowed range: <xsl:value-of select="//min-estimate"/> (`backlog:rules:min-estimate`) and <xsl:value-of select="//max-estimate"/> (`backlog:rules:max-estimate)`.</error>
+      <xsl:if test="//description/string-length() &lt; //min-words">
+        <error>Specified task description (<xsl:value-of select="//description/string-length()"/>) is too small, minimal amount of words is <xsl:value-of select="//min-words"/> (`backlog:rules:min-words`).</error>
       </xsl:if>
     </xsl:copy>
   </xsl:template>

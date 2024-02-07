@@ -41,10 +41,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link JobValidation}.
  *
  * @since 0.0.0
- * @todo #133:30min Validate job using `min-words` rules.
- *  We should validate input job using one more rule `min-words`.
- *  Respectively, we need unit tests for this logic.
- *  Don't forget to remove this puzzle.
  */
 final class JobValidationTest {
 
@@ -125,14 +121,90 @@ final class JobValidationTest {
     @SheetsIn({
         "struct",
         "errors",
-        "estimate"
+        "words"
     })
     @ExtendWith(ValidationPipeline.class)
-    void validatesClean(final Map<String, XSL> sheets) throws Exception {
+    void appendsMinWordsError(final Map<String, XSL> sheets) throws Exception {
         final String result = new JobValidation(
             new GhJob(
                 Yaml.createYamlInput(
-                    new ResourceOf("git/tracehub/validation/clean-job.yml")
+                    new ResourceOf("git/tracehub/validation/words–not-enough.yml")
+                        .stream()
+                ).readYamlMapping(),
+                new TextOf(
+                    new ResourceOf("git/tracehub/agents/github/Issue.md")
+                )
+            ),
+            new GhProject(
+                Yaml.createYamlInput(
+                    new ResourceOf("yml/projects/with-suppressions.yml").stream()
+                ).readYamlMapping()
+            ),
+            () -> sheets
+        ).asString();
+        final String expected = "Specified task description (10) is too small,"
+                                + " minimal amount of words is 20"
+                                + " (`backlog:rules:min-words`).";
+        MatcherAssert.assertThat(
+            "Job validation result '%s' does not match with expected %s"
+                .formatted(result, expected),
+            result,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    @SheetsIn({
+        "struct",
+        "errors",
+        "estimate",
+        "words"
+    })
+    @ExtendWith(ValidationPipeline.class)
+    void appendsComposedErrors(final Map<String, XSL> sheets) throws Exception {
+        final String result = new JobValidation(
+            new GhJob(
+                Yaml.createYamlInput(
+                    new ResourceOf("git/tracehub/validation/--broken.yml")
+                        .stream()
+                ).readYamlMapping(),
+                new TextOf(
+                    new ResourceOf("git/tracehub/agents/github/Issue.md")
+                )
+            ),
+            new GhProject(
+                Yaml.createYamlInput(
+                    new ResourceOf("yml/projects/with-suppressions.yml").stream()
+                ).readYamlMapping()
+            ),
+            () -> sheets
+        ).asString();
+        final String expected = "Specified estimate (15) is not in allowed range: 25"
+                                + " (`backlog:rules:min-estimate`) and "
+                                + "90 (`backlog:rules:max-estimate)`."
+                                + "\nSpecified task description (10) is too "
+                                + "small, minimal amount of words is 20"
+                                + " (`backlog:rules:min-words`).";
+        MatcherAssert.assertThat(
+            "Job validation result '%s' does not match with expected %s"
+                .formatted(result, expected),
+            result,
+            new IsEqual<>(expected)
+        );
+    }
+
+    @Test
+    @SheetsIn({
+        "struct",
+        "errors",
+        "estimate"
+    })
+    @ExtendWith(ValidationPipeline.class)
+    void validatesCleanOnTopEstimate(final Map<String, XSL> sheets) throws Exception {
+        final String result = new JobValidation(
+            new GhJob(
+                Yaml.createYamlInput(
+                    new ResourceOf("git/tracehub/validation/top.yml")
                         .stream()
                 ).readYamlMapping(),
                 new TextOf(
@@ -158,14 +230,48 @@ final class JobValidationTest {
     @SheetsIn({
         "struct",
         "errors",
-        "estimate"
+        "words"
     })
     @ExtendWith(ValidationPipeline.class)
-    void validatesCleanOnTopEstimate(final Map<String, XSL> sheets) throws Exception {
+    void validatesWordsEnough(final Map<String, XSL> sheets) throws Exception {
         final String result = new JobValidation(
             new GhJob(
                 Yaml.createYamlInput(
                     new ResourceOf("git/tracehub/validation/top.yml")
+                        .stream()
+                ).readYamlMapping(),
+                new TextOf(
+                    new ResourceOf("git/tracehub/agents/github/Issue.md")
+                )
+            ),
+            new GhProject(
+                Yaml.createYamlInput(
+                    new ResourceOf("yml/projects/with-suppressions.yml").stream()
+                ).readYamlMapping()
+            ),
+            () -> sheets
+        ).asString();
+        MatcherAssert.assertThat(
+            "Job validation result '%s' contains errors, but should not"
+                .formatted(result),
+            result.isEmpty(),
+            new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    @SheetsIn({
+        "struct",
+        "errors",
+        "estimate",
+        "words"
+    })
+    @ExtendWith(ValidationPipeline.class)
+    void validatesClean(final Map<String, XSL> sheets) throws Exception {
+        final String result = new JobValidation(
+            new GhJob(
+                Yaml.createYamlInput(
+                    new ResourceOf("git/tracehub/validation/clean-job.yml")
                         .stream()
                 ).readYamlMapping(),
                 new TextOf(

@@ -27,10 +27,6 @@ package git.tracehub;
  * Backlog.
  *
  * @since 0.0.0
- * @todo #109:60min Use rule values to validate Job.java.
- *  We should validate {@link Job} using values that we can get from
- *  #rules() method. We also should think about how to resolve mixing
- *  validations from XSL and Java.
  */
 public interface Backlog {
 

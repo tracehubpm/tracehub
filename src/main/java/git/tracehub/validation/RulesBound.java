@@ -40,9 +40,6 @@ import org.xembly.Xembler;
  * Job that contains {@code <rules>} XML node.
  *
  * @since 0.0.0
- * @todo #113:45min Integrate RulesBound.java with job xsl validation.
- *  We should run validation sheets for each job transformed.
- *  Don't forget to remove this puzzle.
  */
 @RequiredArgsConstructor
 public final class RulesBound implements Scalar<XML> {
@@ -61,7 +58,6 @@ public final class RulesBound implements Scalar<XML> {
     public XML value() throws Exception {
         final Map<String, String> rules = this.project.backlog().rules()
             .value();
-//        final XML xml = new XSLChain(this.prep).transform(this.job.asXml());
         final Directives dirs = new Directives()
             .xpath("//LinkedHashMap");
         rules.forEach((rule, value) -> dirs.add(rule).set(value).up());
