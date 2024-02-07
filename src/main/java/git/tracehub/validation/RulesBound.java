@@ -25,11 +25,8 @@ package git.tracehub.validation;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSL;
-import com.jcabi.xml.XSLChain;
 import git.tracehub.Job;
 import git.tracehub.Project;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;

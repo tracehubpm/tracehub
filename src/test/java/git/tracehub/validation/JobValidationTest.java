@@ -27,8 +27,8 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.jcabi.xml.XSL;
 import git.tracehub.agents.github.GhJob;
 import git.tracehub.agents.github.GhProject;
-import git.tracehub.extensions.ValidationPipeline;
 import git.tracehub.extensions.SheetsIn;
+import git.tracehub.extensions.ValidationPipeline;
 import java.util.Map;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.text.TextOf;
@@ -40,8 +40,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 /**
  * Test case for {@link JobValidation}.
  *
+ * @checkstyle StringLiteralsConcatenationCheck (250 lines)
  * @since 0.0.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class JobValidationTest {
 
     @Test
@@ -69,9 +71,10 @@ final class JobValidationTest {
             ),
             () -> sheets
         ).asString();
-        final String expected = "Specified estimate (20) is not in allowed range: 25"
-                                + " (`backlog:rules:min-estimate`) and 90"
-                                + " (`backlog:rules:max-estimate)`.";
+        final String expected =
+            "Specified estimate (20) is not in allowed range: 25"
+            + " (`backlog:rules:min-estimate`) and 90"
+            + " (`backlog:rules:max-estimate)`.";
         MatcherAssert.assertThat(
             "Job validation result '%s' does not match with expected %s"
                 .formatted(result, expected),
@@ -106,9 +109,10 @@ final class JobValidationTest {
             ),
             () -> sheets
         ).asString();
-        final String expected = "Specified estimate (100) is not in allowed range: 25"
-                                + " (`backlog:rules:min-estimate`) and 90"
-                                + " (`backlog:rules:max-estimate)`.";
+        final String expected =
+            "Specified estimate (100) is not in allowed range: 25"
+            + " (`backlog:rules:min-estimate`) and 90"
+            + " (`backlog:rules:max-estimate)`.";
         MatcherAssert.assertThat(
             "Job validation result '%s' does not match with expected %s"
                 .formatted(result, expected),
@@ -142,9 +146,10 @@ final class JobValidationTest {
             ),
             () -> sheets
         ).asString();
-        final String expected = "Specified task description (10) is too small,"
-                                + " minimal amount of words is 20"
-                                + " (`backlog:rules:min-words`).";
+        final String expected =
+            "Specified task description (10) is too small,"
+            + " minimal amount of words is 20"
+            + " (`backlog:rules:min-words`).";
         MatcherAssert.assertThat(
             "Job validation result '%s' does not match with expected %s"
                 .formatted(result, expected),
@@ -179,12 +184,13 @@ final class JobValidationTest {
             ),
             () -> sheets
         ).asString();
-        final String expected = "Specified estimate (15) is not in allowed range: 25"
-                                + " (`backlog:rules:min-estimate`) and "
-                                + "90 (`backlog:rules:max-estimate)`."
-                                + "\nSpecified task description (10) is too "
-                                + "small, minimal amount of words is 20"
-                                + " (`backlog:rules:min-words`).";
+        final String expected =
+            "Specified estimate (15) is not in allowed range: 25"
+            + " (`backlog:rules:min-estimate`) and "
+            + "90 (`backlog:rules:max-estimate)`."
+            + "\nSpecified task description (10) is too "
+            + "small, minimal amount of words is 20"
+            + " (`backlog:rules:min-words`).";
         MatcherAssert.assertThat(
             "Job validation result '%s' does not match with expected %s"
                 .formatted(result, expected),

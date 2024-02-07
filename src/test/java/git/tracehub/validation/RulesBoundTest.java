@@ -26,11 +26,9 @@ package git.tracehub.validation;
 import com.amihaiemil.eoyaml.Yaml;
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
-import com.jcabi.xml.XSLDocument;
 import git.tracehub.agents.github.GhJob;
 import git.tracehub.agents.github.GhProject;
 import org.cactoos.io.ResourceOf;
-import org.cactoos.list.ListOf;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
@@ -71,16 +69,6 @@ final class RulesBoundTest {
                     new ResourceOf("yml/projects/with-suppressions.yml").stream()
                 ).readYamlMapping()
             )
-//            new ListOf<>(
-//                new XSLDocument(
-//                    new ResourceOf("git/tracehub/validation/struct.xsl")
-//                        .stream()
-//                ),
-//                new XSLDocument(
-//                    new ResourceOf("git/tracehub/validation/errors.xsl")
-//                        .stream()
-//                )
-//            )
         ).value();
         final XML expected = new XMLDocument(
             new ResourceOf(
@@ -101,9 +89,9 @@ final class RulesBoundTest {
      * @param name Input file name
      * @throws Exception if something went wrong
      * @todo #113:25min Check the default values for applied rules.
-     * We should check that rules was bound to defaults, check
-     * <a href="https://github.com/tracehubpm/tracehub/issues/116">this</a> issue before.
-     * Don't forget to remove this puzzle.
+     *  We should check that rules was bound to defaults, check
+     *  <a href="https://github.com/tracehubpm/tracehub/issues/116">this</a> issue before.
+     *  Don't forget to remove this puzzle.
      */
     @Disabled
     @ValueSource(strings = {
@@ -132,16 +120,6 @@ final class RulesBoundTest {
                     new ResourceOf("yml/projects/good.yml").stream()
                 ).readYamlMapping()
             )
-//            new ListOf<>(
-//                new XSLDocument(
-//                    new ResourceOf("git/tracehub/validation/struct.xsl")
-//                        .stream()
-//                ),
-//                new XSLDocument(
-//                    new ResourceOf("git/tracehub/validation/errors.xsl")
-//                        .stream()
-//                )
-//            )
         ).value();
         final XML expected = new XMLDocument(
             new ResourceOf(
