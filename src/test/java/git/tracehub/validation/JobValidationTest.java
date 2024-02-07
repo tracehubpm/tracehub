@@ -74,8 +74,8 @@ final class JobValidationTest {
             () -> sheets
         ).asString();
         final String expected = "Specified estimate (20) is not in allowed range: 25"
-                                + " (`issues:backlog:rules:min-estimate`) and 90"
-                                + " (`issues:backlog:rules:max-estimate)`.";
+                                + " (`backlog:rules:min-estimate`) and 90"
+                                + " (`backlog:rules:max-estimate)`.";
         MatcherAssert.assertThat(
             "Job validation result '%s' does not match with expected %s"
                 .formatted(result, expected),
@@ -111,8 +111,8 @@ final class JobValidationTest {
             () -> sheets
         ).asString();
         final String expected = "Specified estimate (100) is not in allowed range: 25"
-                                + " (`issues:backlog:rules:min-estimate`) and 90"
-                                + " (`issues:backlog:rules:max-estimate)`.";
+                                + " (`backlog:rules:min-estimate`) and 90"
+                                + " (`backlog:rules:max-estimate)`.";
         MatcherAssert.assertThat(
             "Job validation result '%s' does not match with expected %s"
                 .formatted(result, expected),

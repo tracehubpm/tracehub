@@ -28,7 +28,6 @@ import git.tracehub.Job;
 import git.tracehub.Project;
 import java.io.IOException;
 import java.util.Map;
-import lombok.SneakyThrows;
 import org.cactoos.Scalar;
 
 /**
@@ -37,11 +36,15 @@ import org.cactoos.Scalar;
  * @since 0.0.0
  */
 public final class JobValidation extends ValidationEnvelope {
-//
-//    private final Job job;
-//    private final Project project;
-//    private final Scalar<Map<String, XSL>> sheets;
 
+    /**
+     * Ctor.
+     *
+     * @param validate Job to validate
+     * @param project Project
+     * @param shts XSL sheets
+     * @throws IOException if I/O fails
+     */
     public JobValidation(
         final Job validate,
         final Project project,
@@ -56,24 +59,4 @@ public final class JobValidation extends ValidationEnvelope {
             shts
         );
     }
-
-//    @Override
-//    public String asString() throws Exception {
-//        Logger.info(
-//            this,
-//            "Starting validation of job labeled '%s'",
-//            this.job.label()
-//        );
-//        return new JoinedErrors(
-//            new XsErrors(
-//                new XsApplied(
-//                    new RulesBound(
-//                        this.job,
-//                        this.project
-//                    ),
-//                    this.sheets
-//                )
-//            )
-//        ).asString();
-//    }
 }

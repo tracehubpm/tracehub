@@ -23,47 +23,31 @@
  */
 package git.tracehub.validation;
 
-import com.jcabi.log.Logger;
 import com.jcabi.xml.XSL;
 import git.tracehub.Project;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
 import org.cactoos.Scalar;
-import org.cactoos.Text;
-import org.cactoos.text.Joined;
 
 /**
  * Project (project.yml) validation.
  *
  * @since 0.0.0
  */
-@RequiredArgsConstructor
-public final class ProjectValidation implements Text {
+public final class ProjectValidation extends ValidationEnvelope {
 
     /**
-     * Project.
+     * Ctor.
+     * @param project Project
+     * @param sheets XSL sheets
      */
-    private final Project project;
-
-    /**
-     * Sheets to apply.
-     */
-    private final Scalar<Map<String, XSL>> sheets;
-
-    @Override
-    public String asString() throws Exception {
-        Logger.info(
-            this,
-            "Starting validation of project.yml in %s",
-            this.project.identity()
+    public ProjectValidation(
+        final Project project,
+        final Scalar<Map<String, XSL>> sheets
+    ) {
+        super(
+            project.identity(),
+            project::asXml,
+            sheets
         );
-        return new JoinedErrors(
-            new XsErrors(
-                new XsApplied(
-                    this.project.asXml(),
-                    this.sheets
-                )
-            )
-        ).asString();
     }
 }
