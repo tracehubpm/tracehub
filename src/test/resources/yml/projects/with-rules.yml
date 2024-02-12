@@ -12,8 +12,8 @@ backlog:
   type: JIRA
   rules:
     min-words: 20
-    min-estimate: 25m
-    max-estimate: 90m
+    min-estimate: 25
+    max-estimate: 90
 dependencies:
   - github.com/h1alexbel/cdit@master
   - github.com/h1alexbel/ghquota@master

@@ -47,6 +47,9 @@ import org.takes.http.FtRemote;
  *  Its not enough for this integration test. We should make an assertions that checks
  *  whether issue is created/commented/assigned or not.
  *  Depends on this <a href="https://github.com/tracehubpm/tracehub/issues/55">issue</a>.
+ * @todo #64:30min Test case for invalid job.
+ *  We should test case when invalid job was submitted (so validation
+ *  failed). Don't forget to remove this puzzle.
  */
 final class TkGitHubITCase {
 

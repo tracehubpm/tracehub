@@ -65,7 +65,7 @@ final class TkGitHubTest {
             repo,
             ".trace/jobs/fix-me.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes\nrole: DEV"
+            + " test description\ncost: 20\nrole: DEV"
         ).value();
         new LocalGhProject("yml/projects/single-backed.yml", repo).value();
         final String response = new RsPrint(

@@ -25,12 +25,16 @@ package git.tracehub.agents.github.issues;
 
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
+import com.jcabi.xml.XSL;
 import git.tracehub.Job;
 import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.GhJob;
+import git.tracehub.validation.JobValidation;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.cactoos.Scalar;
@@ -59,10 +63,10 @@ import org.cactoos.text.TextOf;
  *  We provide a full path of updated job to PMO, PMO gets us an issue number.
  *  From there, probably we should post a comment to that issue that things gets
  *  an update.
- * @todo #15:90min Apply validations on the Job.
- *  We should apply validations on the Job. For now
- *  we should wait for vsheets sheets for Jobs.
- *  Don't forget to remove this puzzle.
+ * @todo #64:45min Post found job validation errors somewhere.
+ *  We should post found errors in job by validation pipeline.
+ *  Ideally the destination should be GitHub commit, or maybe pull request,
+ *  where it was discovered.
  */
 @RequiredArgsConstructor
 public final class GhNew implements Scalar<List<Issue>> {
@@ -82,16 +86,21 @@ public final class GhNew implements Scalar<List<Issue>> {
      */
     private final Repo repo;
 
+    /**
+     * Sheets.
+     */
+    private final Scalar<Map<String, XSL>> sheets;
+
     // @checkstyle AnonInnerLengthCheck (20 lines)
     @Override
     public List<Issue> value() throws Exception {
         return this.commit.created().stream()
             .map(
-                new Function<String, Issue>() {
+                new Function<String, Job>() {
                     @SneakyThrows
                     @Override
-                    public Issue apply(final String name) {
-                        final Job job = new GhJob(
+                    public Job apply(final String name) {
+                        return new GhJob(
                             GhNew.this.repo,
                             name,
                             new TextOf(
@@ -100,6 +109,25 @@ public final class GhNew implements Scalar<List<Issue>> {
                                 )
                             )
                         );
+                    }
+                })
+            .filter(
+                new Predicate<Job>() {
+                    @SneakyThrows
+                    @Override
+                    public boolean test(final Job job) {
+                        return new JobValidation(
+                            job,
+                            GhNew.this.project,
+                            GhNew.this.sheets
+                        ).asString().isEmpty();
+                    }
+                })
+            .map(
+                new Function<Job, Issue>() {
+                    @SneakyThrows
+                    @Override
+                    public Issue apply(final Job job) {
                         return new Labeled(
                             new AssignOnIssue(
                                 GhNew.this.project,
@@ -112,7 +140,7 @@ public final class GhNew implements Scalar<List<Issue>> {
                             new ListOf<>("synced")
                         ).value();
                     }
-                })
-            .toList();
+                }
+            ).toList();
     }
 }
