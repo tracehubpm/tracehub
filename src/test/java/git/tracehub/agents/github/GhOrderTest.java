@@ -46,7 +46,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
  * Test case for {@link GhOrder}.
  *
  * @since 0.0.0
- * @checkstyle StringLiteralsConcatenationCheck (20 lines)
+ * @checkstyle StringLiteralsConcatenationCheck (30 lines)
  */
 final class GhOrderTest {
 
