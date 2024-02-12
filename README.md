@@ -35,8 +35,8 @@ backlog:
   type: GitHub
   rules:
     min-words: 20
-    min-estimate: 25m
-    max-estimate: 90m
+    min-estimate: 25
+    max-estimate: 90
 docs:
   type: Markdown
 dependencies:
@@ -92,7 +92,9 @@ will be placed.
 * `type`: issue tracker type, possible values are `GitHub`
 (jobs will be registered as [issues](https://github.com/features/issues) in GitHub),
 `JIRA` (jobs will be registered as tickets in [Atlassian JIRA](https://www.atlassian.com/software/jira)).
-* `rules`: rules, related to the backlog.
+* `rules`: rules, related to the backlog, there are few: `min-estimate` (measured in minutes),
+`max-estimate` (measured in minutes) and `min-words` (amount of words in task description),
+all of them should be specified as positive integer values.
 
 Section `docs` represents the place where all documentation from `/docs` package
 will be placed.
@@ -123,13 +125,13 @@ Take a look at the example of Job document:
 label: Update License year to 2024
 description: |
   Lets update a copyright year in our License to 2024
-cost: 20 minutes
+cost: 20
 role: ARC
 ```
 
 The element `label` represents the job name.
 The element `description` represents description of the job.
-The element `cost` represents an estimation of this job, positive integer value.
+The element `cost` represents an estimation in **minutes** of this job, positive integer value.
 The element `role` represents a required role for assigning on the job.
 If not specified, then it will be DEV.
 
