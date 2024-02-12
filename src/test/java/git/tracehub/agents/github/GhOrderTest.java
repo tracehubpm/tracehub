@@ -26,16 +26,21 @@ package git.tracehub.agents.github;
 import com.jcabi.github.Issue;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.xml.XSL;
 import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.MkContribution;
+import git.tracehub.extensions.SheetsIn;
+import git.tracehub.extensions.ValidationPipeline;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link GhOrder}.
@@ -46,19 +51,28 @@ import org.junit.jupiter.api.Test;
 final class GhOrderTest {
 
     @Test
-    void executesOrder() throws Exception {
+    @ExtendWith(ValidationPipeline.class)
+    @SheetsIn(
+        {
+            "struct",
+            "errors",
+            "estimate",
+            "words"
+        }
+    )
+    void executesOrder(final Map<String, XSL> sheets) throws Exception {
         final Repo repo = new MkGithub().randomRepo();
         new MkContribution(
             repo,
             ".trace/jobs/job1.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes\nrole: DEV"
+            + " test description that passes validation\ncost: 25\nrole: DEV"
         ).value();
         new MkContribution(
             repo,
             ".trace/jobs/job2.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes\nrole: ARC"
+            + " test description that passes validation\ncost: 25\nrole: ARC"
         ).value();
         new GhOrder(
             new ThJobs(
@@ -76,10 +90,11 @@ final class GhOrderTest {
                     )
                 )
             ),
-            repo
+            repo,
+            () -> sheets
         ).exec(
             new LocalGhProject(
-                "yml/projects/backed.yml",
+                "yml/projects/with-rules.yml",
                 repo
             ).value()
         );

@@ -26,7 +26,6 @@ package git.tracehub.validation;
 import com.jcabi.xml.XSL;
 import git.tracehub.Job;
 import git.tracehub.Project;
-import java.io.IOException;
 import java.util.Map;
 import org.cactoos.Scalar;
 
@@ -43,13 +42,12 @@ public final class JobValidation extends ValidationEnvelope {
      * @param validate Job to validate
      * @param project Project
      * @param shts XSL sheets
-     * @throws IOException if I/O fails
      */
     public JobValidation(
         final Job validate,
         final Project project,
         final Scalar<Map<String, XSL>> shts
-    ) throws IOException {
+    ) {
         super(
             validate.label(),
             new RulesBound(

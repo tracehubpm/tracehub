@@ -7,3 +7,7 @@ performers:
       - ARC
 backlog:
   type: GitHub
+  rules:
+    min-estimate: 20
+    max-estimate: 120
+    min-words: 10

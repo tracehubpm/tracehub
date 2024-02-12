@@ -24,7 +24,6 @@
 package git.tracehub.agents.github.issues;
 
 import com.jcabi.github.Issue;
-import com.jcabi.github.Pull;
 import com.jcabi.github.Repo;
 import git.tracehub.agents.github.CreatePull;
 import git.tracehub.agents.github.GhProject;
@@ -61,13 +60,12 @@ public final class OnAttachedLabel implements Scalar<Issue> {
         final String label = this.request.getJsonObject("label").getString("name");
         final Issue issue = new RqIssue(this.request, this.repo).value();
         if ("bug".equals(label)) {
-            final Pull created = new CreatePull(issue, this.repo, "master")
-                .value();
             issue.comments().post(
                 "@%s, I've created #%s for adding this issue into work queue."
                     .formatted(
                         new Architect(new GhProject(this.repo)).name(),
-                        created.number()
+                        new CreatePull(issue, this.repo, "master").value()
+                            .number()
                     )
             );
         }

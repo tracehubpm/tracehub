@@ -24,7 +24,6 @@
 package git.tracehub;
 
 import com.jcabi.xml.XML;
-import java.io.IOException;
 import org.cactoos.Text;
 
 /**
@@ -38,9 +37,8 @@ public interface Job extends Text {
      * Label.
      *
      * @return Job label
-     * @throws IOException if I/O fails
      */
-    String label() throws IOException;
+    String label();
 
     /**
      * Role.

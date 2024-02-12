@@ -54,9 +54,9 @@ final class YmlRulesTest {
             )
         ).value().values();
         final List<String> expected = new ListOf<>(
-            "25m",
+            "25",
             "20",
-            "90m"
+            "90"
         );
         MatcherAssert.assertThat(
             "Map values %s does not match with expected %s".formatted(

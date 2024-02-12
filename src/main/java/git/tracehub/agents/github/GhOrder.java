@@ -24,11 +24,14 @@
 package git.tracehub.agents.github;
 
 import com.jcabi.github.Repo;
+import com.jcabi.xml.XSL;
 import git.tracehub.Project;
 import git.tracehub.agents.github.issues.GhNew;
 import git.tracehub.facts.Order;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.cactoos.Scalar;
 
 /**
  * GitHub order execution.
@@ -48,13 +51,19 @@ public final class GhOrder implements Order {
      */
     private final Repo repo;
 
+    /**
+     * Sheets.
+     */
+    private final Scalar<Map<String, XSL>> sheets;
+
     @SneakyThrows
     @Override
     public void exec(final Project project) {
         new GhNew(
             project,
             new ThJobs(this.commit),
-            this.repo
+            this.repo,
+            this.sheets
         ).value();
     }
 }

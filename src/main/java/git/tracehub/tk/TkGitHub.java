@@ -38,6 +38,7 @@ import git.tracehub.facts.ExecOn;
 import git.tracehub.validation.Excluded;
 import git.tracehub.validation.ProjectValidation;
 import git.tracehub.validation.Remote;
+import java.util.Collections;
 import java.util.function.Consumer;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -98,6 +99,7 @@ public final class TkGitHub implements Take {
      */
     private final String tag;
 
+    // @checkstyle MethodBodyCommentsCheck (70 lines)
     @Override
     public Response act(final Request req) throws Exception {
         final JsonObject json = Json.createReader(req.body())
@@ -142,7 +144,18 @@ public final class TkGitHub implements Take {
                                         )
                                     )
                                 ),
-                                repo
+                                repo,
+                                /**
+                                 * Job validation sheets.
+                                 * @todo #148:25min Fetch remote sheets for job validation.
+                                 *  We should fetch remote sheets for job validation from
+                                 *  vsheets repo. For now its depends on migration of this
+                                 *  sheets there.
+                                 *  See <a href="https://github.com/tracehubpm/tracehub/issues/148">this</a>
+                                 *  and <a href="https://github.com/tracehubpm/tracehub/issues/149">this</a>.
+                                 *  Don't forget to create tests and remove this puzzle.
+                                 */
+                                Collections::emptyMap
                             )
                         ).exec(project);
                     }

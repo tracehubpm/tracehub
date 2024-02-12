@@ -27,6 +27,7 @@ import com.jcabi.github.Issue;
 import com.jcabi.github.IssueLabels;
 import com.jcabi.github.Repo;
 import com.jcabi.github.mock.MkGithub;
+import com.jcabi.xml.XSL;
 import git.tracehub.Project;
 import git.tracehub.agents.github.Commit;
 import git.tracehub.agents.github.Composed;
@@ -36,23 +37,39 @@ import git.tracehub.agents.github.TraceLogged;
 import git.tracehub.agents.github.TraceOnly;
 import git.tracehub.extensions.LocalGhProject;
 import git.tracehub.extensions.MkContribution;
+import git.tracehub.extensions.SheetsIn;
+import git.tracehub.extensions.ValidationPipeline;
 import java.util.List;
+import java.util.Map;
 import javax.json.Json;
 import org.cactoos.io.ResourceOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.core.IsEqual;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * Test case for {@link GhNew}.
  *
  * @since 0.0.0
- * @checkstyle StringLiteralsConcatenationCheck (100 lines)
+ * @todo #64:35min: Check the job creation if there is no backlog rules.
+ *  We should validate job even there is no backlog:rules in project.yml.
+ *  Depends on this <a href="https://github.com/tracehubpm/tracehub/issues/116">one</a>.
+ * @checkstyle StringLiteralsConcatenationCheck (150 lines)
  */
 final class GhNewTest {
 
     @Test
-    void createsNewIssues() throws Exception {
+    @ExtendWith(ValidationPipeline.class)
+    @SheetsIn(
+        {
+            "struct",
+            "errors",
+            "estimate",
+            "words"
+        }
+    )
+    void createsNewIssues(final Map<String, XSL> sheets) throws Exception {
         final MkGithub github = new MkGithub();
         github.users().add("h1alexbel");
         github.users().add("hizmailovich");
@@ -61,13 +78,13 @@ final class GhNewTest {
             repo,
             ".trace/jobs/job1.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes\nrole: DEV"
+            + " test description that passes validation\ncost: 25\nrole: DEV"
         ).value();
         new MkContribution(
             repo,
             ".trace/jobs/job2.yml",
             "label: Update License year to 2024\ndescription:"
-            + " test description\ncost: 20 minutes\nrole: ARC"
+            + " test description that passes validation\ncost: 25\nrole: ARC"
         ).value();
         final Commit commit =
             new ThJobs(
@@ -86,12 +103,13 @@ final class GhNewTest {
                 )
             );
         final Project project = new LocalGhProject(
-            "yml/projects/many-performers.yml", repo
+            "yml/projects/with-suppressions.yml", repo
         ).value();
         final List<Issue> created = new GhNew(
             project,
             commit,
-            repo
+            repo,
+            () -> sheets
         ).value();
         final int expected = 2;
         MatcherAssert.assertThat(
@@ -137,6 +155,68 @@ final class GhNewTest {
                 .formatted(second),
             new IssueLabels.Smart(second.labels()).contains("synced"),
             new IsEqual<>(true)
+        );
+    }
+
+    @Test
+    @ExtendWith(ValidationPipeline.class)
+    @SheetsIn(
+        {
+            "struct",
+            "errors",
+            "estimate",
+            "words"
+        }
+    )
+    void createsAndLabelsOnlyValidJobs(final Map<String, XSL> sheets) throws Exception {
+        final MkGithub github = new MkGithub();
+        github.users().add("h1alexbel");
+        github.users().add("hizmailovich");
+        final Repo repo = github.randomRepo();
+        new MkContribution(
+            repo,
+            ".trace/jobs/job1.yml",
+            "label: Update License year to 2024\ndescription:"
+            + " test description blah blah blah\ncost: 25\nrole: DEV"
+        ).value();
+        new MkContribution(
+            repo,
+            ".trace/jobs/job2.yml",
+            "label: Update License year to 2024\ndescription:"
+            + " test description\ncost: 20\nrole: ARC"
+        ).value();
+        final Commit commit =
+            new ThJobs(
+                new TraceLogged(
+                    new TraceOnly(
+                        new Composed(
+                            new GhCommits(
+                                Json.createReader(
+                                    new ResourceOf(
+                                        "github/hooks/push/created-jobs.json"
+                                    ).stream()
+                                ).readObject()
+                            )
+                        )
+                    )
+                )
+            );
+        final Project project = new LocalGhProject(
+            "yml/projects/with-suppressions.yml", repo
+        ).value();
+        final List<Issue> created = new GhNew(
+            project,
+            commit,
+            repo,
+            () -> sheets
+        ).value();
+        final int size = created.size();
+        final int expected = 1;
+        MatcherAssert.assertThat(
+            "Created issues size %s does not match with expected %s"
+                .formatted(size, expected),
+            size,
+            new IsEqual<>(expected)
         );
     }
 }
