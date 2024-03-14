@@ -103,7 +103,7 @@ SOFTWARE.
     <Saxon-HE.version>12.4</Saxon-HE.version>
     <velocity-engine-core.version>2.3</velocity-engine-core.version>
     <plantuml-generator-maven-plugin.version>1.1.2</plantuml-generator-maven-plugin.version>
-    <xembly.version>0.31.0</xembly.version>
+    <xembly.version>0.31.1</xembly.version>
   </properties>
   <dependencies>
     <dependency>
