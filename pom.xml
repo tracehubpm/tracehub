@@ -96,7 +96,7 @@ SOFTWARE.
     <mockito-junit-jupiter.version>5.5.0</mockito-junit-jupiter.version>
     <jping.version>0.0.3</jping.version>
     <eokson.version>0.3.2</eokson.version>
-    <logcaptor.version>2.9.0</logcaptor.version>
+    <logcaptor.version>2.9.3</logcaptor.version>
     <logback-classic.version>1.5.0</logback-classic.version>
     <ghquota.version>0.0.1</ghquota.version>
     <jackson-dataformat-yaml.version>2.16.1</jackson-dataformat-yaml.version>
