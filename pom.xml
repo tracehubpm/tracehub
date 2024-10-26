@@ -85,7 +85,7 @@ SOFTWARE.
     <jcabi-http.version>2.0.0</jcabi-http.version>
     <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
     <sa-tan.version>0.1.5</sa-tan.version>
-    <takes.version>1.24.4</takes.version>
+    <takes.version>1.24.5</takes.version>
     <eo-yaml.version>7.2.0</eo-yaml.version>
     <junit-api.version>5.10.0</junit-api.version>
     <lombok.version>1.18.32</lombok.version>
